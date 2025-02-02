@@ -14,13 +14,13 @@ return array(
 	'auth' => array(
 		'allow_anonymous' => 'Öntanımlı kullanıcının makalelerinin anonim okunmasına izin ver (%s)',
 		'allow_anonymous_refresh' => 'Anonim makale yenilemesine izin ver',
-		'api_enabled' => '<abbr>API</abbr> erişimine izin ver <small>(mobil uygulamalar için gerekli)</small>',
+		'api_enabled' => '<abbr>API</abbr> erişimine izin ver <small>(mobil uygulamalar için gerekli and sharing user queries)</small>',	// DIRTY
 		'form' => 'Web formu (geleneksel, JavaScript gerektirir)',
-		'http' => 'HTTP (ileri kullanıcılar için, HTTPS)',
+		'http' => 'HTTP (advanced: managed by Web server, OIDC, SSO…)',	// TODO
 		'none' => 'Hiçbiri (tehlikeli)',
 		'title' => 'Kimlik doğrulama',
-		'token' => 'Master authentication token',	// TODO
-		'token_help' => 'Allows access to all RSS outputs of the user as well as refreshing feeds without authentication:',	// TODO
+		'token' => 'Ana kimlik doğrulama jetonu',
+		'token_help' => 'Kullanıcının tüm RSS çıkışlarına erişimine ve kimlik doğrulaması olmadan akışları yenilemesine izin ver:',
 		'type' => 'Kimlik doğrulama yöntemi',
 		'unsafe_autologin' => 'Güvensiz otomatik girişe izin ver: ',
 	),
@@ -116,6 +116,7 @@ return array(
 		'description' => 'Açıklama',
 		'disabled' => 'Pasif',
 		'empty_list' => 'Yüklenmiş eklenti bulunmamaktadır',
+		'empty_list_help' => 'Boş uzantı listesinin arkasındaki nedeni belirlemek için günlükleri kontrol edin.',
 		'enabled' => 'Aktif',
 		'latest' => 'Kuruldu',
 		'name' => 'İsim',
@@ -147,8 +148,9 @@ return array(
 		'main_stream' => 'Ana akış',
 		'no_idle' => 'Boşta akış yok!',
 		'number_entries' => '%d makale',
+		'overview' => 'Overview',	// TODO
 		'percent_of_total' => '% toplamın yüzdesi',
-		'repartition' => 'Makale dağılımı',
+		'repartition' => 'Makale dağılımı: %s',
 		'status_favorites' => 'Favoriler',
 		'status_read' => 'Okunmuş',
 		'status_total' => 'Toplam',
@@ -160,8 +162,8 @@ return array(
 		'_' => 'Sistem yapılandırması',
 		'auto-update-url' => 'Otomatik güncelleme sunucu URL',
 		'base-url' => array(
-			'_' => 'Base URL',	// TODO
-			'recommendation' => 'Automatic recommendation: <kbd>%s</kbd>',	// TODO
+			'_' => 'Ana URL',
+			'recommendation' => 'Otomatik öneri: <kbd>%s</kbd>',
 		),
 		'cookie-duration' => array(
 			'help' => 'saniye',
@@ -187,33 +189,33 @@ return array(
 			),
 			'title' => 'Kullanıcı kayıt formu',
 		),
-		'sensitive-parameter' => 'Sensitive parameter. Edit manually in <kbd>./data/config.php</kbd>',	// TODO
+		'sensitive-parameter' => 'Hassas parametre. <kbd>./data/config.php</kbd> adresinde elle düzenleyiniz.',
 		'tos' => array(
-			'disabled' => 'is not given',	// TODO
-			'enabled' => '<a href="./?a=tos">is enabled</a>',	// TODO
-			'help' => 'How to <a href="https://freshrss.github.io/FreshRSS/en/admins/12_User_management.html#enable-terms-of-service-tos" target="_blank">enable the Terms of Service</a>',	// TODO
+			'disabled' => 'verilmedi',
+			'enabled' => '<a href="./?a=tos">aktive edildi</a>',
+			'help' => '<a href="https://freshrss.github.io/FreshRSS/en/admins/12_User_management.html#enable-terms-of-service-tos" target="_blank">Kullanım şartlarını</a> nasıl aktifleştiririm?',
 		),
 		'websub' => array(
-			'help' => 'About <a href="https://freshrss.github.io/FreshRSS/en/users/WebSub.html" target="_blank">WebSub</a>',	// TODO
+			'help' => '<a href="https://freshrss.github.io/FreshRSS/en/users/WebSub.html" target="_blank">WebSub</a> hakkında',
 		),
 	),
 	'update' => array(
 		'_' => 'Sistem güncelleme',
 		'apply' => 'Uygula',
-		'changelog' => 'Changelog',	// TODO
+		'changelog' => 'Değişiklik günlüğü',
 		'check' => 'Güncelleme kontrolü',
-		'copiedFromURL' => 'update.php copied from %s to ./data',	// TODO
+		'copiedFromURL' => 'update.php %s lokasyonundan ./data lokasyonuna kopyalandı',
 		'current_version' => 'Mevcut sürümünüz',
 		'last' => 'Son kontrol',
-		'loading' => 'Updating…',	// TODO
+		'loading' => 'Güncelleniyor…',
 		'none' => 'Yeni güncelleme yok',
 		'releaseChannel' => array(
-			'_' => 'Release channel',	// TODO
-			'edge' => 'Rolling release (“edge”)',	// TODO
-			'latest' => 'Stable release (“latest”)',	// TODO
+			'_' => 'Sürüm kanalı',
+			'edge' => 'Sürekli güncellenen sürüm (“edge”)',
+			'latest' => 'Stabil sürüm (“latest”)',
 		),
 		'title' => 'Sistem güncelleme',
-		'viaGit' => 'Update via git and Github.com started',	// TODO
+		'viaGit' => 'git ve GitHub.com ile gğncelleme başladı',
 	),
 	'user' => array(
 		'admin' => 'Yönetici',

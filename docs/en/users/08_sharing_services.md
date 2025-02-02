@@ -14,7 +14,6 @@ FreshRSS has the option to share links with a bunch of services.
 
 | Service           | Short description                                    | Links                                            | Notes                                                         |
 |:------------------|:-----------------------------------------------------|:-------------------------------------------------|:--------------------------------------------------------------|
-| Blogotext         | A little more than a lightweight SQLite Blog-Engine. | [GitHub](https://github.com/BlogoText/blogotext) | Deprecated since FreshRSS V1.20.0 (2022). Will be deleted in 2023 (scheduled to FreshRSS V1.22.0) |
 | Buffer         | Buffer.com is a social media management platform for scheduling, publishing, and analyzing content. | [Website](https://buffer.com) ||
 | Diaspora*         | The online social world where you are in control     | [Website](https://diasporafoundation.org/), [Wikipedia](https://en.wikipedia.org/wiki/Diaspora_(social_network)) |  |
 | Facebook          | Worldwide social network (by Meta Platforms)         | [Website](https://facebook.com), [Wikipedia](https://en.wikipedia.org/wiki/Facebook) | |
@@ -33,6 +32,7 @@ FreshRSS has the option to share links with a bunch of services.
 | Raindrop.io       | All-in-one bookmark manager                          | [Website](https://raindrop.io/)| |
 | Reddit            | A network of communities where people can dive into their interests, hobbies and passions| [Website](https://www.reddit.com/), [Wikipedia](https://en.wikipedia.org/wiki/Reddit)| |
 | Shaarli           | Self-hosted minimalist bookmark manager and link sharing service | [Website](https://shaarli.readthedocs.io/) | |
+| Telegram          | Social network                         | [Website](https://telegram.org), [Wikipedia](https://en.wikipedia.org/wiki/Telegram_(software)) | |
 | Twitter           | Microblogging social network                         | [Website](https://twitter.com), [Wikipedia](https://de.wikipedia.org/wiki/Twitter) | |
 | wallabag          | Save and classify articles. Read them later. Freely  | [Website](https://www.wallabag.org) | Compatible to version 1 and 2 |
 | Whatsapp          | Instant messaging and voice-over-IP service owned by Meta Platforms| [Website](https://www.whatsapp.com), [Wikipedia](https://en.wikipedia.org/wiki/WhatsApp) | |

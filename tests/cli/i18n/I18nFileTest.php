@@ -12,7 +12,7 @@ class I18nFileTest extends PHPUnit\Framework\TestCase {
 
 		$after = $this->computeFilesHash();
 
-		self::assertEquals($before, $after);
+		self::assertSame($before, $after);
 	}
 
 	/** @return array<string,string|false> */

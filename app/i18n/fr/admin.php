@@ -14,9 +14,9 @@ return array(
 	'auth' => array(
 		'allow_anonymous' => 'Autoriser la lecture anonyme des articles de l’utilisateur par défaut (%s)',
 		'allow_anonymous_refresh' => 'Autoriser le rafraîchissement anonyme des flux',
-		'api_enabled' => 'Autoriser l’accès par <abbr>API</abbr> <small>(nécessaire pour les applis mobiles)</small>',
+		'api_enabled' => 'Autoriser l’accès par <abbr>API</abbr> <small>(nécessaire pour les applications mobiles et pour partager les filtres utilisateurs)</small>',
 		'form' => 'Formulaire (traditionnel, requiert JavaScript)',
-		'http' => 'HTTP (pour utilisateurs avancés avec HTTPS)',
+		'http' => 'HTTP (avancé : contrôlé par serveur Web, OIDC, SSO…)',
 		'none' => 'Aucune (dangereux)',
 		'title' => 'Authentification',
 		'token' => 'Jeton d’identification maître',
@@ -116,6 +116,7 @@ return array(
 		'description' => 'Description',	// IGNORE
 		'disabled' => 'Désactivée',
 		'empty_list' => 'Aucune extension installée',
+		'empty_list_help' => 'Vérifiez les logs pour déterminer pourquoi la liste des extensions est vide.',
 		'enabled' => 'Activée',
 		'latest' => 'Installée',
 		'name' => 'Nom',
@@ -147,8 +148,9 @@ return array(
 		'main_stream' => 'Flux principal',
 		'no_idle' => 'Il n’y a aucun flux inactif !',
 		'number_entries' => '%d articles',	// IGNORE
+		'overview' => 'Vue d’ensemble',
 		'percent_of_total' => '% du total',
-		'repartition' => 'Répartition des articles',
+		'repartition' => 'Répartition des articles: %s',
 		'status_favorites' => 'favoris',
 		'status_read' => 'lus',
 		'status_total' => 'total',
@@ -213,7 +215,7 @@ return array(
 			'latest' => 'Publication stable (“latest”)',
 		),
 		'title' => 'Système de mise à jour',
-		'viaGit' => 'Mise à jour via git et Github.com démarrée',
+		'viaGit' => 'Mise à jour via git et GitHub.com démarrée',
 	),
 	'user' => array(
 		'admin' => 'Administrateur',

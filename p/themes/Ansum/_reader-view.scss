@@ -8,14 +8,12 @@
 		color: variables.$main-font-color;
 		border: none;
 
-		.content {
+		.flux_content {
 			background-color: variables.$white;
 			border: none;
 
 			.author {
-				margin: 0 0 10px;
 				color: variables.$grey-medium-dark;
-				font-size: 90%;
 			}
 		}
 	}

@@ -14,12 +14,22 @@ return array(
 	'about' => array(
 		'_' => '关于',
 		'agpl3' => '<a href="https://www.gnu.org/licenses/agpl-3.0.html">AGPL 3</a>',	// IGNORE
+		'bug_reports' => array(
+			'environment_information' => array(
+				'_' => 'System information',	// TODO
+				'browser' => 'Browser',	// TODO
+				'database' => 'Database',	// TODO
+				'server_software' => 'Server software',	// TODO
+				'version_frss' => 'FreshRSS version',	// TODO
+				'version_php' => 'PHP version',	// TODO
+			),
+		),
 		'bugs_reports' => '报告错误',
 		'credits' => '致谢',
 		'credits_content' => '某些设计元素来自于 <a href="http://twitter.github.io/bootstrap/">Bootstrap</a> ，尽管 FreshRSS 并没有使用此框架。<a href="https://gitlab.gnome.org/Archive/gnome-icon-theme-symbolic">图标</a> 来自于 <a href="https://www.gnome.org/">GNOME 项目</a>。<em>Open Sans</em> 字体出自 <a href="https://fonts.google.com/specimen/Open+Sans">Steve Matteson</a> 之手。FreshRSS 基于 PHP 框架 <a href="https://framagit.org/marienfressinaud/MINZ">Minz</a>。',
 		'documentation' => '文档',
 		'freshrss_description' => 'FreshRSS 是一个自托管的 RSS 聚合服务。 它不仅轻快易用，并且强大又易于配置。',
-		'github' => '<a href="https://github.com/FreshRSS/FreshRSS/issues">Github Issues</a>',
+		'github' => '<a href="https://github.com/FreshRSS/FreshRSS/issues">GitHub Issues</a>',
 		'license' => '授权',
 		'project_website' => '项目网站',
 		'title' => '关于',
@@ -27,6 +37,11 @@ return array(
 	),
 	'feed' => array(
 		'empty' => '没有文章可以显示。',
+		'received' => array(
+			'before_yesterday' => 'Received before yesterday',	// TODO
+			'today' => 'Received today',	// TODO
+			'yesterday' => 'Received yesterday',	// TODO
+		),
 		'rss_of' => '%s 的订阅源',
 		'title' => '首页',
 		'title_fav' => '收藏',
@@ -60,6 +75,18 @@ return array(
 		'reader_view' => '阅读视图',
 		'rss_view' => '订阅源',
 		'search_short' => '搜索',
+		'sort' => array(
+			'_' => 'Sorting criteria',	// TODO
+			'date_asc' => 'Publication date 1→9',	// TODO
+			'date_desc' => 'Publication date 9→1',	// TODO
+			'id_asc' => 'Freshly received last',	// TODO
+			'id_desc' => 'Freshly received first',	// TODO
+			'link_asc' => 'Link A→Z',	// TODO
+			'link_desc' => 'Link Z→A',	// TODO
+			'rand' => 'Random order',	// TODO
+			'title_asc' => 'Title A→Z',	// TODO
+			'title_desc' => 'Title Z→A',	// TODO
+		),
 		'starred' => '显示收藏',
 		'stats' => '统计',
 		'subscription' => '订阅管理',

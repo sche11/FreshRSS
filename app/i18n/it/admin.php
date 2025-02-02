@@ -14,13 +14,13 @@ return array(
 	'auth' => array(
 		'allow_anonymous' => 'Consenti la lettura agli utenti anonimi degli articoli dell utente predefinito (%s)',
 		'allow_anonymous_refresh' => 'Consenti agli utenti anonimi di aggiornare gli articoli',
-		'api_enabled' => 'Consenti le <abbr>API</abbr> di accesso <small>(richiesto per le app mobili)</small>',
+		'api_enabled' => 'Consentire l’accesso all’<abbr>API</abbr> <small>(necessario per le app e per la condivisione delle query degli utenti)</small>',
 		'form' => 'Web form (tradizionale, richiede JavaScript)',
-		'http' => 'HTTP (per gli utenti avanzati con HTTPS)',
+		'http' => 'HTTP (avanzato: gestito da server Web, OIDC, SSO…)',
 		'none' => 'Nessuno (pericoloso)',
 		'title' => 'Autenticazione',
-		'token' => 'Master authentication token',	// TODO
-		'token_help' => 'Allows access to all RSS outputs of the user as well as refreshing feeds without authentication:',	// TODO
+		'token' => 'Token di autenticazione principale',
+		'token_help' => 'Consente l’accesso a tutti gli output RSS dell’utente e di aggiornare i feed senza autenticazione:',
 		'type' => 'Metodo di autenticazione',
 		'unsafe_autologin' => 'Consenti accesso automatico non sicuro usando il formato: ',
 	),
@@ -116,6 +116,7 @@ return array(
 		'description' => 'Descrizione',
 		'disabled' => 'Disabilitata',
 		'empty_list' => 'Non ci sono estensioni installate',
+		'empty_list_help' => 'Controllare i log per determinare il motivo della lista estensioni vuota.',
 		'enabled' => 'Abilitata',
 		'latest' => 'Installato',
 		'name' => 'Nome',
@@ -147,8 +148,9 @@ return array(
 		'main_stream' => 'Flusso principale',
 		'no_idle' => 'Non ci sono feed non aggiornati',
 		'number_entries' => '%d articoli',
+		'overview' => 'Overview',	// TODO
 		'percent_of_total' => '% del totale',
-		'repartition' => 'Ripartizione articoli',
+		'repartition' => 'Ripartizione articoli: %s',
 		'status_favorites' => 'Preferiti',
 		'status_read' => 'Letti',
 		'status_total' => 'Totale',
@@ -205,7 +207,7 @@ return array(
 		'copiedFromURL' => 'update.php copiato da %s a ./data',
 		'current_version' => 'Versione',
 		'last' => 'Ultima verifica',
-		'loading' => 'Aggiornamentose…',
+		'loading' => 'Aggiornamento…',
 		'none' => 'Nessun aggiornamento da applicare',
 		'releaseChannel' => array(
 			'_' => 'Canale di rilascio',
@@ -213,7 +215,7 @@ return array(
 			'latest' => 'Stabile (“latest”)',
 		),
 		'title' => 'Aggiorna sistema',
-		'viaGit' => 'Aggiornamento tramite git e Github.com avviato',
+		'viaGit' => 'Aggiornamento tramite git e GitHub.com avviato',
 	),
 	'user' => array(
 		'admin' => 'Amministratore',

@@ -8,23 +8,26 @@ declare(strict_types=1);
  * easy way.
  */
 class FreshRSS_UserQuery {
-
 	private bool $deprecated = false;
 	private string $get = '';
 	private string $get_name = '';
 	private string $get_type = '';
+	/** XML-encoded name */
 	private string $name = '';
 	private string $order = '';
-	private FreshRSS_BooleanSearch $search;
+	private readonly FreshRSS_BooleanSearch $search;
 	private int $state = 0;
 	private string $url = '';
 	private string $token = '';
 	private bool $shareRss = false;
 	private bool $shareOpml = false;
-	/** @var array<int,FreshRSS_Category> $categories */
+	/** @var array<int,FreshRSS_Category> $categories where the key is the category ID */
 	private array $categories;
-	/** @var array<int,FreshRSS_Tag> $labels */
+	/** @var array<int,FreshRSS_Tag> $labels where the key is the label ID */
 	private array $labels;
+	/** XML-encoded description */
+	private string $description = '';
+	private string $imageUrl = '';
 
 	public static function generateToken(string $salt): string {
 		if (!FreshRSS_Context::hasSystemConf()) {
@@ -39,15 +42,24 @@ class FreshRSS_UserQuery {
 	}
 
 	/**
-	 * @param array{get?:string,name?:string,order?:string,search?:string,state?:int,url?:string,token?:string,shareRss?:bool,shareOpml?:bool} $query
-	 * @param array<int,FreshRSS_Category> $categories
-	 * @param array<int,FreshRSS_Tag> $labels
+	 * @param array{get?:string,name?:string,order?:string,search?:string,state?:int,url?:string,token?:string,
+	 * 	shareRss?:bool,shareOpml?:bool,description?:string,imageUrl?:string} $query
+	 * @param array<FreshRSS_Category> $categories
+	 * @param array<FreshRSS_Tag> $labels
 	 */
 	public function __construct(array $query, array $categories, array $labels) {
-		$this->categories = $categories;
-		$this->labels = $labels;
+		$this->categories = [];
+		foreach ($categories as $category) {
+			$this->categories[$category->id()] = $category;
+		}
+		$this->labels = [];
+		foreach ($labels as $label) {
+			$this->labels[$label->id()] = $label;
+		}
 		if (isset($query['get'])) {
 			$this->parseGet($query['get']);
+		} else {
+			$this->get_type = 'all';
 		}
 		if (isset($query['name'])) {
 			$this->name = trim($query['name']);
@@ -57,8 +69,13 @@ class FreshRSS_UserQuery {
 		}
 		if (empty($query['url'])) {
 			if (!empty($query)) {
-				unset($query['name']);
-				$this->url = Minz_Url::display(['params' => $query]);
+				$link = $query;
+				unset($link['description']);
+				unset($link['imageUrl']);
+				unset($link['name']);
+				unset($link['shareOpml']);
+				unset($link['shareRss']);
+				$this->url = Minz_Url::display(['params' => $link]);
 			}
 		} else {
 			$this->url = $query['url'];
@@ -75,9 +92,15 @@ class FreshRSS_UserQuery {
 		if (isset($query['shareOpml'])) {
 			$this->shareOpml = $query['shareOpml'];
 		}
+		if (isset($query['description'])) {
+			$this->description = $query['description'];
+		}
+		if (isset($query['imageUrl'])) {
+			$this->imageUrl = $query['imageUrl'];
+		}
 
 		// linked too deeply with the search object, need to use dependency injection
-		$this->search = new FreshRSS_BooleanSearch($query['search'], 0, 'AND', false);
+		$this->search = new FreshRSS_BooleanSearch($query['search'], 0, 'AND', allowUserQueries: true);
 		if (!empty($query['state'])) {
 			$this->state = intval($query['state']);
 		}
@@ -99,6 +122,8 @@ class FreshRSS_UserQuery {
 			'token' => $this->token,
 			'shareRss' => $this->shareRss,
 			'shareOpml' => $this->shareOpml,
+			'description' => $this->description,
+			'imageUrl' => $this->imageUrl,
 		]);
 	}
 
@@ -107,11 +132,19 @@ class FreshRSS_UserQuery {
 	 */
 	private function parseGet(string $get): void {
 		$this->get = $get;
-		if (preg_match('/(?P<type>[acfistT])(_(?P<id>\d+))?/', $get, $matches)) {
+		if ($this->get === '') {
+			$this->get_type = 'all';
+		} elseif (preg_match('/(?P<type>[aAcfistTZ])(_(?P<id>\d+))?/', $get, $matches)) {
 			$id = intval($matches['id'] ?? '0');
 			switch ($matches['type']) {
-				case 'a':
+				case 'a':	// All PRIORITY_MAIN_STREAM
 					$this->get_type = 'all';
+					break;
+				case 'A':	// All except PRIORITY_ARCHIVED
+					$this->get_type = 'A';
+					break;
+				case 'Z':	// All including PRIORITY_ARCHIVED
+					$this->get_type = 'Z';
 					break;
 				case 'c':
 					$this->get_type = 'category';
@@ -155,22 +188,22 @@ class FreshRSS_UserQuery {
 
 	/**
 	 * Check if the user query has parameters.
-	 * If the type is 'all', it is considered equal to no parameters
 	 */
 	public function hasParameters(): bool {
-		if ($this->get_type === 'all') {
-			return false;
+		if ($this->get_type !== 'all') {
+			return true;
 		}
 		if ($this->hasSearch()) {
 			return true;
 		}
-		if ($this->state) {
+		if (!in_array($this->state, [
+				0,
+				FreshRSS_Entry::STATE_READ | FreshRSS_Entry::STATE_NOT_READ,
+				FreshRSS_Entry::STATE_READ | FreshRSS_Entry::STATE_NOT_READ | FreshRSS_Entry::STATE_FAVORITE | FreshRSS_Entry::STATE_NOT_FAVORITE
+			], true)) {
 			return true;
 		}
-		if ($this->order) {
-			return true;
-		}
-		if ($this->get) {
+		if ($this->order !== '' && $this->order !== FreshRSS_Context::userConf()->sort_order) {
 			return true;
 		}
 		return false;
@@ -258,6 +291,13 @@ class FreshRSS_UserQuery {
 		return '';
 	}
 
+	public function sharedUrlGreader(bool $xmlEscaped = true): string {
+		if ($this->shareRss && $this->token !== '') {
+			return $this->sharedUrl($xmlEscaped) . ($xmlEscaped ? '&amp;' : '&') . 'f=greader';
+		}
+		return '';
+	}
+
 	public function sharedUrlHtml(bool $xmlEscaped = true): string {
 		if ($this->shareRss && $this->token !== '') {
 			return $this->sharedUrl($xmlEscaped) . ($xmlEscaped ? '&amp;' : '&') . 'f=html';
@@ -277,5 +317,21 @@ class FreshRSS_UserQuery {
 			return $this->sharedUrl($xmlEscaped) . ($xmlEscaped ? '&amp;' : '&') . 'f=opml';
 		}
 		return '';
+	}
+
+	public function getDescription(): string {
+		return $this->description;
+	}
+
+	public function setDescription(string $description): void {
+		$this->description = $description;
+	}
+
+	public function getImageUrl(): string {
+		return $this->imageUrl;
+	}
+
+	public function setImageUrl(string $imageUrl): void {
+		$this->imageUrl = $imageUrl;
 	}
 }

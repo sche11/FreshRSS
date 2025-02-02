@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * @param array<FreshRSS_Feed> $feeds
- * @return array<array<string,string|bool|int>>
+ * @return list<array<string,string|bool|int>>
  */
 function feedsToOutlines(array $feeds, bool $excludeMutedFeeds = false): array {
 	$outlines = [];
@@ -27,11 +27,14 @@ function feedsToOutlines(array $feeds, bool $excludeMutedFeeds = false): array {
 			case FreshRSS_Feed::KIND_XML_XPATH:
 				$outline['type'] = FreshRSS_Export_Service::TYPE_XML_XPATH;
 				break;
-			case FreshRSS_Feed::KIND_JSON_DOTPATH:
-				$outline['type'] = FreshRSS_Export_Service::TYPE_JSON_DOTPATH;
+			case FreshRSS_Feed::KIND_JSON_DOTNOTATION:
+				$outline['type'] = FreshRSS_Export_Service::TYPE_JSON_DOTNOTATION;
 				break;
 			case FreshRSS_Feed::KIND_JSONFEED:
 				$outline['type'] = FreshRSS_Export_Service::TYPE_JSONFEED;
+				break;
+			case FreshRSS_Feed::KIND_HTML_XPATH_JSON_DOTNOTATION:
+				$outline['type'] = FreshRSS_Export_Service::TYPE_HTML_XPATH_JSON_DOTNOTATION;
 				break;
 		}
 
@@ -44,23 +47,26 @@ function feedsToOutlines(array $feeds, bool $excludeMutedFeeds = false): array {
 			$outline['frss:xPathItemUri'] = $xPathSettings['itemUri'] ?? null;
 			$outline['frss:xPathItemAuthor'] = $xPathSettings['itemAuthor'] ?? null;
 			$outline['frss:xPathItemTimestamp'] = $xPathSettings['itemTimestamp'] ?? null;
-			$outline['frss:xPathItemTimeformat'] = $xPathSettings['itemTimeformat'] ?? null;
+			$outline['frss:xPathItemTimeFormat'] = $xPathSettings['itemTimeFormat'] ?? null;
 			$outline['frss:xPathItemThumbnail'] = $xPathSettings['itemThumbnail'] ?? null;
 			$outline['frss:xPathItemCategories'] = $xPathSettings['itemCategories'] ?? null;
 			$outline['frss:xPathItemUid'] = $xPathSettings['itemUid'] ?? null;
-		} elseif ($feed->kind() === FreshRSS_Feed::KIND_JSON_DOTPATH) {
+		} elseif ($feed->kind() === FreshRSS_Feed::KIND_JSON_DOTNOTATION || $feed->kind() === FreshRSS_Feed::KIND_HTML_XPATH_JSON_DOTNOTATION) {
 			/** @var array<string,string> */
-			$jsonSettings = $feed->attributeArray('json_dotpath') ?? [];
+			$jsonSettings = $feed->attributeArray('json_dotnotation') ?? [];
 			$outline['frss:jsonItem'] = $jsonSettings['item'] ?? null;
 			$outline['frss:jsonItemTitle'] = $jsonSettings['itemTitle'] ?? null;
 			$outline['frss:jsonItemContent'] = $jsonSettings['itemContent'] ?? null;
 			$outline['frss:jsonItemUri'] = $jsonSettings['itemUri'] ?? null;
 			$outline['frss:jsonItemAuthor'] = $jsonSettings['itemAuthor'] ?? null;
 			$outline['frss:jsonItemTimestamp'] = $jsonSettings['itemTimestamp'] ?? null;
-			$outline['frss:jsonItemTimeformat'] = $jsonSettings['itemTimeformat'] ?? null;
+			$outline['frss:jsonItemTimeFormat'] = $jsonSettings['itemTimeFormat'] ?? null;
 			$outline['frss:jsonItemThumbnail'] = $jsonSettings['itemThumbnail'] ?? null;
 			$outline['frss:jsonItemCategories'] = $jsonSettings['itemCategories'] ?? null;
 			$outline['frss:jsonItemUid'] = $jsonSettings['itemUid'] ?? null;
+			if ($feed->kind() === FreshRSS_Feed::KIND_HTML_XPATH_JSON_DOTNOTATION) {
+				$outline['frss:xPathToJson'] = $feed->attributeString('xPathToJson');
+			}
 		}
 
 		if (!empty($feed->filtersAction('read'))) {
@@ -76,8 +82,19 @@ function feedsToOutlines(array $feeds, bool $excludeMutedFeeds = false): array {
 			$outline['frss:cssFullContent'] = htmlspecialchars_decode($feed->pathEntries(), ENT_QUOTES);
 		}
 
+		if (!empty($feed->attributeArray('path_entries_conditions'))) {
+			$conditions = '';
+			foreach ($feed->attributeArray('path_entries_conditions') as $condition) {
+				if (is_string($condition)) {
+					$conditions .= $condition . "\n";
+				}
+			}
+			$conditions = trim($conditions);
+			$outline['frss:cssFullContentConditions'] = $conditions;
+		}
+
 		if ($feed->attributeString('path_entries_filter') != '') {
-			$outline['frss:cssFullContentFilter'] = $feed->attributeString('path_entries_filter');
+			$outline['frss:cssContentFilter'] = $feed->attributeString('path_entries_filter');
 		}
 
 		$curl_params = $feed->attributeArray('curl_params');
@@ -90,12 +107,17 @@ function feedsToOutlines(array $feeds, bool $excludeMutedFeeds = false): array {
 			$outline['frss:CURLOPT_POSTFIELDS'] = $curl_params[CURLOPT_POSTFIELDS] ?? null;
 			$outline['frss:CURLOPT_PROXY'] = $curl_params[CURLOPT_PROXY] ?? null;
 			$outline['frss:CURLOPT_PROXYTYPE'] = $curl_params[CURLOPT_PROXYTYPE] ?? null;
+			if ($outline['frss:CURLOPT_PROXYTYPE'] === 3) {	// Legacy for NONE
+				$outline['frss:CURLOPT_PROXYTYPE'] = -1;
+			}
 			$outline['frss:CURLOPT_USERAGENT'] = $curl_params[CURLOPT_USERAGENT] ?? null;
 
 			if (!empty($curl_params[CURLOPT_HTTPHEADER]) && is_array($curl_params[CURLOPT_HTTPHEADER])) {
 				$headers = '';
 				foreach ($curl_params[CURLOPT_HTTPHEADER] as $header) {
-					$headers .= $header . "\n";
+					if (is_string($header)) {
+						$headers .= $header . "\n";
+					}
 				}
 				$headers = trim($headers);
 				$outline['frss:CURLOPT_HTTPHEADER'] = $headers;

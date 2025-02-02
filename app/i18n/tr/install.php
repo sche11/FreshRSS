@@ -18,14 +18,6 @@ return array(
 		'next_step' => 'Sonraki adım',
 		'reinstall' => 'FreshRSS i yeniden yükle',
 	),
-	'auth' => array(
-		'form' => 'Web formu (geleneksel, JavaScript gerektirir)',
-		'http' => 'HTTP (ileri kullanıcılar için, HTTPS)',
-		'none' => 'Hiçbiri (tehlikeli)',
-		'password_form' => 'Şifre<br /><small>(Tarayıcı girişi için)</small>',
-		'password_format' => 'En az 7 karakter',
-		'type' => 'Kimlik doğrulama yöntemi',
-	),
 	'bdd' => array(
 		'_' => 'Veritabanı',
 		'conf' => array(

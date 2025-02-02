@@ -29,7 +29,9 @@ return array(
 			'help' => '使用 URL 上的 <a href="http://opml.org/" target="_blank">OPML 文件</a> 中的订阅源填充这一分类',
 		),
 		'empty' => '空分类',
+		'expand' => 'Expand category',	// TODO
 		'information' => '信息',
+		'open' => 'Open category',	// TODO
 		'opml_url' => 'OPML URL',	// IGNORE
 		'position' => '显示位置',
 		'position_help' => '控制分类排列顺序',
@@ -55,25 +57,40 @@ return array(
 			'prepend' => '添加在现有内容前部',
 			'replace' => '替换现有内容',
 		),
+		'content_retrieval' => 'Content retrieval',	// TODO
 		'css_cookie' => '获取原文时的 Cookies',
 		'css_cookie_help' => '例：<kbd>foo=bar; gdpr_consent=true; cookie=value</kbd>',
 		'css_help' => '用于获取全文（注意，这将耗费更多时间！）',
 		'css_path' => '原文的 CSS 选择器',
 		'css_path_filter' => array(
 			'_' => '需移除元素的 CSS 选择器',
-			'help' => '可设置多个 CSS 选择器，例如：<kbd>.footer, .aside</kbd>',
+			'help' => '可设置多个 CSS 选择器，例如：<kbd>footer, aside, p[data-sanitized-class~="menu"]</kbd>',
 		),
 		'description' => '描述',
 		'empty' => '此源为空。请确认它是否正常更新。',
-		'error' => '此源遇到一些问题。请在确认是否能正常访问后重试。',
+		'error' => '此源遇到一些问题。请在确认是否能正常访问后重试。',	// DIRTY
+		'export-as-opml' => array(
+			'download' => '下载',
+			'help' => 'XML 文件 (data subset. <a href="https://freshrss.github.io/FreshRSS/en/developers/OPML.html" target="_blank">See documentation</a>)',	// DIRTY
+			'label' => '导出为 OPML',
+		),
 		'filteractions' => array(
 			'_' => '过滤动作',
-			'help' => '每行写一条过滤搜索，过滤条件可见 <a href="https://freshrss.github.io/FreshRSS/en/users/10_filter.html#with-the-search-field" target="_blank">文档</a>。',
+			'help' => '每行写一条过滤规则，过滤规则可见 <a href="https://freshrss.github.io/FreshRSS/en/users/10_filter.html#with-the-search-field" target="_blank">文档</a>。',
 		),
+		'http_headers' => 'HTTP Headers',	// TODO
+		'http_headers_help' => 'Headers are separated by a newline, and the name and value of a header are separated by a colon (e.g: <kbd><code>Accept: application/atom+xml<br />Authorization: Bearer some-token</code></kbd>).',	// TODO
 		'information' => '信息',
 		'keep_min' => '至少保存的文章数',
 		'kind' => array(
 			'_' => '订阅源类型',
+			'html_json' => array(
+				'_' => 'HTML + XPath + JSON dot notation (JSON in HTML)',	// TODO
+				'xpath' => array(
+					'_' => 'XPath for JSON in HTML',	// TODO
+					'help' => 'Example: <code>//script[@type="application/json"]</code>',	// TODO
+				),
+			),
 			'html_xpath' => array(
 				'_' => 'HTML + XPath (Web 抓取)',
 				'feed_title' => array(
@@ -121,47 +138,47 @@ return array(
 				'relative' => 'XPath（文章）：',
 				'xpath' => 'XPath 定位：',
 			),
-			'json_dotpath' => array(
-				'_' => 'JSON (Dotted paths)',	// TODO
+			'json_dotnotation' => array(
+				'_' => 'JSON (点表达式)',
 				'feed_title' => array(
-					'_' => 'feed title',	// TODO
-					'help' => 'Example: <code>meta.title</code> or a static string: <code>"My custom feed"</code>',	// TODO
+					'_' => '订阅源标题',
+					'help' => '例如: <code>meta.title</code> 或一个静态的字符串: <code>"My custom feed"</code>',
 				),
-				'help' => 'A JSON dotted path uses dots between objects and brackets for arrays (e.g. <code>data.items[0].title</code>)',	// TODO
+				'help' => 'JSON 点表达式（JSON 路径）在对象之间使用点，在数组中使用中括号 (例如 <code>data.items[0].title</code>)',
 				'item' => array(
-					'_' => 'finding news <strong>items</strong><br /><small>(most important)</small>',	// TODO
-					'help' => 'JSON path to the array containing the items, e.g. <code>newsItems</code>',	// TODO
+					'_' => '寻找新的 <strong>文章</strong><br /><small>(最重要的参数)</small>',
+					'help' => '包含文章数组的 JSON 路径， 例如 <code>$</code> or <code>newsItems</code>',	// DIRTY
 				),
-				'item_author' => 'item author',	// TODO
-				'item_categories' => 'item tags',	// TODO
+				'item_author' => '文章作者',
+				'item_categories' => '文章标签',
 				'item_content' => array(
-					'_' => 'item content',	// TODO
-					'help' => 'Key under which the content is found, e.g. <code>content</code>',	// TODO
+					'_' => '文章内容',
+					'help' => '用于找到文章内容的键, 例如 <code>content</code>',
 				),
 				'item_thumbnail' => array(
-					'_' => 'item thumbnail',	// TODO
-					'help' => 'Example: <code>image</code>',	// TODO
+					'_' => '文章缩略图',
+					'help' => '例如: <code>image</code>',
 				),
 				'item_timeFormat' => array(
-					'_' => 'Custom date/time format',	// TODO
-					'help' => 'Optional. A format supported by <a href="https://php.net/datetime.createfromformat" target="_blank"><code>DateTime::createFromFormat()</code></a> such as <code>d-m-Y H:i:s</code>',	// TODO
+					'_' => '自定义时间格式',
+					'help' => '可选项. 被 <a href="https://php.net/datetime.createfromformat" target="_blank"><code>DateTime::createFromFormat()</code></a> 支持的日期格式。例如 <code>d-m-Y H:i:s</code>',
 				),
 				'item_timestamp' => array(
-					'_' => 'item date',	// TODO
-					'help' => 'The result will be parsed by <a href="https://php.net/strtotime" target="_blank"><code>strtotime()</code></a>',	// TODO
+					'_' => '文章时间',
+					'help' => '结果会被 <a href="https://php.net/strtotime" target="_blank"><code>strtotime()</code></a> 解析',
 				),
-				'item_title' => 'item title',	// TODO
-				'item_uid' => 'item unique ID',	// TODO
+				'item_title' => '文章标题',
+				'item_uid' => '文章唯一ID',
 				'item_uri' => array(
-					'_' => 'item link (URL)',	// TODO
-					'help' => 'Example: <code>permalink</code>',	// TODO
+					'_' => '文章链接 (URL)',
+					'help' => '例如: <code>permalink</code>',
 				),
-				'json' => 'Dotted Path for:',	// TODO
-				'relative' => 'Dotted Path (relative to item) for:',	// TODO
+				'json' => 'JSON 路径：',
+				'relative' => 'JSON 路径（相对于文章）：',
 			),
-			'jsonfeed' => 'JSON Feed',	// TODO
+			'jsonfeed' => 'JSON 订阅源',
 			'rss' => 'RSS / Atom (默认)',
-			'xml_xpath' => 'XML + XPath',	// TODO
+			'xml_xpath' => 'XML + XPath',	// IGNORE
 		),
 		'maintenance' => array(
 			'clear_cache' => '清理缓存',
@@ -173,19 +190,24 @@ return array(
 		'max_http_redir' => '最大 HTTP 重定向',
 		'max_http_redir_help' => '设置为 0 或留空以禁用，-1 表示无限重定向',
 		'method' => array(
-			'_' => 'HTTP Method',	// TODO
+			'_' => 'HTTP 方式',
 		),
-		'method_help' => 'The POST payload has automatic support for <code>application/x-www-form-urlencoded</code> and <code>application/json</code>',	// TODO
-		'method_postparams' => 'Payload for POST',	// TODO
+		'method_help' => '如果荷载非空且是合法的 JSON，HTTP 请求标头将被自动设为 <code>application/json</code>，否则使用 <code>application/x-www-form-urlencoded</code>',
+		'method_postparams' => 'POST 荷载',
 		'moved_category_deleted' => '删除分类时，其中的订阅源会自动归类到 <em>%s</em>',
-		'mute' => '暂停',
+		'mute' => array(
+			'_' => '暂停',
+			'state_is_muted' => 'This feed is muted',	// TODO
+		),
 		'no_selected' => '未选择订阅源',
 		'number_entries' => '%d 篇文章',
+		'open_feed' => 'Open feed %s',	// TODO
+		'path_entries_conditions' => 'Conditions for content retrieval',	// TODO
 		'priority' => array(
 			'_' => '可见性',
 			'archived' => '不显示（归档）',
 			'category' => '在分类中显示',
-			'important' => 'Show in important feeds',	// TODO
+			'important' => '在“重要的订阅”中显示',
 			'main_stream' => '在首页中显示',
 		),
 		'proxy' => '获取订阅源时的代理',
@@ -208,6 +230,16 @@ return array(
 		'title' => '标题',
 		'title_add' => '添加订阅源',
 		'ttl' => '最小自动更新间隔',
+		'unicityCriteria' => array(
+			'_' => 'Article unicity criteria',	// TODO
+			'forced' => '<span title="Block the unicity criteria, even when the feed has duplicate articles">forced</span>',	// TODO
+			'help' => 'Relevant for invalid feeds.<br />⚠️ Changing the policy will create duplicates.',	// TODO
+			'id' => 'Standard ID (default)',	// TODO
+			'link' => 'Link',	// TODO
+			'sha1:link_published' => 'Link + Date',	// TODO
+			'sha1:link_published_title' => 'Link + Date + Title',	// TODO
+			'sha1:link_published_title_content' => 'Link + Date + Title + Content',	// TODO
+		),
 		'url' => '源地址',
 		'useragent' => '设置用于获取此源的 User Agent',
 		'useragent_help' => '例：<kbd>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0)</kbd>',
@@ -216,7 +248,10 @@ return array(
 		'websub' => 'WebSub 即时通知',
 	),
 	'import_export' => array(
-		'export' => '导出',
+		'export' => array(
+			'_' => '导出',
+			'sqlite' => 'Download user database as SQLite',	// TODO
+		),
 		'export_labelled' => '导出有标签的文章',
 		'export_opml' => '导出订阅源列表（OPML）',
 		'export_starred' => '导出你的收藏',
@@ -240,7 +275,7 @@ return array(
 		'subscription_tools' => '订阅工具',
 	),
 	'tag' => array(
-		'auto_label' => 'Add this label to new articles',	// TODO
+		'auto_label' => '给新文章打标签',
 		'name' => '名称',
 		'new_name' => '新名称',
 		'old_name' => '旧名称',
@@ -251,7 +286,8 @@ return array(
 		'add_category' => '添加分类',
 		'add_dynamic_opml' => '添加订阅源动态列表',
 		'add_feed' => '添加订阅源',
-		'add_label' => '添加标签',
+		'add_label' => '打标签',
+		'add_opml_category' => 'OPML category name',	// TODO
 		'delete_label' => '删除标签',
 		'feed_management' => '订阅源管理',
 		'rename_label' => '重命名标签',

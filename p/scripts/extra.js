@@ -39,44 +39,53 @@ function init_crypto_form() {
 	}
 
 	crypto_form.onsubmit = function (e) {
-		if (submit_button) {
-			submit_button.disabled = true;
+		e.preventDefault();
+
+		if (!submit_button) {
+			return false;
 		}
-		let success = false;
+		submit_button.disabled = true;
+
+		if (document.getElementById('challenge').value)	{
+			// Already computed
+			return true;
+		}
 
 		const req = new XMLHttpRequest();
-		req.open('GET', './?c=javascript&a=nonce&user=' + document.getElementById('username').value, false);
+		req.open('GET', './?c=javascript&a=nonce&user=' + document.getElementById('username').value, true);
+
 		req.onerror = function () {
 			openNotification('Communication error!', 'bad');
-		};
-		req.send();
-		if (req.status == 200) {
-			const json = xmlHttpRequestJson(req);
-			if (!json.salt1 || !json.nonce) {
-				openNotification('Invalid user!', 'bad');
-			} else {
-				try {
-					const strong = window.Uint32Array && window.crypto && (typeof window.crypto.getRandomValues === 'function');
-					const s = dcodeIO.bcrypt.hashSync(document.getElementById('passwordPlain').value, json.salt1);
-					const c = dcodeIO.bcrypt.hashSync(json.nonce + s, strong ? dcodeIO.bcrypt.genSaltSync(4) : poormanSalt());
-					document.getElementById('challenge').value = c;
-					if (!s || !c) {
-						openNotification('Crypto error!', 'bad');
-					} else {
-						success = true;
-					}
-				} catch (ex) {
-					openNotification('Crypto exception! ' + ex, 'bad');
-				}
-			}
-		} else {
-			req.onerror();
-		}
-
-		if (submit_button) {
 			submit_button.disabled = false;
-		}
-		return success;
+		};
+
+		req.onload = function () {
+			if (req.status == 200) {
+				const json = xmlHttpRequestJson(req);
+				if (!json.salt1 || !json.nonce) {
+					openNotification('Invalid user!', 'bad');
+				} else {
+					try {
+						const strong = window.Uint32Array && window.crypto && (typeof window.crypto.getRandomValues === 'function');
+						const s = dcodeIO.bcrypt.hashSync(document.getElementById('passwordPlain').value, json.salt1);
+						const c = dcodeIO.bcrypt.hashSync(json.nonce + s, strong ? dcodeIO.bcrypt.genSaltSync(4) : poormanSalt());
+						document.getElementById('challenge').value = c;
+						if (!s || !c) {
+							openNotification('Crypto error!', 'bad');
+						} else {
+							crypto_form.removeEventListener('submit', crypto_form.onsubmit);
+							crypto_form.submit();
+						}
+					} catch (ex) {
+						openNotification('Crypto exception! ' + ex, 'bad');
+					}
+				}
+			} else {
+				req.onerror();
+			}
+		};
+
+		req.send();
 	};
 }
 // </crypto form (Web login)>
@@ -277,7 +286,7 @@ function init_2stateButton() {
 
 function init_configuration_alert() {
 	window.onsubmit = function (e) {
-		window.hasSubmit = data_leave_validation(document.body, e.submitter ? e.submitter.form : null);
+		window.hasSubmit = data_leave_validation(document.body, e.target);
 	};
 	window.onbeforeunload = function (e) {
 		if (window.hasSubmit) {

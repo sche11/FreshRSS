@@ -29,7 +29,9 @@ return array(
 			'help' => 'Provide the URL to an <a href="http://opml.org/" target="_blank">OPML file</a> to dynamically populate this category with feeds',
 		),
 		'empty' => 'Empty category',
+		'expand' => 'Expand category',
 		'information' => 'Information',
+		'open' => 'Open category',
 		'opml_url' => 'OPML URL',
 		'position' => 'Display position',
 		'position_help' => 'To control category sort order',
@@ -38,7 +40,7 @@ return array(
 	'feed' => array(
 		'accept_cookies' => 'Accept cookies',
 		'accept_cookies_help' => 'Allow the feed server to set cookies (stored in memory for the duration of the request only)',
-		'add' => 'Add an RSS feed',
+		'add' => 'Add a feed',
 		'advanced' => 'Advanced',
 		'archiving' => 'Archiving',
 		'auth' => array(
@@ -55,25 +57,40 @@ return array(
 			'prepend' => 'Add before existing content',
 			'replace' => 'Replace existing content',
 		),
+		'content_retrieval' => 'Content retrieval',
 		'css_cookie' => 'Use Cookies when fetching the article content',
 		'css_cookie_help' => 'Example: <kbd>foo=bar; gdpr_consent=true; cookie=value</kbd>',
 		'css_help' => 'Retrieves truncated RSS feeds (caution, requires more time!)',
 		'css_path' => 'Article CSS selector on original website',
 		'css_path_filter' => array(
 			'_' => 'CSS selector of the elements to remove',
-			'help' => 'A CSS selector may be a list such as: <kbd>.footer, .aside</kbd>',
+			'help' => 'A CSS selector may be a list such as: <kbd>footer, aside, p[data-sanitized-class~="menu"]</kbd>',
 		),
 		'description' => 'Description',
 		'empty' => 'This feed is empty. Please verify that it is still maintained.',
-		'error' => 'This feed has encountered a problem. Please verify that it is always reachable then update it.',
+		'error' => 'This feed has encountered a problem. If this situation persists, please verify that it is still reachable.',
+		'export-as-opml' => array(
+			'download' => 'Download',
+			'help' => 'XML file (data subset. <a href="https://freshrss.github.io/FreshRSS/en/developers/OPML.html" target="_blank">See documentation</a>)',
+			'label' => 'Export as OPML',
+		),
 		'filteractions' => array(
 			'_' => 'Filter actions',
 			'help' => 'Write one search filter per line. Operators <a href="https://freshrss.github.io/FreshRSS/en/users/10_filter.html#with-the-search-field" target="_blank">see documentation</a>.',
 		),
+		'http_headers' => 'HTTP Headers',
+		'http_headers_help' => 'Headers are separated by a newline, and the name and value of a header are separated by a colon (e.g: <kbd><code>Accept: application/atom+xml<br />Authorization: Bearer some-token</code></kbd>).',
 		'information' => 'Information',
 		'keep_min' => 'Minimum number of articles to keep',
 		'kind' => array(
 			'_' => 'Type of feed source',
+			'html_json' => array(
+				'_' => 'HTML + XPath + JSON dot notation (JSON in HTML)',	// TODO
+				'xpath' => array(
+					'_' => 'XPath for JSON in HTML',	// TODO
+					'help' => 'Example: <code>//script[@type="application/json"]</code>',	// TODO
+				),
+			),
 			'html_xpath' => array(
 				'_' => 'HTML + XPath (Web scraping)',
 				'feed_title' => array(
@@ -121,16 +138,16 @@ return array(
 				'relative' => 'XPath (relative to item) for:',
 				'xpath' => 'XPath for:',
 			),
-			'json_dotpath' => array(
-				'_' => 'JSON (Dotted paths)',
+			'json_dotnotation' => array(
+				'_' => 'JSON (dot notation)',
 				'feed_title' => array(
 					'_' => 'feed title',
 					'help' => 'Example: <code>meta.title</code> or a static string: <code>"My custom feed"</code>',
 				),
-				'help' => 'A JSON dotted path uses dots between objects and brackets for arrays (e.g. <code>data.items[0].title</code>)',
+				'help' => 'A JSON dot notated uses dots between objects and brackets for arrays (e.g. <code>data.items[0].title</code>)',
 				'item' => array(
 					'_' => 'finding news <strong>items</strong><br /><small>(most important)</small>',
-					'help' => 'JSON path to the array containing the items, e.g. <code>newsItems</code>',
+					'help' => 'JSON path to the array containing the items, e.g. <code>$</code> or <code>newsItems</code>',
 				),
 				'item_author' => 'item author',
 				'item_categories' => 'item tags',
@@ -156,8 +173,8 @@ return array(
 					'_' => 'item link (URL)',
 					'help' => 'Example: <code>permalink</code>',
 				),
-				'json' => 'Dotted Path for:',
-				'relative' => 'Dotted Path (relative to item) for:',
+				'json' => 'dot notation for:',
+				'relative' => 'dot notated path (relative to item) for:',
 			),
 			'jsonfeed' => 'JSON Feed',
 			'rss' => 'RSS / Atom (default)',
@@ -177,10 +194,15 @@ return array(
 		),
 		'method_help' => 'The POST payload has automatic support for <code>application/x-www-form-urlencoded</code> and <code>application/json</code>',
 		'method_postparams' => 'Payload for POST',
-		'moved_category_deleted' => 'When you delete a category, its feeds are automatically classified under <em>%s</em>.',
-		'mute' => 'mute',
+		'moved_category_deleted' => 'When you remove a category, its feeds are automatically classified under <em>%s</em>.',
+		'mute' => array(
+			'_' => 'mute',
+			'state_is_muted' => 'This feed is muted',
+		),
 		'no_selected' => 'No feed selected.',
 		'number_entries' => '%d articles',
+		'open_feed' => 'Open feed %s',
+		'path_entries_conditions' => 'Conditions for content retrieval',
 		'priority' => array(
 			'_' => 'Visibility',
 			'archived' => 'Do not show (archived)',
@@ -195,7 +217,7 @@ return array(
 			'show_rendered' => 'Show content',
 		),
 		'show' => array(
-			'all' => 'Show all feeds',
+			'all' => 'All feeds',
 			'error' => 'Show only feeds with errors',
 		),
 		'showing' => array(
@@ -208,6 +230,16 @@ return array(
 		'title' => 'Title',
 		'title_add' => 'Add an RSS feed',
 		'ttl' => 'Do not automatically refresh more often than',
+		'unicityCriteria' => array(
+			'_' => 'Article unicity criteria',
+			'forced' => '<span title="Block the unicity criteria, even when the feed has duplicate articles">forced</span>',	// TODO
+			'help' => 'Relevant for invalid feeds.<br />⚠️ Changing the policy will create duplicates.',	// TODO
+			'id' => 'Standard ID (default)',
+			'link' => 'Link',
+			'sha1:link_published' => 'Link + Date',
+			'sha1:link_published_title' => 'Link + Date + Title',
+			'sha1:link_published_title_content' => 'Link + Date + Title + Content',
+		),
 		'url' => 'Feed URL',
 		'useragent' => 'Set the user agent for fetching this feed',
 		'useragent_help' => 'Example: <kbd>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0)</kbd>',
@@ -216,7 +248,10 @@ return array(
 		'websub' => 'Instant notifications with WebSub',
 	),
 	'import_export' => array(
-		'export' => 'Export',
+		'export' => array(
+			'_' => 'Export',
+			'sqlite' => 'Download user database as SQLite',	// TODO
+		),
 		'export_labelled' => 'Export your labelled articles',
 		'export_opml' => 'Export list of feeds (OPML)',
 		'export_starred' => 'Export your favourites',
@@ -252,6 +287,7 @@ return array(
 		'add_dynamic_opml' => 'Add dynamic OPML',
 		'add_feed' => 'Add a feed',
 		'add_label' => 'Add a label',
+		'add_opml_category' => 'OPML category name',
 		'delete_label' => 'Delete a label',
 		'feed_management' => 'RSS feeds management',
 		'rename_label' => 'Rename a label',

@@ -16,9 +16,14 @@ class Minz_ModelPdo {
 	 */
 	public static bool $usesSharedPdo = true;
 
+	/**
+	 * If true, the connection to the database will be a dummy one. Useful for unit tests.
+	 */
+	public static bool $dummyConnection = false;
+
 	private static ?Minz_Pdo $sharedPdo = null;
 
-	private static ?string $sharedCurrentUser;
+	private static string $sharedCurrentUser = '';
 
 	protected Minz_Pdo $pdo;
 
@@ -78,14 +83,14 @@ class Minz_ModelPdo {
 					$db['user'], Minz_Exception::ERROR
 				);
 		}
-		self::$sharedPdo = $this->pdo;
+		if (self::$usesSharedPdo) {
+			self::$sharedPdo = $this->pdo;
+		}
 	}
 
 	/**
 	 * Create the connection to the database using the variables
 	 * HOST, BASE, USER and PASS variables defined in the configuration file
-	 * @param string|null $currentUser
-	 * @param Minz_Pdo|null $currentPdo
 	 * @throws Minz_ConfigurationException
 	 * @throws Minz_PDOConnectionException
 	 */
@@ -97,7 +102,10 @@ class Minz_ModelPdo {
 			$this->pdo = $currentPdo;
 			return;
 		}
-		if ($currentUser == '') {
+		if (self::$dummyConnection) {
+			return;
+		}
+		if ($currentUser == null) {
 			throw new Minz_PDOConnectionException('Current user must not be empty!', '', Minz_Exception::ERROR);
 		}
 		if (self::$usesSharedPdo && self::$sharedPdo !== null && $currentUser === self::$sharedCurrentUser) {
@@ -106,7 +114,9 @@ class Minz_ModelPdo {
 			return;
 		}
 		$this->current_user = $currentUser;
-		self::$sharedCurrentUser = $currentUser;
+		if (self::$usesSharedPdo) {
+			self::$sharedCurrentUser = $currentUser;
+		}
 
 		$ex = null;
 		//Attempt a few times to connect to database
@@ -155,10 +165,19 @@ class Minz_ModelPdo {
 		self::$sharedCurrentUser = '';
 	}
 
+	public function close(): void {
+		if ($this->current_user === self::$sharedCurrentUser) {
+			self::clean();
+		}
+		$this->current_user = '';
+		unset($this->pdo);
+		gc_collect_cycles();
+	}
+
 	/**
 	 * @param array<string,int|string|null> $values
-	 * @phpstan-return ($mode is PDO::FETCH_ASSOC ? array<array<string,int|string|null>>|null : array<int|string|null>|null)
-	 * @return array<array<string,int|string|null>>|array<int|string|null>|null
+	 * @phpstan-return ($mode is PDO::FETCH_ASSOC ? list<array<string,int|string|null>>|null : list<int|string|null>|null)
+	 * @return list<array<string,int|string|null>>|list<int|string|null>|null
 	 */
 	private function fetchAny(string $sql, array $values, int $mode, int $column = 0): ?array {
 		$stm = $this->pdo->prepare($sql);
@@ -185,15 +204,15 @@ class Minz_ModelPdo {
 			switch ($mode) {
 				case PDO::FETCH_COLUMN:
 					$res = $stm->fetchAll(PDO::FETCH_COLUMN, $column);
+					/** @var list<int|string|null> $res */
 					break;
 				case PDO::FETCH_ASSOC:
 				default:
 					$res = $stm->fetchAll(PDO::FETCH_ASSOC);
+					/** @var list<array<string,int|string|null>> $res */
 					break;
 			}
-			if ($res !== false) {
-				return $res;
-			}
+			return $res;
 		}
 
 		$backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 6);
@@ -205,14 +224,14 @@ class Minz_ModelPdo {
 			$calling .= '|' . $backtrace[$i]['function'];
 		}
 		$calling = trim($calling, '|');
-		$info = $stm == null ? $this->pdo->errorInfo() : $stm->errorInfo();
+		$info = $stm === false ? $this->pdo->errorInfo() : $stm->errorInfo();
 		Minz_Log::error('SQL error ' . $calling . ' ' . json_encode($info));
 		return null;
 	}
 
 	/**
 	 * @param array<string,int|string|null> $values
-	 * @return array<array<string,int|string|null>>|null
+	 * @return list<array<string,int|string|null>>|null
 	 */
 	public function fetchAssoc(string $sql, array $values = []): ?array {
 		return $this->fetchAny($sql, $values, PDO::FETCH_ASSOC);
@@ -220,9 +239,24 @@ class Minz_ModelPdo {
 
 	/**
 	 * @param array<string,int|string|null> $values
-	 * @return array<int|string|null>|null
+	 * @return list<int|string|null>|null
 	 */
 	public function fetchColumn(string $sql, int $column, array $values = []): ?array {
 		return $this->fetchAny($sql, $values, PDO::FETCH_COLUMN, $column);
+	}
+
+	/** For retrieving a single value without prepared statement such as `SELECT version()` */
+	public function fetchValue(string $sql): ?string {
+		$stm = $this->pdo->query($sql);
+		if ($stm === false) {
+			Minz_Log::error('SQL error ' . json_encode($this->pdo->errorInfo()) . ' during ' . $sql);
+			return null;
+		}
+		$columns = $stm->fetchAll(PDO::FETCH_COLUMN, 0);
+		if ($columns === false) {
+			Minz_Log::error('SQL error ' . json_encode($stm->errorInfo()) . ' during ' . $sql);
+			return null;
+		}
+		return is_scalar($columns[0] ?? null) ? (string)$columns[0] : null;
 	}
 }

@@ -5,34 +5,9 @@ if (version_compare(PHP_VERSION, FRESHRSS_MIN_PHP_VERSION, '<')) {
 	die(sprintf('FreshRSS error: FreshRSS requires PHP %s+!', FRESHRSS_MIN_PHP_VERSION));
 }
 
-if (!function_exists('array_is_list')) {
-	/**
-	 * Polyfill for PHP <8.1
-	 * https://php.net/array-is-list#127044
-	 * @param array<mixed> $array
-	 */
-	function array_is_list(array $array): bool {
-		$i = -1;
-		foreach ($array as $k => $v) {
-			++$i;
-			if ($k !== $i) {
-				return false;
-			}
-		}
-		return true;
-	}
-}
-
 if (!function_exists('mb_strcut')) {
 	function mb_strcut(string $str, int $start, ?int $length = null, string $encoding = 'UTF-8'): string {
 		return substr($str, $start, $length) ?: '';
-	}
-}
-
-if (!function_exists('str_starts_with')) {
-	/** Polyfill for PHP <8.0 */
-	function str_starts_with(string $haystack, string $needle): bool {
-		return strncmp($haystack, $needle, strlen($needle)) === 0;
 	}
 }
 
@@ -41,8 +16,7 @@ if (!function_exists('syslog')) {
 		define('STDERR', fopen('php://stderr', 'w'));
 	}
 	function syslog(int $priority, string $message): bool {
-		// @phpstan-ignore-next-line
-		if (COPY_SYSLOG_TO_STDERR && defined('STDERR') && STDERR) {
+		if (COPY_SYSLOG_TO_STDERR && defined('STDERR') && is_resource(STDERR)) {
 			return fwrite(STDERR, $message . "\n") != false;
 		}
 		return false;
@@ -84,28 +58,57 @@ function classAutoloader(string $class): void {
 		}
 	} elseif (strpos($class, 'Minz') === 0) {
 		include(LIB_PATH . '/' . str_replace('_', '/', $class) . '.php');
-	} elseif (strpos($class, 'SimplePie') === 0) {
-		include(LIB_PATH . '/SimplePie/' . str_replace('_', '/', $class) . '.php');
+	} elseif (str_starts_with($class, 'SimplePie\\')) {
+		$prefix = 'SimplePie\\';
+		$base_dir = LIB_PATH . '/simplepie/simplepie/src/';
+		$relative_class_name = substr($class, strlen($prefix));
+		include $base_dir . str_replace('\\', '/', $relative_class_name) . '.php';
 	} elseif (str_starts_with($class, 'Gt\\CssXPath\\')) {
 		$prefix = 'Gt\\CssXPath\\';
 		$base_dir = LIB_PATH . '/phpgt/cssxpath/src/';
 		$relative_class_name = substr($class, strlen($prefix));
-		require $base_dir . str_replace('\\', '/', $relative_class_name) . '.php';
+		include $base_dir . str_replace('\\', '/', $relative_class_name) . '.php';
 	} elseif (str_starts_with($class, 'marienfressinaud\\LibOpml\\')) {
 		$prefix = 'marienfressinaud\\LibOpml\\';
 		$base_dir = LIB_PATH . '/marienfressinaud/lib_opml/src/LibOpml/';
 		$relative_class_name = substr($class, strlen($prefix));
-		require $base_dir . str_replace('\\', '/', $relative_class_name) . '.php';
+		include $base_dir . str_replace('\\', '/', $relative_class_name) . '.php';
 	} elseif (str_starts_with($class, 'PHPMailer\\PHPMailer\\')) {
 		$prefix = 'PHPMailer\\PHPMailer\\';
 		$base_dir = LIB_PATH . '/phpmailer/phpmailer/src/';
 		$relative_class_name = substr($class, strlen($prefix));
-		require $base_dir . str_replace('\\', '/', $relative_class_name) . '.php';
+		include $base_dir . str_replace('\\', '/', $relative_class_name) . '.php';
 	}
 }
 
 spl_autoload_register('classAutoloader');
 //</Auto-loading>
+
+/**
+ * @param array<mixed,mixed> $array
+ * @phpstan-assert-if-true array<string,mixed> $array
+ */
+function is_array_keys_string(array $array): bool {
+	foreach ($array as $key => $value) {
+		if (!is_string($key)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+/**
+ * @param array<mixed,mixed> $array
+ * @phpstan-assert-if-true array<mixed,string> $array
+ */
+function is_array_values_string(array $array): bool {
+	foreach ($array as $value) {
+		if (!is_string($value)) {
+			return false;
+		}
+	}
+	return true;
+}
 
 /**
  * Memory efficient replacement of `echo json_encode(...)`
@@ -150,14 +153,7 @@ function idn_to_puny(string $url): string {
 	if (function_exists('idn_to_ascii')) {
 		$idn = parse_url($url, PHP_URL_HOST);
 		if (is_string($idn) && $idn != '') {
-			// https://wiki.php.net/rfc/deprecate-and-remove-intl_idna_variant_2003
-			if (defined('INTL_IDNA_VARIANT_UTS46')) {
-				$puny = idn_to_ascii($idn, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
-			} elseif (defined('INTL_IDNA_VARIANT_2003')) {
-				$puny = idn_to_ascii($idn, IDNA_DEFAULT, INTL_IDNA_VARIANT_2003);
-			} else {
-				$puny = idn_to_ascii($idn);
-			}
+			$puny = idn_to_ascii($idn);
 			$pos = strpos($url, $idn);
 			if ($puny != false && $pos !== false) {
 				$url = substr_replace($url, $puny, $pos, strlen($idn));
@@ -167,10 +163,7 @@ function idn_to_puny(string $url): string {
 	return $url;
 }
 
-/**
- * @return string|false
- */
-function checkUrl(string $url, bool $fixScheme = true) {
+function checkUrl(string $url, bool $fixScheme = true): string|false {
 	$url = trim($url);
 	if ($url == '') {
 		return '';
@@ -179,7 +172,7 @@ function checkUrl(string $url, bool $fixScheme = true) {
 		$url = 'https://' . ltrim($url, '/');
 	}
 
-	$url = idn_to_puny($url);	//PHP bug #53474 IDN
+	$url = idn_to_puny($url);	// https://bugs.php.net/bug.php?id=53474
 	$urlRelaxed = str_replace('_', 'z', $url);	//PHP discussion #64948 Underscore
 
 	if (is_string(filter_var($urlRelaxed, FILTER_VALIDATE_URL))) {
@@ -211,21 +204,20 @@ function escapeToUnicodeAlternative(string $text, bool $extended = true): string
 	$text = htmlspecialchars_decode($text, ENT_QUOTES);
 
 	//Problematic characters
-	$problem = array('&', '<', '>');
+	$problem = ['&', '<', '>'];
 	//Use their fullwidth Unicode form instead:
-	$replace = array('＆', '＜', '＞');
+	$replace = ['＆', '＜', '＞'];
 
 	// https://raw.githubusercontent.com/mihaip/google-reader-api/master/wiki/StreamId.wiki
 	if ($extended) {
-		$problem += array("'", '"', '^', '?', '\\', '/', ',', ';');
-		$replace += array("’", '＂', '＾', '？', '＼', '／', '，', '；');
+		$problem += ["'", '"', '^', '?', '\\', '/', ',', ';'];
+		$replace += ["’", '＂', '＾', '？', '＼', '／', '，', '；'];
 	}
 
 	return trim(str_replace($problem, $replace, $text));
 }
 
-/** @param int|float $n */
-function format_number($n, int $precision = 0): string {
+function format_number(int|float $n, int $precision = 0): string {
 	// number_format does not seem to be Unicode-compatible
 	return str_replace(' ', ' ',	// Thin non-breaking space
 		number_format((float)$n, $precision, '.', ' ')
@@ -235,10 +227,10 @@ function format_number($n, int $precision = 0): string {
 function format_bytes(int $bytes, int $precision = 2, string $system = 'IEC'): string {
 	if ($system === 'IEC') {
 		$base = 1024;
-		$units = array('B', 'KiB', 'MiB', 'GiB', 'TiB');
+		$units = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
 	} elseif ($system === 'SI') {
 		$base = 1000;
-		$units = array('B', 'KB', 'MB', 'GB', 'TB');
+		$units = ['B', 'KB', 'MB', 'GB', 'TB'];
 	} else {
 		return format_number($bytes, $precision);
 	}
@@ -264,6 +256,7 @@ function timestamptodate(int $t, bool $hour = true): string {
  * Decode HTML entities but preserve XML entities.
  */
 function html_only_entity_decode(?string $text): string {
+	/** @var array<string,string>|null $htmlEntitiesOnly */
 	static $htmlEntitiesOnly = null;
 	if ($htmlEntitiesOnly === null) {
 		$htmlEntitiesOnly = array_flip(array_diff(
@@ -280,12 +273,12 @@ function html_only_entity_decode(?string $text): string {
  * @param array<string,mixed>|string $log
  * @return array<string,mixed>|string
  */
-function sensitive_log($log) {
+function sensitive_log(array|string $log): array|string {
 	if (is_array($log)) {
 		foreach ($log as $k => $v) {
 			if (in_array($k, ['api_key', 'Passwd', 'T'], true)) {
 				$log[$k] = '██';
-			} elseif (is_array($v) || is_string($v)) {
+			} elseif ((is_array($v) && is_array_keys_string($v)) || is_string($v)) {
 				$log[$k] = sensitive_log($v);
 			} else {
 				return '';
@@ -306,14 +299,16 @@ function sensitive_log($log) {
  * @param array<int,mixed> $curl_options
  * @throws FreshRSS_Context_Exception
  */
-function customSimplePie(array $attributes = [], array $curl_options = []): SimplePie {
+function customSimplePie(array $attributes = [], array $curl_options = []): \SimplePie\SimplePie {
 	$limits = FreshRSS_Context::systemConf()->limits;
-	$simplePie = new SimplePie();
+	$simplePie = new \SimplePie\SimplePie();
+	if (FreshRSS_Context::systemConf()->simplepie_syslog_enabled) {
+		$simplePie->get_registry()->register(\SimplePie\File::class, FreshRSS_SimplePieResponse::class);
+	}
 	$simplePie->set_useragent(FRESHRSS_USERAGENT);
-	$simplePie->set_syslog(FreshRSS_Context::systemConf()->simplepie_syslog_enabled);
 	$simplePie->set_cache_name_function('sha1');
 	$simplePie->set_cache_location(CACHE_PATH);
-	$simplePie->set_cache_duration($limits['cache_duration']);
+	$simplePie->set_cache_duration($limits['cache_duration'], $limits['cache_duration_min'], $limits['cache_duration_max']);
 	$simplePie->enable_order_by_date(false);
 
 	$feed_timeout = empty($attributes['timeout']) || !is_numeric($attributes['timeout']) ? 0 : (int)$attributes['timeout'];
@@ -321,38 +316,50 @@ function customSimplePie(array $attributes = [], array $curl_options = []): Simp
 
 	$curl_options = array_replace(FreshRSS_Context::systemConf()->curl_options, $curl_options);
 	if (isset($attributes['ssl_verify'])) {
-		$curl_options[CURLOPT_SSL_VERIFYHOST] = $attributes['ssl_verify'] ? 2 : 0;
+		$curl_options[CURLOPT_SSL_VERIFYHOST] = empty($attributes['ssl_verify']) ? 0 : 2;
 		$curl_options[CURLOPT_SSL_VERIFYPEER] = (bool)$attributes['ssl_verify'];
-		if (!$attributes['ssl_verify']) {
+		if (empty($attributes['ssl_verify'])) {
 			$curl_options[CURLOPT_SSL_CIPHER_LIST] = 'DEFAULT@SECLEVEL=1';
 		}
 	}
 	if (!empty($attributes['curl_params']) && is_array($attributes['curl_params'])) {
 		foreach ($attributes['curl_params'] as $co => $v) {
-			$curl_options[$co] = $v;
+			if (is_int($co)) {
+				$curl_options[$co] = $v;
+			}
+		}
+	}
+	if (!empty($curl_options[CURLOPT_PROXYTYPE]) && ($curl_options[CURLOPT_PROXYTYPE] < 0 || $curl_options[CURLOPT_PROXYTYPE] === 3)) {
+		// 3 is legacy for NONE
+		unset($curl_options[CURLOPT_PROXYTYPE]);
+		if (isset($curl_options[CURLOPT_PROXY])) {
+			unset($curl_options[CURLOPT_PROXY]);
 		}
 	}
 	$simplePie->set_curl_options($curl_options);
 
 	$simplePie->strip_comments(true);
-	$simplePie->strip_htmltags(array(
+	$simplePie->strip_htmltags([
 		'base', 'blink', 'body', 'doctype', 'embed',
 		'font', 'form', 'frame', 'frameset', 'html',
 		'link', 'input', 'marquee', 'meta', 'noscript',
 		'object', 'param', 'plaintext', 'script', 'style',
 		'svg',	//TODO: Support SVG after sanitizing and URL rewriting of xlink:href
-	));
-	$simplePie->rename_attributes(array('id', 'class'));
-	$simplePie->strip_attributes(array_merge($simplePie->strip_attributes, array(
+	]);
+	$simplePie->rename_attributes(['id', 'class']);
+	$simplePie->strip_attributes(array_merge($simplePie->strip_attributes, [
 		'autoplay', 'class', 'onload', 'onunload', 'onclick', 'ondblclick', 'onmousedown', 'onmouseup',
 		'onmouseover', 'onmousemove', 'onmouseout', 'onfocus', 'onblur',
-		'onkeypress', 'onkeydown', 'onkeyup', 'onselect', 'onchange', 'seamless', 'sizes', 'srcset')));
-	$simplePie->add_attributes(array(
-		'audio' => array('controls' => 'controls', 'preload' => 'none'),
-		'iframe' => array('sandbox' => 'allow-scripts allow-same-origin'),
-		'video' => array('controls' => 'controls', 'preload' => 'none'),
-	));
-	$simplePie->set_url_replacements(array(
+		'onkeypress', 'onkeydown', 'onkeyup', 'onselect', 'onchange', 'seamless', 'sizes', 'srcset']));
+	$simplePie->add_attributes([
+		'audio' => ['controls' => 'controls', 'preload' => 'none'],
+		'iframe' => [
+			'allow' => 'accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share',
+			'sandbox' => 'allow-scripts allow-same-origin',
+		],
+		'video' => ['controls' => 'controls', 'preload' => 'none'],
+	]);
+	$simplePie->set_url_replacements([
 		'a' => 'href',
 		'area' => 'href',
 		'audio' => 'src',
@@ -360,21 +367,21 @@ function customSimplePie(array $attributes = [], array $curl_options = []): Simp
 		'del' => 'cite',
 		'form' => 'action',
 		'iframe' => 'src',
-		'img' => array(
+		'img' => [
 			'longdesc',
 			'src'
-		),
+		],
 		'input' => 'src',
 		'ins' => 'cite',
 		'q' => 'cite',
 		'source' => 'src',
 		'track' => 'src',
-		'video' => array(
+		'video' => [
 			'poster',
 			'src',
-		),
-	));
-	$https_domains = array();
+		],
+	]);
+	$https_domains = [];
 	$force = @file(FRESHRSS_PATH . '/force-https.default.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 	if (is_array($force)) {
 		$https_domains = array_merge($https_domains, $force);
@@ -383,6 +390,11 @@ function customSimplePie(array $attributes = [], array $curl_options = []): Simp
 	if (is_array($force)) {
 		$https_domains = array_merge($https_domains, $force);
 	}
+
+	// Remove whitespace and comments starting with # / ;
+	$https_domains = preg_replace('%\\s+|[\/#;].*$%', '', $https_domains) ?? $https_domains;
+	$https_domains = array_filter($https_domains, fn(string $v) => $v !== '');
+
 	$simplePie->set_https_domains($https_domains);
 	return $simplePie;
 }
@@ -394,12 +406,18 @@ function sanitizeHTML(string $data, string $base = '', ?int $maxLength = null): 
 	if ($maxLength !== null) {
 		$data = mb_strcut($data, 0, $maxLength, 'UTF-8');
 	}
+	/** @var \SimplePie\SimplePie|null $simplePie */
 	static $simplePie = null;
-	if ($simplePie == null) {
+	if ($simplePie === null) {
 		$simplePie = customSimplePie();
+		$simplePie->enable_cache(false);
 		$simplePie->init();
 	}
-	$result = html_only_entity_decode($simplePie->sanitize->sanitize($data, SIMPLEPIE_CONSTRUCT_HTML, $base));
+	$sanitized = $simplePie->sanitize->sanitize($data, \SimplePie\SimplePie::CONSTRUCT_HTML, $base);
+	if (!is_string($sanitized)) {
+		return '';
+	}
+	$result = html_only_entity_decode($sanitized);
 	if ($maxLength !== null && strlen($result) > $maxLength) {
 		//Sanitizing has made the result too long so try again shorter
 		$data = mb_strcut($result, 0, (2 * $maxLength) - strlen($result) - 2, 'UTF-8');
@@ -444,10 +462,16 @@ function stripHtmlMetaCharset(string $html): string {
 function enforceHttpEncoding(string $html, string $contentType = ''): string {
 	$httpCharset = preg_match('/\bcharset=([0-9a-z_-]{2,12})$/i', $contentType, $matches) === 1 ? $matches[1] : '';
 	if ($httpCharset == '') {
-		// No charset defined by HTTP, do nothing
-		return $html;
+		// No charset defined by HTTP
+		if (preg_match('/<meta\s[^>]*charset\s*=[\s\'"]*UTF-?8\b/i', substr($html, 0, 2048))) {
+			// Detect UTF-8 even if declared too deep in HTML for DOMDocument
+			$httpCharset = 'UTF-8';
+		} else {
+			// Do nothing
+			return $html;
+		}
 	}
-	$httpCharsetNormalized = SimplePie_Misc::encoding($httpCharset);
+	$httpCharsetNormalized = \SimplePie\Misc::encoding($httpCharset);
 	if (in_array($httpCharsetNormalized, ['windows-1252', 'US-ASCII'], true)) {
 		// Default charset for HTTP, do nothing
 		return $html;
@@ -466,7 +490,7 @@ function enforceHttpEncoding(string $html, string $contentType = ''): string {
 	}
 	if ($httpCharsetNormalized !== 'UTF-8') {
 		// Try to change encoding to UTF-8 using mbstring or iconv or intl
-		$utf8 = SimplePie_Misc::change_encoding($html, $httpCharsetNormalized, 'UTF-8');
+		$utf8 = \SimplePie\Misc::change_encoding($html, $httpCharsetNormalized, 'UTF-8');
 		if (is_string($utf8)) {
 			$html = stripHtmlMetaCharset($utf8);
 			$httpCharsetNormalized = 'UTF-8';
@@ -493,7 +517,7 @@ function httpGet(string $url, string $cachePath, string $type = 'html', array $a
 	if ($cacheMtime !== false && $cacheMtime > time() - intval($limits['cache_duration'])) {
 		$body = @file_get_contents($cachePath);
 		if ($body != false) {
-			syslog(LOG_DEBUG, 'FreshRSS uses cache for ' . SimplePie_Misc::url_remove_credentials($url));
+			syslog(LOG_DEBUG, 'FreshRSS uses cache for ' . \SimplePie\Misc::url_remove_credentials($url));
 			return $body;
 		}
 	}
@@ -503,7 +527,7 @@ function httpGet(string $url, string $cachePath, string $type = 'html', array $a
 	}
 
 	if (FreshRSS_Context::systemConf()->simplepie_syslog_enabled) {
-		syslog(LOG_INFO, 'FreshRSS GET ' . $type . ' ' . SimplePie_Misc::url_remove_credentials($url));
+		syslog(LOG_INFO, 'FreshRSS GET ' . $type . ' ' . \SimplePie\Misc::url_remove_credentials($url));
 	}
 
 	$accept = '*/*;q=0.8';
@@ -525,9 +549,12 @@ function httpGet(string $url, string $cachePath, string $type = 'html', array $a
 
 	// TODO: Implement HTTP 1.1 conditional GET If-Modified-Since
 	$ch = curl_init();
+	if ($ch === false) {
+		return '';
+	}
 	curl_setopt_array($ch, [
 		CURLOPT_URL => $url,
-		CURLOPT_HTTPHEADER => array('Accept: ' . $accept),
+		CURLOPT_HTTPHEADER => ['Accept: ' . $accept],
 		CURLOPT_USERAGENT => FRESHRSS_USERAGENT,
 		CURLOPT_CONNECTTIMEOUT => $feed_timeout > 0 ? $feed_timeout : $limits['timeout'],
 		CURLOPT_TIMEOUT => $feed_timeout > 0 ? $feed_timeout : $limits['timeout'],
@@ -535,6 +562,7 @@ function httpGet(string $url, string $cachePath, string $type = 'html', array $a
 		CURLOPT_RETURNTRANSFER => true,
 		CURLOPT_FOLLOWLOCATION => true,
 		CURLOPT_ENCODING => '',	//Enable all encodings
+		//CURLOPT_VERBOSE => 1,	// To debug sent HTTP headers
 	]);
 
 	curl_setopt_array($ch, FreshRSS_Context::systemConf()->curl_options);
@@ -544,9 +572,9 @@ function httpGet(string $url, string $cachePath, string $type = 'html', array $a
 	}
 
 	if (isset($attributes['ssl_verify'])) {
-		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $attributes['ssl_verify'] ? 2 : 0);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, empty($attributes['ssl_verify']) ? 0 : 2);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, (bool)$attributes['ssl_verify']);
-		if (!$attributes['ssl_verify']) {
+		if (empty($attributes['ssl_verify'])) {
 			curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'DEFAULT@SECLEVEL=1');
 		}
 	}
@@ -565,8 +593,11 @@ function httpGet(string $url, string $cachePath, string $type = 'html', array $a
 		// TODO: Implement HTTP 410 Gone
 	} elseif (!is_string($body) || strlen($body) === 0) {
 		$body = '';
-	} elseif ($type !== 'json') {
-		$body = enforceHttpEncoding($body, $c_content_type);
+	} else {
+		$body = trim($body, " \n\r\t\v");	// Do not trim \x00 to avoid breaking a BOM
+		if ($type !== 'json') {
+			$body = enforceHttpEncoding($body, $c_content_type);
+		}
 	}
 
 	if (file_put_contents($cachePath, $body) === false) {
@@ -606,9 +637,13 @@ function lazyimg(string $content): string {
 	) ?? '';
 }
 
+/** @return numeric-string */
 function uTimeString(): string {
 	$t = @gettimeofday();
-	return $t['sec'] . str_pad('' . $t['usec'], 6, '0', STR_PAD_LEFT);
+	$sec = is_numeric($t['sec']) ? (int)$t['sec'] : 0;
+	$usec = is_numeric($t['usec']) ? (int)$t['usec'] : 0;
+	$result = ((string)$sec) . str_pad((string)$usec, 6, '0', STR_PAD_LEFT);
+	return ctype_digit($result) ? $result : '0';
 }
 
 function invalidateHttpCache(string $username = ''): bool {
@@ -616,18 +651,14 @@ function invalidateHttpCache(string $username = ''): bool {
 		Minz_Session::_param('touch', uTimeString());
 		$username = Minz_User::name() ?? Minz_User::INTERNAL_USER;
 	}
-	$ok = @touch(DATA_PATH . '/users/' . $username . '/' . LOG_FILENAME);
-	//if (!$ok) {
-		//TODO: Display notification error on front-end
-	//}
-	return $ok;
+	return FreshRSS_UserDAO::ctouch($username);
 }
 
 /**
- * @return array<string>
+ * @return list<string>
  */
 function listUsers(): array {
-	$final_list = array();
+	$final_list = [];
 	$base_path = join_path(DATA_PATH, 'users');
 	$dir_list = array_values(array_diff(
 		scandir($base_path) ?: [],
@@ -730,9 +761,9 @@ function checkCIDR(string $ip, string $range): bool {
  * Use CONN_REMOTE_ADDR (if available, to be robust even when using Apache mod_remoteip) or REMOTE_ADDR environment variable to determine the connection IP.
  */
 function connectionRemoteAddress(): string {
-	$remoteIp = $_SERVER['CONN_REMOTE_ADDR'] ?? '';
+	$remoteIp = is_string($_SERVER['CONN_REMOTE_ADDR'] ?? null) ? $_SERVER['CONN_REMOTE_ADDR'] : '';
 	if ($remoteIp == '') {
-		$remoteIp = $_SERVER['REMOTE_ADDR'] ?? '';
+		$remoteIp = is_string($_SERVER['REMOTE_ADDR'] ?? null) ? $_SERVER['REMOTE_ADDR'] : '';
 	}
 	if ($remoteIp == 0) {
 		$remoteIp = '';
@@ -770,17 +801,17 @@ function checkTrustedIP(): bool {
 }
 
 function httpAuthUser(bool $onlyTrusted = true): string {
-	if (!empty($_SERVER['REMOTE_USER'])) {
+	if (!empty($_SERVER['REMOTE_USER']) && is_string($_SERVER['REMOTE_USER'])) {
 		return $_SERVER['REMOTE_USER'];
 	}
-	if (!empty($_SERVER['REDIRECT_REMOTE_USER'])) {
+	if (!empty($_SERVER['REDIRECT_REMOTE_USER']) && is_string($_SERVER['REDIRECT_REMOTE_USER'])) {
 		return $_SERVER['REDIRECT_REMOTE_USER'];
 	}
 	if (!$onlyTrusted || checkTrustedIP()) {
-		if (!empty($_SERVER['HTTP_REMOTE_USER'])) {
+		if (!empty($_SERVER['HTTP_REMOTE_USER']) && is_string($_SERVER['HTTP_REMOTE_USER'])) {
 			return $_SERVER['HTTP_REMOTE_USER'];
 		}
-		if (!empty($_SERVER['HTTP_X_WEBAUTH_USER'])) {
+		if (!empty($_SERVER['HTTP_X_WEBAUTH_USER']) && is_string($_SERVER['HTTP_X_WEBAUTH_USER'])) {
 			return $_SERVER['HTTP_X_WEBAUTH_USER'];
 		}
 	}
@@ -802,7 +833,7 @@ function check_install_php(): array {
 	$pdo_mysql = extension_loaded('pdo_mysql');
 	$pdo_pgsql = extension_loaded('pdo_pgsql');
 	$pdo_sqlite = extension_loaded('pdo_sqlite');
-	return array(
+	return [
 		'php' => version_compare(PHP_VERSION, FRESHRSS_MIN_PHP_VERSION) >= 0,
 		'curl' => extension_loaded('curl'),
 		'pdo' => $pdo_mysql || $pdo_sqlite || $pdo_pgsql,
@@ -813,7 +844,7 @@ function check_install_php(): array {
 		'json' => extension_loaded('json'),
 		'mbstring' => extension_loaded('mbstring'),
 		'zip' => extension_loaded('zip'),
-	);
+	];
 }
 
 /**
@@ -836,7 +867,7 @@ function check_install_files(): array {
  * @return array<string,bool> of tested values.
  */
 function check_install_database(): array {
-	$status = array(
+	$status = [
 		'connection' => true,
 		'tables' => false,
 		'categories' => false,
@@ -845,7 +876,7 @@ function check_install_database(): array {
 		'entrytmp' => false,
 		'tag' => false,
 		'entrytag' => false,
-	);
+	];
 
 	try {
 		$dbDAO = FreshRSS_Factory::createDatabaseDAO();
@@ -857,7 +888,7 @@ function check_install_database(): array {
 		$status['entrytmp'] = $dbDAO->entrytmpIsCorrect();
 		$status['tag'] = $dbDAO->tagIsCorrect();
 		$status['entrytag'] = $dbDAO->entrytagIsCorrect();
-	} catch(Minz_PDOConnectionException $e) {
+	} catch (Minz_PDOConnectionException $e) {
 		$status['connection'] = false;
 	}
 
@@ -890,14 +921,14 @@ function recursive_unlink(string $dir): bool {
 /**
  * Remove queries where $get is appearing.
  * @param string $get the get attribute which should be removed.
- * @param array<int,array<string,string|int>> $queries an array of queries.
- * @return array<int,array<string,string|int>> without queries where $get is appearing.
+ * @param array<int,array{get?:string,name?:string,order?:string,search?:string,state?:int,url?:string}> $queries an array of queries.
+ * @return array<int,array{get?:string,name?:string,order?:string,search?:string,state?:int,url?:string}> without queries where $get is appearing.
  */
 function remove_query_by_get(string $get, array $queries): array {
-	$final_queries = array();
-	foreach ($queries as $key => $query) {
+	$final_queries = [];
+	foreach ($queries as $query) {
 		if (empty($query['get']) || $query['get'] !== $get) {
-			$final_queries[$key] = $query;
+			$final_queries[] = $query;
 		}
 	}
 	return $final_queries;
@@ -919,7 +950,7 @@ const SHORTCUT_KEYS = [
 
 /**
  * @param array<string> $shortcuts
- * @return array<string>
+ * @return list<string>
  */
 function getNonStandardShortcuts(array $shortcuts): array {
 	$standard = strtolower(implode(' ', SHORTCUT_KEYS));
@@ -929,7 +960,7 @@ function getNonStandardShortcuts(array $shortcuts): array {
 		return $shortcut !== '' && stripos($standard, $shortcut) === false;
 	});
 
-	return $nonStandard;
+	return array_values($nonStandard);
 }
 
 function errorMessageInfo(string $errorTitle, string $error = ''): string {

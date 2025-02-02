@@ -22,13 +22,14 @@ function isImgMime(string $content): bool {
 	return $isImage;
 }
 
-/** @param array<int,int|bool> $curlOptions */
+/** @param array<int,int|bool|string> $curlOptions */
 function downloadHttp(string &$url, array $curlOptions = []): string {
 	syslog(LOG_INFO, 'FreshRSS Favicon GET ' . $url);
-	$url = checkUrl($url);
-	if ($url == false) {
+	$url2 = checkUrl($url);
+	if ($url2 == false) {
 		return '';
 	}
+	$url = $url2;
 	/** @var CurlHandle $ch */
 	$ch = curl_init($url);
 	curl_setopt_array($ch, [
@@ -38,6 +39,7 @@ function downloadHttp(string &$url, array $curlOptions = []): string {
 			CURLOPT_MAXREDIRS => 10,
 			CURLOPT_FOLLOWLOCATION => true,
 			CURLOPT_ENCODING => '',	//Enable all encodings
+			//CURLOPT_VERBOSE => 1,	// To debug sent HTTP headers
 		]);
 
 	FreshRSS_Context::initSystem();
@@ -55,11 +57,11 @@ function downloadHttp(string &$url, array $curlOptions = []): string {
 	curl_close($ch);
 	if (!empty($info['url'])) {
 		$url2 = checkUrl($info['url']);
-		if ($url2 != '') {
+		if ($url2 != false) {
 			$url = $url2;	//Possible redirect
 		}
 	}
-	return $info['http_code'] == 200 ? $response : '';
+	return is_array($info) && $info['http_code'] == 200 ? $response : '';
 }
 
 function searchFavicon(string &$url): string {
@@ -74,7 +76,7 @@ function searchFavicon(string &$url): string {
 	$links = $xpath->query('//link[@href][translate(@rel, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="shortcut icon"'
 		. ' or translate(@rel, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="icon"]');
 
-	if (!$links) {
+	if (!($links instanceof DOMNodeList)) {
 		return '';
 	}
 
@@ -95,13 +97,16 @@ function searchFavicon(string &$url): string {
 			$href = ($urlParts['scheme'] ?? 'https') . ':' . $href;
 		}
 
-		$href = SimplePie_IRI::absolutize($baseUrl, $href);
+		$href = \SimplePie\IRI::absolutize($baseUrl, $href);
 		if ($href == false) {
 			return '';
 		}
 
 		$iri = $href->get_iri();
-		$favicon = downloadHttp($iri, array(CURLOPT_REFERER => $url));
+		if ($iri == false) {
+			return '';
+		}
+		$favicon = downloadHttp($iri, [CURLOPT_REFERER => $url]);
 		if (isImgMime($favicon)) {
 			return $favicon;
 		}
@@ -113,16 +118,14 @@ function download_favicon(string $url, string $dest): bool {
 	$url = trim($url);
 	$favicon = searchFavicon($url);
 	if ($favicon == '') {
-		$rootUrl = preg_replace('%^(https?://[^/]+).*$%i', '$1/', $url);
+		$rootUrl = preg_replace('%^(https?://[^/]+).*$%i', '$1/', $url) ?? $url;
 		if ($rootUrl != $url) {
 			$url = $rootUrl;
 			$favicon = searchFavicon($url);
 		}
 		if ($favicon == '') {
 			$link = $rootUrl . 'favicon.ico';
-			$favicon = downloadHttp($link, array(
-					CURLOPT_REFERER => $url,
-				));
+			$favicon = downloadHttp($link, [CURLOPT_REFERER => $url]);
 			if (!isImgMime($favicon)) {
 				$favicon = '';
 			}
@@ -130,4 +133,17 @@ function download_favicon(string $url, string $dest): bool {
 	}
 	return ($favicon != '' && file_put_contents($dest, $favicon) > 0) ||
 		@copy(DEFAULT_FAVICON, $dest);
+}
+
+function contentType(string $ico): string {
+	$ico_content_type = 'image/x-icon';
+	if (function_exists('mime_content_type')) {
+		$ico_content_type = mime_content_type($ico) ?: $ico_content_type;
+	}
+	switch ($ico_content_type) {
+		case 'image/svg':
+			$ico_content_type = 'image/svg+xml';
+			break;
+	}
+	return $ico_content_type;
 }

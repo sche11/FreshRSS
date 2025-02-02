@@ -14,9 +14,9 @@ return array(
 	'auth' => array(
 		'allow_anonymous' => 'הרשאה לאנונימיים לקרוא את מאמרי משתמש ברירת המחדל (%s)',
 		'allow_anonymous_refresh' => 'הרשאה לאנונימיים לרענן את רשימת המאמרים',
-		'api_enabled' => 'הרשאת גישה ל <abbr>API</abbr> <small>(נדרש ליישומים סלולריים)</small>',
+		'api_enabled' => 'הרשאת גישה ל <abbr>API</abbr> <small>(נדרש ליישומים סלולריים and sharing user queries)</small>',	// DIRTY
 		'form' => 'טופס אינטרנטי (מסורתי, דורש JavaScript)',
-		'http' => 'HTTP (למשתמשים מתקדמים עם HTTPS)',
+		'http' => 'HTTP (advanced: managed by Web server, OIDC, SSO…)',	// TODO
 		'none' => 'ללא (מסוכן)',
 		'title' => 'Authentication',	// TODO
 		'token' => 'Master authentication token',	// TODO
@@ -116,6 +116,7 @@ return array(
 		'description' => 'Description',	// TODO
 		'disabled' => 'Disabled',	// TODO
 		'empty_list' => 'There is no installed extension',
+		'empty_list_help' => 'Check the logs to determine the reason behind the empty extension list.',	// TODO
 		'enabled' => 'Enabled',	// TODO
 		'latest' => 'Installed',	// TODO
 		'name' => 'Name',	// TODO
@@ -147,8 +148,9 @@ return array(
 		'main_stream' => 'הזנה ראשית',
 		'no_idle' => 'אין הזנות מובטלות!',
 		'number_entries' => '%d מאמרים',
+		'overview' => 'Overview',	// TODO
 		'percent_of_total' => '% מסך הכל',
-		'repartition' => 'חלוקת המאמרים',
+		'repartition' => 'חלוקת המאמרים: %s',	// DIRTY
 		'status_favorites' => 'מועדפים',
 		'status_read' => 'נקרא',
 		'status_total' => 'סך הכל',
@@ -213,7 +215,7 @@ return array(
 			'latest' => 'Stable release (“latest”)',	// TODO
 		),
 		'title' => 'מערכת העדכון',
-		'viaGit' => 'Update via git and Github.com started',	// TODO
+		'viaGit' => 'Update via git and GitHub.com started',	// TODO
 	),
 	'user' => array(
 		'admin' => 'Administrator',	// TODO

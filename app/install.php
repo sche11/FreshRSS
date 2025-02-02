@@ -10,7 +10,7 @@ require(LIB_PATH . '/lib_install.php');
 
 Minz_Session::init('FreshRSS');
 
-if (isset($_GET['step'])) {
+if (isset($_GET['step']) && is_numeric($_GET['step'])) {
 	define('STEP', (int)$_GET['step']);
 } else {
 	define('STEP', 0);
@@ -41,7 +41,7 @@ function initTranslate(): void {
 }
 
 function get_best_language(): string {
-	$accept = empty($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? '' : $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+	$accept = empty($_SERVER['HTTP_ACCEPT_LANGUAGE']) || !is_string($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? '' : $_SERVER['HTTP_ACCEPT_LANGUAGE'];
 	return strtolower(substr($accept, 0, 2));
 }
 
@@ -102,22 +102,22 @@ function saveStep2(): void {
 					'bd_prefix' => false,
 				]);
 		} else {
-			if (empty($_POST['type']) ||
-				empty($_POST['host']) ||
-				empty($_POST['user']) ||
-				empty($_POST['base'])) {
+			if (empty($_POST['type']) || !is_string($_POST['type']) ||
+				empty($_POST['host']) || !is_string($_POST['host']) ||
+				empty($_POST['user']) || !is_string($_POST['user']) ||
+				empty($_POST['base']) || !is_string($_POST['base']) ||
+				!is_string($_POST['pass'] ?? null) || !is_string($_POST['prefix'] ?? null)
+			) {
 				Minz_Session::_param('bd_error', 'Missing parameters!');
-			}
-			Minz_Session::_params([
+			} else {
+				Minz_Session::_params([
 					'bd_base' => substr($_POST['base'], 0, 64),
 					'bd_host' => $_POST['host'],
 					'bd_user' => $_POST['user'],
 					'bd_password' => $_POST['pass'],
 					'bd_prefix' => substr($_POST['prefix'], 0, 16),
 				]);
-		}
-		if (Minz_Session::paramString('bd_type') === 'pgsql') {
-			Minz_Session::_param('bd_base', strtolower(Minz_Session::paramString('bd_base')));
+			}
 		}
 
 		// We use dirname to remove the /i part
@@ -146,6 +146,9 @@ function saveStep2(): void {
 			$customConfig = include($customConfigPath);
 			if (is_array($customConfig)) {
 				$config_array = array_merge($customConfig, $config_array);
+				if (!is_string($config_array['default_user'] ?? null)) {
+					$config_array['default_user'] = '_';
+				}
 			}
 		}
 
@@ -160,6 +163,9 @@ function saveStep2(): void {
 
 		$ok = false;
 		try {
+			if (!is_string($config_array['default_user'])) {
+				throw new Exception('Invalid default user name');
+			}
 			Minz_User::change($config_array['default_user']);
 			$error = initDb();
 			Minz_User::change();
@@ -293,7 +299,7 @@ function freshrss_already_installed(): bool {
 	$system_conf = null;
 	try {
 		$system_conf = FreshRSS_SystemConfiguration::init($conf_path);
-	} catch (Minz_ConfigurationNamespaceException $e) {
+	} catch (Minz_FileNotExistException $e) {
 		return false;
 	}
 
@@ -301,7 +307,7 @@ function freshrss_already_installed(): bool {
 	$current_user = $system_conf->default_user;
 	try {
 		FreshRSS_UserConfiguration::init(USERS_PATH . '/' . $current_user . '/config.php');
-	} catch (Minz_ConfigurationNamespaceException $e) {
+	} catch (Minz_FileNotExistException $e) {
 		return false;
 	}
 
@@ -330,11 +336,11 @@ function checkStep3(): array {
 
 	$form = Minz_Session::paramString('auth_type') != '';
 
-	$defaultUser = empty($_POST['default_user']) ? null : $_POST['default_user'];
-	if ($defaultUser === null) {
+	$defaultUser = is_string($_POST['default_user'] ?? null) ? trim($_POST['default_user']) : '';
+	if ($defaultUser === '') {
 		$defaultUser = Minz_Session::paramString('default_user') == '' ? '' : Minz_Session::paramString('default_user');
 	}
-	$data = is_writable(join_path(USERS_PATH, $defaultUser, 'config.php'));
+	$data = is_writable(USERS_PATH . '/' . $defaultUser . '/config.php');
 
 	return [
 		'conf' => $conf ? 'ok' : 'ko',
@@ -385,8 +391,8 @@ function printStep0(): void {
 		</div>
 	</div>
 
+	<h2><?= _t('install.language.choose') ?></h2>
 	<form action="index.php?step=0" method="post">
-		<legend><?= _t('install.language.choose') ?></legend>
 		<div class="form-group">
 			<label class="group-name" for="language"><?= _t('install.language') ?></label>
 			<div class="group-controls">
@@ -448,16 +454,15 @@ function getProcessUsername(): string {
 /* check system environment */
 function printStep1(): void {
 	$res = checkRequirements();
-	$processUsername = getProcessUsername();
 ?>
 	<h2><?= _t('admin.check_install.php') ?></h2>
 	<noscript><p class="alert alert-warn"><span class="alert-head"><?= _t('gen.short.attention') ?></span> <?= _t('install.javascript_is_better') ?></p></noscript>
-
 	<?php
-	$version = function_exists('curl_version') ? curl_version() : [];
 	printStep1Template('php', $res['php'], [PHP_VERSION, FRESHRSS_MIN_PHP_VERSION]);
 	printStep1Template('pdo', $res['pdo']);
-	printStep1Template('curl', $res['curl'], [$version['version'] ?? '']);
+	$curlVersion = function_exists('curl_version') ? curl_version() : [];
+	$curlVersion = is_string($curlVersion['version'] ?? null) ? $curlVersion['version'] : '';
+	printStep1Template('curl', $res['curl'], [$curlVersion]);
 	printStep1Template('json', $res['json']);
 	printStep1Template('pcre', $res['pcre']);
 	printStep1Template('ctype', $res['ctype']);
@@ -468,6 +473,7 @@ function printStep1(): void {
 	?>
 	<h2><?= _t('admin.check_install.files') ?></h2>
 	<?php
+	$processUsername = getProcessUsername();
 	printStep1Template('data', $res['data'], [DATA_PATH, $processUsername]);
 	printStep1Template('cache', $res['cache'], [CACHE_PATH, $processUsername]);
 	printStep1Template('tmp', $res['tmp'], [TMP_PATH, $processUsername]);
@@ -519,30 +525,30 @@ function printStep2(): void {
 	<p class="alert alert-success"><span class="alert-head"><?= _t('gen.short.ok') ?></span> <?= _t('install.bdd.conf.ok') ?></p>
 	<?php } elseif ($s2['conn'] == 'ko') { ?>
 	<p class="alert alert-error"><span class="alert-head"><?= _t('gen.short.damn') ?></span> <?= _t('install.bdd.conf.ko'),
-		(empty($_SESSION['bd_error']) ? '' : ' : ' . $_SESSION['bd_error']) ?></p>
+		(empty($_SESSION['bd_error']) || !is_string($_SESSION['bd_error']) ? '' : ' : ' . $_SESSION['bd_error']) ?></p>
 	<?php } ?>
 
+	<h2><?= _t('install.bdd.conf') ?></h2>
 	<form action="index.php?step=2" method="post" autocomplete="off">
-		<legend><?= _t('install.bdd.conf') ?></legend>
 		<div class="form-group">
 			<label class="group-name" for="type"><?= _t('install.bdd.type') ?></label>
 			<div class="group-controls">
 				<select name="type" id="type" tabindex="1">
 				<?php if (extension_loaded('pdo_sqlite')) {?>
 				<option value="sqlite"
-					<?= isset($_SESSION['bd_type']) && $_SESSION['bd_type'] === 'sqlite' ? 'selected="selected"' : '' ?>>
+					<?= ($_SESSION['bd_type'] ?? null) === 'sqlite' ? 'selected="selected"' : '' ?>>
 					SQLite
 				</option>
 				<?php }?>
 				<?php if (extension_loaded('pdo_mysql')) {?>
 				<option value="mysql"
-					<?= isset($_SESSION['bd_type']) && $_SESSION['bd_type'] === 'mysql' ? 'selected="selected"' : '' ?>>
+					<?= ($_SESSION['bd_type'] ?? null) === 'mysql' ? 'selected="selected"' : '' ?>>
 					MySQL / MariaDB
 				</option>
 				<?php }?>
 				<?php if (extension_loaded('pdo_pgsql')) {?>
 				<option value="pgsql"
-					<?= isset($_SESSION['bd_type']) && $_SESSION['bd_type'] === 'pgsql' ? 'selected="selected"' : '' ?>>
+					<?= ($_SESSION['bd_type'] ?? null) === 'pgsql' ? 'selected="selected"' : '' ?>>
 					PostgreSQL
 				</option>
 				<?php }?>
@@ -551,11 +557,18 @@ function printStep2(): void {
 		</div>
 
 		<div id="mysql">
+		<?php
+			$bd_base = is_string($_SESSION['bd_base'] ?? null) ? $_SESSION['bd_base'] : null;
+			$bd_host = is_string($_SESSION['bd_host'] ?? null) ? $_SESSION['bd_host'] : null;
+			$bd_password = is_string($_SESSION['bd_password'] ?? null) ? $_SESSION['bd_password'] : null;
+			$bd_prefix = is_string($_SESSION['bd_prefix'] ?? null) ? $_SESSION['bd_prefix'] : null;
+			$bd_user = is_string($_SESSION['bd_user'] ?? null) ? $_SESSION['bd_user'] : null;
+		?>
 		<div class="form-group">
 			<label class="group-name" for="host"><?= _t('install.bdd.host') ?></label>
 			<div class="group-controls">
-				<input type="text" id="host" name="host" pattern="[0-9A-Z/a-z_.\-]{1,64}(:[0-9]{2,5})?" value="<?=
-					$_SESSION['bd_host'] ?? $system_default_config->db['host'] ?? '' ?>" tabindex="2" />
+				<input type="text" id="host" name="host" pattern="[0-9A-Z\/a-z_.\-]{1,64}(:[0-9]{2,5})?" value="<?=
+					$bd_host ?? $system_default_config->db['host'] ?? '' ?>" tabindex="2" />
 			</div>
 		</div>
 
@@ -563,7 +576,7 @@ function printStep2(): void {
 			<label class="group-name" for="user"><?= _t('install.bdd.username') ?></label>
 			<div class="group-controls">
 				<input type="text" id="user" name="user" maxlength="64" pattern="[0-9A-Za-z@_.\-]{1,64}" value="<?=
-					$_SESSION['bd_user'] ?? '' ?>" tabindex="3" />
+					$bd_user ?? '' ?>" tabindex="3" />
 			</div>
 		</div>
 
@@ -572,7 +585,7 @@ function printStep2(): void {
 			<div class="group-controls">
 				<div class="stick">
 					<input type="password" id="pass" name="pass" value="<?=
-						$_SESSION['bd_password'] ?? '' ?>" tabindex="4" autocomplete="off" />
+						$bd_password ?? '' ?>" tabindex="4" autocomplete="off" />
 					<a class="btn toggle-password" data-toggle="pass" tabindex="5"><?= FreshRSS_Themes::icon('key') ?></a>
 				</div>
 			</div>
@@ -582,7 +595,7 @@ function printStep2(): void {
 			<label class="group-name" for="base"><?= _t('install.bdd') ?></label>
 			<div class="group-controls">
 				<input type="text" id="base" name="base" maxlength="64" pattern="[0-9A-Za-z_\-]{1,64}" value="<?=
-					$_SESSION['bd_base'] ?? '' ?>" tabindex="6" />
+					$bd_base ?? '' ?>" tabindex="6" />
 			</div>
 		</div>
 
@@ -590,7 +603,7 @@ function printStep2(): void {
 			<label class="group-name" for="prefix"><?= _t('install.bdd.prefix') ?></label>
 			<div class="group-controls">
 				<input type="text" id="prefix" name="prefix" maxlength="16" pattern="[0-9A-Za-z_]{1,16}" value="<?=
-					$_SESSION['bd_prefix'] ?? $system_default_config->db['prefix'] ?? '' ?>" tabindex="7" />
+					$bd_prefix ?? $system_default_config->db['prefix'] ?? '' ?>" tabindex="7" />
 			</div>
 		</div>
 		</div>
@@ -614,7 +627,8 @@ function no_auth(string $auth_type): bool {
 
 /* Create default user */
 function printStep3(): void {
-	$auth_type = $_SESSION['auth_type'] ?? '';
+	$auth_type = is_string($_SESSION['auth_type'] ?? null) ? $_SESSION['auth_type'] : '';
+	$default_user = is_string($_SESSION['default_user'] ?? null) ? $_SESSION['default_user'] : '';
 	$s3 = checkStep3();
 	if ($s3['all'] == 'ok') { ?>
 	<p class="alert alert-success"><span class="alert-head"><?= _t('gen.short.ok') ?></span> <?= _t('install.conf.ok') ?></p>
@@ -622,43 +636,42 @@ function printStep3(): void {
 	<p class="alert alert-error"><?= _t('install.fix_errors_before') ?></p>
 	<?php } ?>
 
+	<h2><?= _t('install.conf') ?></h2>
 	<form action="index.php?step=3" method="post">
-		<legend><?= _t('install.conf') ?></legend>
-
 		<div class="form-group">
 			<label class="group-name" for="default_user"><?= _t('install.default_user') ?></label>
 			<div class="group-controls">
 				<input type="text" id="default_user" name="default_user" autocomplete="username" required="required" size="16"
-					pattern="<?= FreshRSS_user_Controller::USERNAME_PATTERN ?>" value="<?= $_SESSION['default_user'] ?? '' ?>"
+					pattern="<?= FreshRSS_user_Controller::USERNAME_PATTERN ?>" value="<?= $default_user ?>"
 					placeholder="<?= httpAuthUser(false) == '' ? 'alice' : httpAuthUser(false) ?>" tabindex="1" />
 				<p class="help"><?= _i('help') ?> <?= _t('install.default_user.max_char') ?></p>
 			</div>
 		</div>
 
 		<div class="form-group">
-			<label class="group-name" for="auth_type"><?= _t('install.auth.type') ?></label>
+			<label class="group-name" for="auth_type"><?= _t('admin.auth.type') ?></label>
 			<div class="group-controls">
 				<select id="auth_type" name="auth_type" required="required" tabindex="2">
 					<option value="form"<?= $auth_type === 'form' || (no_auth($auth_type) && cryptAvailable()) ? ' selected="selected"' : '',
-						cryptAvailable() ? '' : ' disabled="disabled"' ?>><?= _t('install.auth.form') ?></option>
+						cryptAvailable() ? '' : ' disabled="disabled"' ?>><?= _t('admin.auth.form') ?></option>
 					<option value="http_auth"<?= $auth_type === 'http_auth' ? ' selected="selected"' : '',
 						httpAuthUser(false) == '' ? ' disabled="disabled"' : '' ?>>
-							<?= _t('install.auth.http') ?> (REMOTE_USER = '<?= httpAuthUser(false) ?>')</option>
+							<?= _t('admin.auth.http') ?> (REMOTE_USER = '<?= httpAuthUser(false) ?>')</option>
 					<option value="none"<?= $auth_type === 'none' || (no_auth($auth_type) && !cryptAvailable()) ? ' selected="selected"' : ''
-						?>><?= _t('install.auth.none') ?></option>
+						?>><?= _t('admin.auth.none') ?></option>
 				</select>
 			</div>
 		</div>
 
 		<div class="form-group">
-			<label class="group-name" for="passwordPlain"><?= _t('install.auth.password_form') ?></label>
+			<label class="group-name" for="passwordPlain"><?= _t('admin.user.password_form') ?></label>
 			<div class="group-controls">
 				<div class="stick">
 					<input type="password" id="passwordPlain" name="passwordPlain" pattern=".{7,}"
 						autocomplete="off" <?= $auth_type === 'form' ? ' required="required"' : '' ?> tabindex="3" />
 					<button type="button" class="btn toggle-password" data-toggle="passwordPlain" tabindex="4"><?= FreshRSS_Themes::icon('key') ?></button>
 				</div>
-				<p class="help"><?= _i('help') ?> <?= _t('install.auth.password_format') ?></p>
+				<p class="help"><?= _i('help') ?> <?= _t('admin.user.password_format') ?></p>
 				<noscript><b><?= _t('gen.js.should_be_activated') ?></b></noscript>
 			</div>
 		</div>

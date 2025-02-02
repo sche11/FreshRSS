@@ -16,8 +16,8 @@ return array(
 		'exception' => '清理例外',
 		'help' => '更多可用选项位于各订阅源的设置',
 		'keep_favourites' => '永不删除已收藏的文章',
-		'keep_labels' => '永不删除标签',
-		'keep_max' => '最多保留的文章数',	// DIRTY
+		'keep_labels' => '永不删除打了标签的文章',
+		'keep_max' => '每订阅源最多保留的文章数',
 		'keep_min_by_feed' => '至少保留的文章数',
 		'keep_period' => '文章最多保留',
 		'keep_unreads' => '永不删除未读文章',
@@ -33,8 +33,9 @@ return array(
 	'display' => array(
 		'_' => '显示',
 		'darkMode' => array(
-			'_' => '自动黑暗模式（测试版）',
+			'_' => '自动黑暗模式',
 			'auto' => '启动',
+			'help' => 'For compatible themes only',	// TODO
 			'no' => '关闭',
 		),
 		'icon' => array(
@@ -98,9 +99,19 @@ return array(
 			'previous' => '上一页',
 		),
 	),
+	'privacy' => array(
+		'_' => 'Privacy',	// TODO
+		'retrieve_extension_list' => 'Retrieve extension list',	// TODO
+	),
 	'profile' => array(
 		'_' => '账户管理',
-		'api' => 'API 管理',
+		'api' => array(
+			'_' => 'API 管理',
+			'check_link' => 'Check API status via: <kbd><a href="../api/" target="_blank">%s</a></kbd>',	// TODO
+			'disabled' => 'The API access is disabled.',	// TODO
+			'documentation_link' => 'See the <a href="https://freshrss.github.io/FreshRSS/en/users/06_Mobile_access.html#access-via-mobile-app" target="_blank">documentation and list of known apps</a>',	// TODO
+			'help' => 'See <a href="http://freshrss.github.io/FreshRSS/en/users/06_Mobile_access.html#access-via-mobile-app" target=_blank>documentation</a>',	// TODO
+		),
 		'delete' => array(
 			'_' => '账户删除',
 			'warn' => '你的帐户以及所有相关数据将被删除。',
@@ -114,38 +125,51 @@ return array(
 	'query' => array(
 		'_' => '自定义查询',
 		'deprecated' => '此查询不再有效。相关的分类或订阅源已被删除。',
+		'description' => 'Description',	// TODO
 		'filter' => array(
 			'_' => '生效的过滤器：',
 			'categories' => '按分类显示',
 			'feeds' => '按订阅源显示',
 			'order' => '按日期排序',
 			'search' => '表达式',
-			'shareOpml' => 'Enable sharing by OPML of corresponding categories and feeds',	// TODO
-			'shareRss' => 'Enable sharing by HTML &amp; RSS',	// TODO
+			'shareOpml' => '启用相应类别和 feed 的 OPML 分享',
+			'shareRss' => '启用 HTML 和 RSS 分享',
 			'state' => '状态',
 			'tags' => '按标签显示',
 			'type' => '类型',
 		),
+		'get_A' => 'Show all feeds, also those shown in their category',	// TODO
+		'get_Z' => 'Show all feeds, also archived ones',	// TODO
 		'get_all' => '显示所有文章',
-		'get_all_labels' => 'Display articles with any label',	// TODO
-		'get_category' => '显示分类 “%s”',
+		'get_all_labels' => '显示所有打了标签的文章',
+		'get_category' => '显示分类“%s”',
 		'get_favorite' => '显示收藏文章',
-		'get_feed' => '显示订阅源 “%s”',
-		'get_important' => 'Display articles from important feeds',	// TODO
-		'get_label' => 'Display articles with “%s” label',	// TODO
-		'help' => 'See the <a href="https://freshrss.github.io/FreshRSS/en/users/user_queries.html" target="_blank">documentation for user queries and resharing by HTML / RSS / OPML</a>.',	// TODO
+		'get_feed' => '显示订阅源“%s”',
+		'get_important' => '显示来自“重要的订阅”的文章',
+		'get_label' => '显示打了“%s”标签的文章',
+		'help' => '参见文档： <a href="https://freshrss.github.io/FreshRSS/en/users/user_queries.html" target="_blank">queries and resharing by HTML / RSS / OPML</a>.',
+		'image_url' => 'Image URL',	// TODO
 		'name' => '名称',
 		'no_filter' => '无过滤器',
+		'no_queries' => array(
+			'_' => 'No user queries are saved yet.',	// TODO
+			'help' => 'See <a href="https://freshrss.github.io/FreshRSS/en/users/user_queries.html" target="_blank">documentation</a>',	// TODO
+		),
 		'number' => '查询 n°%d',
 		'order_asc' => '由旧至新显示文章',
 		'order_desc' => '由新至旧显示文章',
 		'search' => '搜索 “%s”',
 		'share' => array(
-			'_' => 'Share this query by link',	// TODO
-			'help' => 'Give this link if you want to share this query with anyone',	// TODO
-			'html' => 'Shareable link to the HTML page',	// TODO
-			'opml' => 'Shareable link to the OPML list of feeds',	// TODO
-			'rss' => 'Shareable link to the RSS feed',	// TODO
+			'_' => '分享您的自定义查询',
+			'disabled' => array(
+				'_' => 'disabled',	// TODO
+				'title' => 'Sharing',	// TODO
+			),
+			'greader' => 'Shareable link to the GReader JSON',	// TODO
+			'help' => '获取此自定义查询的分享链接',
+			'html' => 'HTML 页面的分享链接',
+			'opml' => '订阅源 OPML 的分享链接',
+			'rss' => 'RSS feed 的分享链接',
 		),
 		'state_0' => '显示所有文章',
 		'state_1' => '显示已读文章',
@@ -169,6 +193,7 @@ return array(
 		'_' => '阅读',
 		'after_onread' => '“全部标记为已读”后',
 		'always_show_favorites' => '默认显示收藏夹中所有的文章',
+		'apply_to_individual_feed' => 'Applies to feeds individually',	// TODO
 		'article' => array(
 			'authors_date' => array(
 				'_' => '作者和日期',
@@ -183,6 +208,11 @@ return array(
 				'with_authors' => '与作者和日期一行',
 			),
 			'feed_title' => '订阅源标题',
+			'icons' => array(
+				'_' => 'Article icons position<br /><small>(Reading view only)</small>',	// TODO
+				'above_title' => 'Above title',	// TODO
+				'with_authors' => 'In authors and date row',	// TODO
+			),
 			'tags' => array(
 				'_' => '文章标签',
 				'both' => '页脚与页眉',
@@ -211,7 +241,7 @@ return array(
 		),
 		'hide_read_feeds' => '隐藏没有未读文章的分类和订阅源（启用“显示所有文章”后不生效）',
 		'img_with_lazyload' => '延迟加载图片',
-		'jump_next' => '跳转到下一未读项（订阅源或分类）',
+		'jump_next' => '跳转到下一未读项',
 		'mark_updated_article_unread' => '将有更新的文章设为未读',
 		'number_divided_when_reader' => '阅读视图中显示一半',
 		'read' => array(
@@ -223,17 +253,19 @@ return array(
 			'upon_gone' => '在被原订阅源被移除后',
 			'upon_reception' => '在接收文章后',
 			'when' => '何时将文章标记为已读',
-			'when_same_title' => '已存在 n 条相同标题文章',
+			'when_same_title_in_category' => 'if an identical title already exists in the top <i>n</i> newest articles of the category',	// TODO
+			'when_same_title_in_feed' => '已存在 n 条相同标题文章 (of the feed)',	// DIRTY
 		),
 		'show' => array(
 			'_' => '文章显示',
 			'active_category' => '活跃的分类',
-			'adaptive' => '自适应显示',
+			'adaptive' => 'Show unreads if any, all articles otherwise',	// TODO
 			'all_articles' => '显示所有',
 			'all_categories' => '所有分类',
 			'no_category' => '无分类',
 			'remember_categories' => '记住打开的分类',
 			'unread' => '只显示未读',
+			'unread_or_favorite' => 'Show unreads and favourites',	// TODO
 		),
 		'show_fav_unread_help' => '同样适用于标签',
 		'sides_close_article' => '点击文章文本区域外关闭文章',
@@ -241,6 +273,9 @@ return array(
 			'_' => '排列顺序',
 			'newer_first' => '由新至旧',
 			'older_first' => '由旧至新',
+		),
+		'star' => array(
+			'when' => 'Mark an article as favourite…',	// TODO
 		),
 		'sticky_post' => '打开文章时将其置顶',
 		'title' => '阅读',
@@ -254,7 +289,7 @@ return array(
 	'sharing' => array(
 		'_' => '分享',
 		'add' => '添加分享方式',
-		'blogotext' => 'Blogotext',	// IGNORE
+		'bluesky' => 'Bluesky',	// TODO
 		'deprecated' => '此功能已被废弃并会在未来的 FreshRSS 版本中移除，详情见 <a href="https://freshrss.github.io/FreshRSS/en/users/08_sharing_services.html" title="打开文档获更多信息" target="_blank">说明文档</a>.',
 		'diaspora' => 'Diaspora*',	// IGNORE
 		'email' => 'Email',	// IGNORE

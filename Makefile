@@ -40,6 +40,7 @@ start: ## Start the development environment (use Docker)
 	docker network create --driver bridge $(NETWORK) || true
 	$(foreach extension,$(extensions),$(eval volumes=$(volumes) --volume $(extension):/var/www/FreshRSS/extensions/$(notdir $(extension)):z))
 	docker run \
+		-it \
 		--rm \
 		--volume $(shell pwd):/var/www/FreshRSS:z \
 		$(volumes) \
@@ -58,37 +59,34 @@ stop: ## Stop FreshRSS container if any
 ## Tests and linter ##
 ######################
 .PHONY: test
-test: vendor/bin/phpunit ## Run the test suite
-	$(PHP) vendor/bin/phpunit --bootstrap ./tests/bootstrap.php ./tests
+test: bin/phpunit ## Run the test suite
+	$(PHP) bin/phpunit --bootstrap ./tests/bootstrap.php ./tests
 
 .PHONY: lint
-lint: vendor/bin/phpcs ## Run the linter on the PHP files
-	$(PHP) vendor/bin/phpcs . -p -s
+lint: bin/phpcs ## Run the linter on the PHP files
+	$(PHP) bin/phpcs . -p -s
 
 .PHONY: lint-fix
-lint-fix: vendor/bin/phpcbf ## Fix the errors detected by the linter
-	$(PHP) vendor/bin/phpcbf . -p -s
+lint-fix: bin/phpcbf ## Fix the errors detected by the linter
+	$(PHP) bin/phpcbf . -p -s
 
 bin/composer:
 	mkdir -p bin/
-	wget 'https://raw.githubusercontent.com/composer/getcomposer.org/8af47a6fd4910073ea7580378d6252c708f83a06/web/installer' -O - -q | php -- --quiet --install-dir='./bin/' --filename='composer'
+	wget 'https://raw.githubusercontent.com/composer/getcomposer.org/1a26c0dcb361332cb504e4861ed0f758281575aa/web/installer' -O - -q | php -- --quiet --install-dir='./bin/' --filename='composer'
 
-vendor/bin/phpunit: bin/composer
+# building any of these builds them all
+vendor/bin/phpunit vendor/bin/phpcs vendor/bin/phpcbf vendor/bin/phpstan &: bin/composer
 	bin/composer install --prefer-dist --no-progress
-	ln -s ../vendor/bin/phpunit bin/phpunit
 
-vendor/bin/phpcs: bin/composer
-	bin/composer install --prefer-dist --no-progress
-	ln -s ../vendor/bin/phpcs bin/phpcs
-
-vendor/bin/phpcbf: bin/composer
-	bin/composer install --prefer-dist --no-progress
-	ln -s ../vendor/bin/phpcbf bin/phpcbf
+# Any of these depend on the vendor/ target, and then symlink the vendor/bin/ to the bin/.
+# use -sf so if the symlink already exists it won't error out. Running this from a container often won't properly detect it already exists
+bin/phpunit bin/phpcs bin/phpcbf bin/phpstan : % : vendor/%
+	ln -sf $< $@
 
 bin/typos:
 	mkdir -p bin/
 	cd bin ; \
-	wget -q 'https://github.com/crate-ci/typos/releases/download/v1.17.0/typos-v1.17.0-x86_64-unknown-linux-musl.tar.gz' && \
+	wget -q 'https://github.com/crate-ci/typos/releases/download/v1.23.1/typos-v1.23.1-x86_64-unknown-linux-musl.tar.gz' && \
 	tar -xvf *.tar.gz './typos' && \
 	chmod +x typos && \
 	rm *.tar.gz ; \
@@ -99,9 +97,6 @@ node_modules/.bin/eslint:
 
 node_modules/.bin/rtlcss:
 	npm install
-
-vendor/bin/phpstan: bin/composer
-	bin/composer install --prefer-dist --no-progress
 
 ##########
 ## I18N ##
@@ -197,11 +192,11 @@ refresh: ## Refresh feeds by fetching new messages
 
 # TODO: Add composer install
 .PHONY: composer-test
-composer-test: vendor/bin/phpstan
+composer-test: bin/phpstan bin/composer
 	bin/composer run-script test
 
 .PHONY: composer-fix
-composer-fix:
+composer-fix: bin/composer
 	bin/composer run-script fix
 
 .PHONY: npm-test

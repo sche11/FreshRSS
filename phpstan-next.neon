@@ -1,0 +1,19 @@
+includes:
+	- phpstan.dist.neon
+	- vendor/phpstan/phpstan/conf/bleedingEdge.neon
+
+parameters:
+	level: max
+	checkImplicitMixed: true	# TODO pass
+	strictRules:
+		strictArrayFilter: false	# TODO pass maybe
+	excludePaths:
+		analyse:
+			# TODO: Update files below and remove them from this list
+			- app/Models/Entry.php
+			- app/Models/EntryDAO.php
+			- app/Models/FeedDAO.php
+			- app/Models/TagDAO.php
+			- app/Models/Themes.php
+			- app/Services/ImportService.php
+			- app/views/helpers/feed/update.phtml

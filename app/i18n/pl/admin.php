@@ -14,15 +14,15 @@ return array(
 	'auth' => array(
 		'allow_anonymous' => 'Pozwól na anonimowy odczyt wiadomości domyślnego użytkownika (%s)',
 		'allow_anonymous_refresh' => 'Pozwól na anonimowe odświeżanie wiadomości',
-		'api_enabled' => 'Pozwól na dostęp przez <abbr>API</abbr> <small>(wymagane dla aplikacji na telefon)</small>',
+		'api_enabled' => 'Pozwól na dostęp przez <abbr>API</abbr> <small>(wymagane dla aplikacji na telefon and sharing user queries)</small>',	// DIRTY
 		'form' => 'Formularz na stronie (tradycyjna, wymagany JavaScript)',
-		'http' => 'HTTP (dla zaawansowanych użytkowników, z wykorzystaniem HTTPS)',
+		'http' => 'HTTP (advanced: managed by Web server, OIDC, SSO…)',	// TODO
 		'none' => 'Brak (niebezpieczna)',
 		'title' => 'Uwierzytelnianie',
-		'token' => 'Master authentication token',	// TODO
-		'token_help' => 'Allows access to all RSS outputs of the user as well as refreshing feeds without authentication:',	// TODO
+		'token' => 'Główny token uwierzytelniania',
+		'token_help' => 'Umożliwia dostęp do wszystkich kanałów RSS użytkownika, jak również odświeżanie kanałów bez uwierzytelnienia:',
 		'type' => 'Metoda uwierzytelniania',
-		'unsafe_autologin' => 'Pozwól na niebezpieczne automatyczne logowanie następującym schematem:	-> todo',
+		'unsafe_autologin' => 'Pozwól na niebezpieczne automatyczne logowanie następującym schematem: ',
 	),
 	'check_install' => array(
 		'cache' => array(
@@ -116,6 +116,7 @@ return array(
 		'description' => 'Opis',
 		'disabled' => 'Wyłączone',
 		'empty_list' => 'Brak zainstalowanych rozszerzeń',
+		'empty_list_help' => 'Check the logs to determine the reason behind the empty extension list.',	// TODO
 		'enabled' => 'Włączone',
 		'latest' => 'Zainstalowane',
 		'name' => 'Nazwa',
@@ -147,8 +148,9 @@ return array(
 		'main_stream' => 'Kanał główny',
 		'no_idle' => 'Brak bezczynnych kanałów!',
 		'number_entries' => '%d wiadomości',
+		'overview' => 'Overview',	// TODO
 		'percent_of_total' => '% wszystkich',
-		'repartition' => 'Podział wiadomości',
+		'repartition' => 'Podział wiadomości: %s',
 		'status_favorites' => 'Ulubione',
 		'status_read' => 'Przeczytane',
 		'status_total' => 'Wszystkie',
@@ -160,8 +162,8 @@ return array(
 		'_' => 'Konfiguracja serwisu',
 		'auto-update-url' => 'Adres serwera automatycznej aktualizacji',
 		'base-url' => array(
-			'_' => 'Base URL',	// TODO
-			'recommendation' => 'Automatic recommendation: <kbd>%s</kbd>',	// TODO
+			'_' => 'Baza URL-a',
+			'recommendation' => 'Automatyczne zalecenie: <kbd>%s</kbd>',
 		),
 		'cookie-duration' => array(
 			'help' => 'w sekundach',
@@ -187,33 +189,33 @@ return array(
 			),
 			'title' => 'Formularz rejestracji użytkowników',
 		),
-		'sensitive-parameter' => 'Sensitive parameter. Edit manually in <kbd>./data/config.php</kbd>',	// TODO
+		'sensitive-parameter' => 'Czuły parametr. Należy go ustawić ręcznie w <kbd>./data/config.php</kbd>',
 		'tos' => array(
-			'disabled' => 'is not given',	// TODO
-			'enabled' => '<a href="./?a=tos">is enabled</a>',	// TODO
-			'help' => 'How to <a href="https://freshrss.github.io/FreshRSS/en/admins/12_User_management.html#enable-terms-of-service-tos" target="_blank">enable the Terms of Service</a>',	// TODO
+			'disabled' => 'nie zostały ustalone',
+			'enabled' => '<a href="./?a=tos">włączone</a>',
+			'help' => 'W jaki sposób włączyć <a href="https://freshrss.github.io/FreshRSS/en/admins/12_User_management.html#enable-terms-of-service-tos" target="_blank">Warunki użytkowania</a>',
 		),
 		'websub' => array(
-			'help' => 'About <a href="https://freshrss.github.io/FreshRSS/en/users/WebSub.html" target="_blank">WebSub</a>',	// TODO
+			'help' => 'O protokole <a href="https://freshrss.github.io/FreshRSS/en/users/WebSub.html" target="_blank">WebSub</a>',
 		),
 	),
 	'update' => array(
 		'_' => 'Aktualizacja',
 		'apply' => 'Zastosuj',
-		'changelog' => 'Changelog',	// TODO
+		'changelog' => 'lista zmian',
 		'check' => 'Szukaj uaktualnień',
-		'copiedFromURL' => 'update.php copied from %s to ./data',	// TODO
+		'copiedFromURL' => 'update.php skopiowany z %s do ./data',
 		'current_version' => 'Używana wersja',
 		'last' => 'Ostatnie sprawdzenie',
-		'loading' => 'Updating…',	// TODO
+		'loading' => 'Aktualizowanie…',
 		'none' => 'Brak nowych aktualizacji',
 		'releaseChannel' => array(
-			'_' => 'Release channel',	// TODO
-			'edge' => 'Rolling release (“edge”)',	// TODO
-			'latest' => 'Stable release (“latest”)',	// TODO
+			'_' => 'Kanał aktualizacji',
+			'edge' => 'Wersja rozwojowa (“edge”)',
+			'latest' => 'Wersja stabilna (“latest”)',
 		),
 		'title' => 'Aktualizacja',
-		'viaGit' => 'Update via git and Github.com started',	// TODO
+		'viaGit' => 'Rozpoczęto aktualizację gitem do najnowszej wersji z GitHuba',
 	),
 	'user' => array(
 		'admin' => 'Administrator',	// IGNORE

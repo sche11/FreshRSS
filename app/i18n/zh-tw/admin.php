@@ -14,13 +14,13 @@ return array(
 	'auth' => array(
 		'allow_anonymous' => '允許匿名閱讀預設使用者（%s）的文章',
 		'allow_anonymous_refresh' => '允許匿名刷新文章',
-		'api_enabled' => '允許 <abbr>API</abbr> 訪問 <small>（用於手機應用）</small>',
+		'api_enabled' => '允許 <abbr>API</abbr> 訪問 <small>（用於手機應用 and sharing user queries）</small>',	// DIRTY
 		'form' => '網頁表單（傳統方式, 需要 JavaScript)',
-		'http' => 'HTTP（面向啟用 HTTPS 的高級用戶)',
+		'http' => 'HTTP (advanced: managed by Web server, OIDC, SSO…)',	// TODO
 		'none' => '無認證（危險）',
 		'title' => '認證',
-		'token' => 'Master authentication token',	// TODO
-		'token_help' => 'Allows access to all RSS outputs of the user as well as refreshing feeds without authentication:',	// TODO
+		'token' => '主要驗證權杖',
+		'token_help' => '允許存取使用者的所有 RSS 輸出以及重整源而無需身份驗證:',
 		'type' => '認證方式',
 		'unsafe_autologin' => '允許不安全的自動登入方式：',
 	),
@@ -116,6 +116,7 @@ return array(
 		'description' => '描述',
 		'disabled' => '已禁用',
 		'empty_list' => '沒有已安裝的擴充功能',
+		'empty_list_help' => 'Check the logs to determine the reason behind the empty extension list.',	// TODO
 		'enabled' => '已啟用',
 		'latest' => '已安裝',
 		'name' => '名稱',
@@ -147,8 +148,9 @@ return array(
 		'main_stream' => '首頁',
 		'no_idle' => '訂閱源近期皆有更新！',
 		'number_entries' => '%d 篇文章',
+		'overview' => 'Overview',	// TODO
 		'percent_of_total' => '%',
-		'repartition' => '文章分布',
+		'repartition' => '文章分布: %s',	// DIRTY
 		'status_favorites' => '收藏',
 		'status_read' => '已讀',
 		'status_total' => '總計',
@@ -160,8 +162,8 @@ return array(
 		'_' => '系統配置',
 		'auto-update-url' => '自動升級伺服器地址',
 		'base-url' => array(
-			'_' => 'Base URL',	// TODO
-			'recommendation' => 'Automatic recommendation: <kbd>%s</kbd>',	// TODO
+			'_' => '基本URL',
+			'recommendation' => '自動推薦: <kbd>%s</kbd>',
 		),
 		'cookie-duration' => array(
 			'help' => '單位（秒）',
@@ -178,7 +180,7 @@ return array(
 				'option' => array(
 					'noform' => '禁用，無註冊表單',
 					'nolimit' => '啟用，且無帳號限制',
-					'setaccountsnumber' => '設置用戶數的最大值',
+					'setaccountsnumber' => '設置使用者數的最大值',
 				),
 			),
 			'status' => array(
@@ -187,38 +189,38 @@ return array(
 			),
 			'title' => '使用者註冊表單',
 		),
-		'sensitive-parameter' => 'Sensitive parameter. Edit manually in <kbd>./data/config.php</kbd>',	// TODO
+		'sensitive-parameter' => '敏感參數。手動編輯於 <kbd>./data/config.php</kbd>',
 		'tos' => array(
-			'disabled' => 'is not given',	// TODO
-			'enabled' => '<a href="./?a=tos">is enabled</a>',	// TODO
-			'help' => 'How to <a href="https://freshrss.github.io/FreshRSS/en/admins/12_User_management.html#enable-terms-of-service-tos" target="_blank">enable the Terms of Service</a>',	// TODO
+			'disabled' => '未被給予',
+			'enabled' => '<a href="./?a=tos">為啟用的</a>',
+			'help' => '如何 <a href="https://freshrss.github.io/FreshRSS/en/admins/12_User_management.html#enable-terms-of-service-tos" target="_blank">啟用服務條款</a>',
 		),
 		'websub' => array(
-			'help' => 'About <a href="https://freshrss.github.io/FreshRSS/en/users/WebSub.html" target="_blank">WebSub</a>',	// TODO
+			'help' => '關於 <a href="https://freshrss.github.io/FreshRSS/en/users/WebSub.html" target="_blank">WebSub</a>',
 		),
 	),
 	'update' => array(
 		'_' => '更新系統',
 		'apply' => '應用',
-		'changelog' => 'Changelog',	// TODO
+		'changelog' => '更新紀錄',
 		'check' => '檢查更新',
-		'copiedFromURL' => 'update.php copied from %s to ./data',	// TODO
+		'copiedFromURL' => 'update.php 複製從 %s 至 ./data',
 		'current_version' => '當前 版本為',
 		'last' => '上次檢查',
-		'loading' => 'Updating…',	// TODO
+		'loading' => '更新中…',
 		'none' => '沒有可用更新',
 		'releaseChannel' => array(
-			'_' => 'Release channel',	// TODO
-			'edge' => 'Rolling release (“edge”)',	// TODO
-			'latest' => 'Stable release (“latest”)',	// TODO
+			'_' => '發佈通道',
+			'edge' => '滾動式發佈(“edge”)',
+			'latest' => '穩定式發佈(“latest”)',
 		),
 		'title' => '系統更新',
-		'viaGit' => 'Update via git and Github.com started',	// TODO
+		'viaGit' => '從git並由GitHub.com開始',
 	),
 	'user' => array(
 		'admin' => '管理員',
 		'article_count' => '文章數',
-		'back_to_manage' => '← 返回用戶列表',
+		'back_to_manage' => '← 返回使用者列表',
 		'create' => '新增使用者',
 		'database_size' => '資料庫大小',
 		'email' => '郵箱地址',

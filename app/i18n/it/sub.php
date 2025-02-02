@@ -29,7 +29,9 @@ return array(
 			'help' => 'Fornisci l’URL ad un <a href="http://opml.org/" target="_blank">file OPML</a> per popolare dinamicamente questa categoria con i feed',
 		),
 		'empty' => 'Categoria vuota',
+		'expand' => 'Espandi categoria',
 		'information' => 'Informazioni',
+		'open' => 'Aprire la categoria!',
 		'opml_url' => 'URL OPML',
 		'position' => 'Mostra posizione',
 		'position_help' => 'Per controllare l’ordinamento della categoria',
@@ -38,12 +40,12 @@ return array(
 	'feed' => array(
 		'accept_cookies' => 'Accetta i cookie',
 		'accept_cookies_help' => 'Consenti al server dei feed di impostare dei cookie (salvati in memoria solo per la durata della richiesta)',
-		'add' => 'Aggiungi un Feed RSS',
+		'add' => 'Aggiungi un Feed',
 		'advanced' => 'Avanzate',
 		'archiving' => 'Archiviazione',
 		'auth' => array(
 			'configuration' => 'Autenticazione',
-			'help' => 'Accesso per feeds protetti',
+			'help' => 'Accesso per feed protetti',
 			'http' => 'Autenticazione HTTP',
 			'password' => 'Password HTTP',
 			'username' => 'Nome utente HTTP',
@@ -55,25 +57,40 @@ return array(
 			'prepend' => 'Aggiungi prima del contenuto esistente',
 			'replace' => 'Rimpiazza il contenuto esistente',
 		),
+		'content_retrieval' => 'Recupero dei contenuti',
 		'css_cookie' => 'Usa i cookie quando viene recuperato il contenuto di un articolo',
 		'css_cookie_help' => 'Esempio: <kbd>foo=bar; gdpr_consent=true; cookie=value</kbd>',
-		'css_help' => 'In caso di RSS feeds troncati (attenzione, richiede molto tempo!)',
+		'css_help' => 'In caso di feed RSS troncati (attenzione, richiede molto tempo!)',
 		'css_path' => 'Percorso del foglio di stile CSS del sito di origine',
 		'css_path_filter' => array(
 			'_' => 'Il selettore CSS degli elementi da rimuovere',
-			'help' => 'Il selettore CSS potrebbe essere una lista, ad esempio: <kbd>.footer, .aside</kbd>',
+			'help' => 'Il selettore CSS potrebbe essere una lista, ad esempio: <kbd>footer, aside, p[data-sanitized-class~="menu"]</kbd>',
 		),
 		'description' => 'Descrizione',
 		'empty' => 'Questo feed non contiene articoli. Per favore verifica il sito direttamente.',
 		'error' => 'Questo feed ha generato un errore. Per favore verifica se ancora disponibile.',
+		'export-as-opml' => array(
+			'download' => 'Scarica',
+			'help' => 'File XML (sottoinsieme di dati. <a href="https://freshrss.github.io/FreshRSS/en/developers/OPML.html" target="_blank">Leggi la documentazione</a>)',
+			'label' => 'Esporta come OPML',
+		),
 		'filteractions' => array(
 			'_' => 'Azioni di filtro',
-			'help' => 'Scrivi un filtro di ricerca per riga. Operators <a href="https://freshrss.github.io/FreshRSS/en/users/10_filter.html#with-the-search-field" target="_blank">see documentation</a>.',	// DIRTY
+			'help' => 'Scrivi un filtro di ricerca per riga. Per li operatori <a href="https://freshrss.github.io/FreshRSS/en/users/10_filter.html#with-the-search-field" target="_blank">vedi la documentazione</a>.',
 		),
+		'http_headers' => 'HTTP Headers',	// IGNORE
+		'http_headers_help' => 'Le intestazioni sono separate da una linea e il nome e il valore di un’intestazione sono separati da due punti (p.es: <kbd><code>Accept: application/atom+xml<br />Authorization: Bearer some-token</code></kbd>).',
 		'information' => 'Informazioni',
 		'keep_min' => 'Numero minimo di articoli da mantenere',
 		'kind' => array(
 			'_' => 'Tipo di sorgente del feed',
+			'html_json' => array(
+				'_' => 'HTML + XPath + notazione a punti JSON (JSON in HTML)',
+				'xpath' => array(
+					'_' => 'XPath per JSON in HTML',
+					'help' => 'Esempio: <code>//script[@type="application/json"]</code>',
+				),
+			),
 			'html_xpath' => array(
 				'_' => 'HTML + XPath (Web scraping)',	// IGNORE
 				'feed_title' => array(
@@ -121,16 +138,16 @@ return array(
 				'relative' => 'XPath (relativo all’oggetto) per:',
 				'xpath' => 'XPath per:',
 			),
-			'json_dotpath' => array(
-				'_' => 'JSON (path con i punti)',
+			'json_dotnotation' => array(
+				'_' => 'JSON (notazione a punti)',
 				'feed_title' => array(
 					'_' => 'titolo feed',
 					'help' => 'Esempio: <code>meta.title</code> o una stringa statica: <code>"Il mio feed personalizzato"</code>',
 				),
-				'help' => 'Un JSON con le path divise da punti usa dei punti fra gli oggetti e le parentesi per gli array. (es. <code>data.items[0].title</code>)',
+				'help' => 'Una notazione JSON utilizza i punti tra gli oggetti e le parentesi per gli array. P.es. <code>data.items[0].title</code>',
 				'item' => array(
 					'_' => 'ricerca nuovi <strong>elementi</strong><br /><small>(più importante)</small>',
-					'help' => 'percorso JSON per l’array contenente gli elementi, es. <code>newsItems</code>',
+					'help' => 'percorso JSON per l’array contenente gli elementi, es. <code>$</code> o <code>newsItems</code>',
 				),
 				'item_author' => 'autore elemento',
 				'item_categories' => 'tag elemento',
@@ -156,8 +173,8 @@ return array(
 					'_' => 'link elemento (URL)',
 					'help' => 'Esempio: <code>permalink</code>',
 				),
-				'json' => 'Percorso con i punti per:',
-				'relative' => 'Percorso con i punti (relativo all’elemento) per:',
+				'json' => 'notazione a punti per:',
+				'relative' => 'path con notazione a punti (relativo all’elemento) per:',
 			),
 			'jsonfeed' => 'Feed JSON',
 			'rss' => 'RSS / Atom (predefinito)',
@@ -178,9 +195,14 @@ return array(
 		'method_help' => 'Il payload POST ha il supporto automatico per <code>application/x-www-form-urlencoded</code> e <code>application/json</code>',
 		'method_postparams' => 'Payload per POST',
 		'moved_category_deleted' => 'Cancellando una categoria i feed al suo interno verranno classificati automaticamente come <em>%s</em>.',
-		'mute' => 'muta',
+		'mute' => array(
+			'_' => 'muta',
+			'state_is_muted' => 'Questo feed è disattivato',
+		),
 		'no_selected' => 'Nessun feed selezionato.',
 		'number_entries' => '%d articoli',
+		'open_feed' => 'Aprire il feed %s',
+		'path_entries_conditions' => 'Condizioni per il recupero dei contenuti',
 		'priority' => array(
 			'_' => 'Visibilità',
 			'archived' => 'Non mostrare (archiviato)',
@@ -189,7 +211,7 @@ return array(
 			'main_stream' => 'Mostra in homepage',
 		),
 		'proxy' => 'Imposta un proxy per recuperare questo feed',
-		'proxy_help' => 'Seleziona un protocollo (e.g: SOCKS5) ed inserisci l’indirizzo del proxy (e.g: <kbd>127.0.0.1:1080</kbd> or <kbd>username:password@127.0.0.1:1080</kbd>)',	// DIRTY
+		'proxy_help' => 'Seleziona un protocollo (e.g: SOCKS5) ed inserisci l’indirizzo del proxy (es.: <kbd>127.0.0.1:1080</kbd> o <kbd>username:password@127.0.0.1:1080</kbd>)',
 		'selector_preview' => array(
 			'show_raw' => 'Mostra codice sorgente',
 			'show_rendered' => 'Mostra contenuto',
@@ -208,6 +230,16 @@ return array(
 		'title' => 'Titolo',
 		'title_add' => 'Aggiungi RSS feed',
 		'ttl' => 'Non aggiornare automaticamente piu di',
+		'unicityCriteria' => array(
+			'_' => 'Criteri di unicità dell’articolo',
+			'forced' => '<span title="Blocca i criteri di unicità, anche quando il feed ha articoli duplicati">forzare</span>',
+			'help' => 'Rilevante per i feed non validi.<br />⚠️ La modifica del criterio creerà dei duplicati.',
+			'id' => 'Standard ID (default)',	// IGNORE
+			'link' => 'Link',	// IGNORE
+			'sha1:link_published' => 'Link + Data',
+			'sha1:link_published_title' => 'Link + Data + Titolo',
+			'sha1:link_published_title_content' => 'Link + Data + Titolo + Contenuto',
+		),
 		'url' => 'URL del feed',
 		'useragent' => 'Imposta lo user agent per recuperare questo feed',
 		'useragent_help' => 'Esempio: <kbd>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0)</kbd>',
@@ -216,7 +248,10 @@ return array(
 		'websub' => 'Notifica istantanea con WebSub',
 	),
 	'import_export' => array(
-		'export' => 'Esporta',
+		'export' => array(
+			'_' => 'Esporta',
+			'sqlite' => 'Scaricare il database dell’utente in SQLite',
+		),
 		'export_labelled' => 'Esporta gli articoli etichettati',
 		'export_opml' => 'Esporta tutta la lista dei feed (OPML)',
 		'export_starred' => 'Esporta i tuoi preferiti',
@@ -232,7 +267,7 @@ return array(
 		'import_export' => 'Importa / esporta',
 		'label_management' => 'Gestione etichette',
 		'stats' => array(
-			'idle' => 'Feeds non aggiornati',
+			'idle' => 'Feed non aggiornati',
 			'main' => 'Statistiche principali',
 			'repartition' => 'Ripartizione articoli',
 		),
@@ -252,8 +287,9 @@ return array(
 		'add_dynamic_opml' => 'Aggiungi OPML dinamico',
 		'add_feed' => 'Aggiungi un feed',
 		'add_label' => 'Aggiungi un’etichetta',
+		'add_opml_category' => 'Nome categoria OPML',
 		'delete_label' => 'Cancella un’etichetta',
-		'feed_management' => 'Gestione RSS feeds',
+		'feed_management' => 'Gestione feed RSS',
 		'rename_label' => 'Rinomina un’etichetta',
 		'subscription_tools' => 'Strumenti di sottoscrizione',
 	),

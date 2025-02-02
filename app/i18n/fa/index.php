@@ -14,12 +14,22 @@ return array(
 	'about' => array(
 		'_' => ' در مورد',
 		'agpl3' => ' <a href="https://www.gnu.org/licenses/agpl-3.0.html">AGPL 3</a>',
+		'bug_reports' => array(
+			'environment_information' => array(
+				'_' => 'System information',	// TODO
+				'browser' => 'Browser',	// TODO
+				'database' => 'Database',	// TODO
+				'server_software' => 'Server software',	// TODO
+				'version_frss' => 'FreshRSS version',	// TODO
+				'version_php' => 'PHP version',	// TODO
+			),
+		),
 		'bugs_reports' => ' گزارش اشکال',
 		'credits' => ' اعتبار',
 		'credits_content' => ' برخی از عناصر طراحی از <a href="http://twitter.github.io/bootstrap/">Bootstrap</a> می آیند',
 		'documentation' => ' اسناد و مدارک',
 		'freshrss_description' => ' FreshRSS یک جمع کننده و خواننده RSS خود میزبان است. این به شما امکان می دهد بدون نیاز به مرور از یک وب سایت به وب سایت دیگر',
-		'github' => ' <a href="https://github.com/FreshRSS/FreshRSS/issues">در Github</a>',
+		'github' => ' <a href="https://github.com/FreshRSS/FreshRSS/issues">در GitHub</a>',
 		'license' => ' مجوز',
 		'project_website' => ' وب سایت پروژه',
 		'title' => ' در مورد',
@@ -27,6 +37,11 @@ return array(
 	),
 	'feed' => array(
 		'empty' => ' هیچ مقاله ای برای نمایش وجود ندارد.',
+		'received' => array(
+			'before_yesterday' => 'Received before yesterday',	// TODO
+			'today' => 'Received today',	// TODO
+			'yesterday' => 'Received yesterday',	// TODO
+		),
 		'rss_of' => ' فید RSS %s',
 		'title' => ' جریان اصلی',
 		'title_fav' => ' موارد دلخواه',
@@ -60,6 +75,18 @@ return array(
 		'reader_view' => ' مشاهده خواندن',
 		'rss_view' => ' خوراک RSS',
 		'search_short' => ' جستجو',
+		'sort' => array(
+			'_' => 'Sorting criteria',	// TODO
+			'date_asc' => 'Publication date 1→9',	// TODO
+			'date_desc' => 'Publication date 9→1',	// TODO
+			'id_asc' => 'Freshly received last',	// TODO
+			'id_desc' => 'Freshly received first',	// TODO
+			'link_asc' => 'Link A→Z',	// TODO
+			'link_desc' => 'Link Z→A',	// TODO
+			'rand' => 'Random order',	// TODO
+			'title_asc' => 'Title A→Z',	// TODO
+			'title_desc' => 'Title Z→A',	// TODO
+		),
 		'starred' => ' نمایش موارد دلخواه',
 		'stats' => ' آمار',
 		'subscription' => ' مدیریت اشتراک',

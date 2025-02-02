@@ -82,7 +82,7 @@ if (!$isValidated) {
  * Iterates through all php and phtml files in the whole project and extracts all
  * translation keys used.
  *
- * @return array<string>
+ * @return list<string>
  */
 function findUsedTranslations(): array {
 	$directory = new RecursiveDirectoryIterator(__DIR__ . '/..');
@@ -90,6 +90,9 @@ function findUsedTranslations(): array {
 	$regex = new RegexIterator($iterator, '/^.+\.(php|phtml)$/i', RecursiveRegexIterator::GET_MATCH);
 	$usedI18n = [];
 	foreach (array_keys(iterator_to_array($regex)) as $file) {
+		if (!is_string($file) || $file === '') {
+			continue;
+		}
 		$fileContent = file_get_contents($file);
 		if ($fileContent === false) {
 			continue;
@@ -102,9 +105,8 @@ function findUsedTranslations(): array {
 
 /**
  * Output help message.
- * @return never
  */
-function checkHelp() {
+function checkHelp(): never {
 	$file = str_replace(__DIR__ . '/', '', __FILE__);
 
 	echo <<<HELP

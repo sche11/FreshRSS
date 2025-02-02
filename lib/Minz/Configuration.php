@@ -18,7 +18,7 @@ class Minz_Configuration {
 	 * The list of configurations.
 	 * @var array<string,static>
 	 */
-	private static array $config_list = array();
+	private static array $config_list = [];
 
 	/**
 	 * Add a new configuration to the list of configuration.
@@ -29,8 +29,8 @@ class Minz_Configuration {
 	 * @param Minz_ConfigurationSetterInterface $configuration_setter an optional helper to set values in configuration
 	 * @throws Minz_FileNotExistException
 	 */
-	public static function register(string $namespace, string $config_filename, string $default_filename = null,
-		Minz_ConfigurationSetterInterface $configuration_setter = null): void {
+	public static function register(string $namespace, string $config_filename, ?string $default_filename = null,
+		?Minz_ConfigurationSetterInterface $configuration_setter = null): void {
 		self::$config_list[$namespace] = new static(
 			$namespace, $config_filename, $default_filename, $configuration_setter
 		);
@@ -45,7 +45,7 @@ class Minz_Configuration {
 	 */
 	public static function load(string $filename): array {
 		$data = @include($filename);
-		if (is_array($data)) {
+		if (is_array($data) && is_array_keys_string($data)) {
 			return $data;
 		} else {
 			throw new Minz_FileNotExistException($filename);
@@ -56,10 +56,9 @@ class Minz_Configuration {
 	 * Return the configuration related to a given namespace.
 	 *
 	 * @param string $namespace the name of the configuration to get.
-	 * @return static object
 	 * @throws Minz_ConfigurationNamespaceException if the namespace does not exist.
 	 */
-	public static function get(string $namespace) {
+	public static function get(string $namespace): static {
 		if (!isset(self::$config_list[$namespace])) {
 			throw new Minz_ConfigurationNamespaceException(
 				$namespace . ' namespace does not exist'
@@ -72,7 +71,7 @@ class Minz_Configuration {
 	/**
 	 * The namespace of the current configuration.
 	 * Unused.
-	 * @phpstan-ignore-next-line
+	 * @phpstan-ignore property.onlyWritten
 	 */
 	private string $namespace = '';
 
@@ -106,8 +105,8 @@ class Minz_Configuration {
 	 * @param Minz_ConfigurationSetterInterface $configuration_setter an optional helper to set values in configuration
 	 * @throws Minz_FileNotExistException
 	 */
-	private final function __construct(string $namespace, string $config_filename, string $default_filename = null,
-		Minz_ConfigurationSetterInterface $configuration_setter = null) {
+	final private function __construct(string $namespace, string $config_filename, ?string $default_filename = null,
+		?Minz_ConfigurationSetterInterface $configuration_setter = null) {
 		$this->namespace = $namespace;
 		$this->config_filename = $config_filename;
 		$this->default_filename = $default_filename;
@@ -118,9 +117,10 @@ class Minz_Configuration {
 		}
 
 		try {
-			$this->data = array_replace_recursive(
+			$overloaded = array_replace_recursive(
 				$this->data, self::load($this->config_filename)
 			);
+			$this->data = array_filter($overloaded, 'is_string', ARRAY_FILTER_USE_KEY);
 		} catch (Minz_FileNotExistException $e) {
 			if ($this->default_filename == null) {
 				throw $e;
@@ -133,7 +133,7 @@ class Minz_Configuration {
 	 * @param Minz_ConfigurationSetterInterface|null $configuration_setter the setter to call when modifying data.
 	 */
 	public function _configurationSetter(?Minz_ConfigurationSetterInterface $configuration_setter): void {
-		if (is_callable(array($configuration_setter, 'handle'))) {
+		if (is_callable([$configuration_setter, 'handle'])) {
 			$this->configuration_setter = $configuration_setter;
 		}
 	}
@@ -156,7 +156,7 @@ class Minz_Configuration {
 	 * @param mixed $default default value to return if key does not exist.
 	 * @return array|mixed value corresponding to the key.
 	 */
-	public function param(string $key, $default = null) {
+	public function param(string $key, mixed $default = null): mixed {
 		if (isset($this->data[$key])) {
 			return $this->data[$key];
 		} elseif (!is_null($default)) {
@@ -171,7 +171,7 @@ class Minz_Configuration {
 	 * A wrapper for param().
 	 * @return array|mixed
 	 */
-	public function __get(string $key) {
+	public function __get(string $key): mixed {
 		return $this->param($key);
 	}
 
@@ -181,7 +181,7 @@ class Minz_Configuration {
 	 * @param string $key the param name to set.
 	 * @param mixed $value the value to set. If null, the key is removed from the configuration.
 	 */
-	public function _param(string $key, $value = null): void {
+	public function _param(string $key, mixed $value = null): void {
 		if ($this->configuration_setter !== null && $this->configuration_setter->support($key)) {
 			$this->configuration_setter->handle($this->data, $key, $value);
 		} elseif (isset($this->data[$key]) && is_null($value)) {
@@ -193,9 +193,8 @@ class Minz_Configuration {
 
 	/**
 	 * A wrapper for _param().
-	 * @param mixed $value
 	 */
-	public function __set(string $key, $value): void {
+	public function __set(string $key, mixed $value): void {
 		$this->_param($key, $value);
 	}
 

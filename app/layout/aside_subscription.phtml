@@ -5,6 +5,13 @@
 	<a class="toggle_aside" href="#close"><?= _i('close') ?></a>
 	<ul>
 		<li class="item nav-section">
+			<ul>
+				<li class="item">
+					<a href="<?= _url('index', 'index') ?>"><?= _t('gen.action.back_to_rss_feeds') ?></a>
+				</li>
+			</ul>
+		</li>
+		<li class="item nav-section">
 			<div class="nav-header"><?= _t('sub.menu.subscription_management') ?></div>
 			<ul>
 				<li class="item<?= Minz_Request::controllerName() === 'subscription' && Minz_Request::actionName() === 'add' ? ' active' : '' ?>">
@@ -45,7 +52,9 @@
 		</li>
 	</ul>
 </nav>
-<a class="close-aside" href="#close">❌</a>
-<nav class="nav_menu nav_mobile">
-	<a class="btn toggle_aside" href="#aside_feed"><?= _i('category') ?></a>
-</nav>
+<?php if (Minz_Request::actionName() != 'repartition') { ?>
+	<a class="close-aside" href="#close">❌</a>
+	<nav class="nav_menu nav_mobile">
+		<a class="btn toggle_aside" href="#aside_feed"><?= _i('category') ?></a>
+	</nav>
+<?php } ?>

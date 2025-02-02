@@ -3,7 +3,7 @@
 # Do not modify this file, which defines default values,
 # but instead edit `./data/config.php` after the install process is completed,
 # or edit `./data/config.custom.php` before the install process.
-return array(
+return [
 
 	# Set to `development` to get additional error messages,
 	#	or to `production` to get only the most important messages.
@@ -42,8 +42,6 @@ return array(
 	# Force users to validate their email address. If `true`, an email with a
 	# validation URL is sent during registration, and users cannot access their
 	# feed if they didn’t access this URL.
-	# Note: it is recommended to not enable it with PHP < 5.5 (emails cannot be
-	# sent).
 	'force_email_validation' => false,
 
 	# Allow or not visitors without login to see the articles
@@ -96,15 +94,19 @@ return array(
 	# Faster with higher values. Reduce for server with little memory or database issues.
 	'nb_parallel_refresh' => 10,
 
-	'limits' => array(
+	'limits' => [
 
 		# Duration in seconds of the login cookie.
 		'cookie_duration' => FreshRSS_Auth::DEFAULT_COOKIE_DURATION,
 
-		# Duration in seconds of the SimplePie cache,
-		#	during which a query to the RSS feed will return the local cached version.
+		# Duration in seconds of the SimplePie cache, during which a query to the RSS feed will return the local cached version.
 		# Especially important for multi-user setups.
+		# Might be overridden by HTTP response headers.
 		'cache_duration' => 800,
+		# Minimal cache duration (in seconds), overriding HTTP response headers `Cache-Control` and `Expires`,
+		'cache_duration_min' => 60,
+		# Maximal cache duration (in seconds), overriding HTTP response headers `Cache-Control` and `Expires`,
+		'cache_duration_max' => 86400,
 
 		# SimplePie HTTP request timeout in seconds.
 		'timeout' => 20,
@@ -123,11 +125,11 @@ return array(
 		#   0 for an unlimited number of accounts
 		#   1 is to not allow user registrations (1 is corresponding to the admin account)
 		'max_registrations' => 1,
-	),
+	],
 
 	# Options used by cURL when making HTTP requests, e.g. when the SimplePie library retrieves feeds.
 	# https://php.net/manual/function.curl-setopt
-	'curl_options' => array(
+	'curl_options' => [
 		# Options to disable SSL/TLS certificate check (e.g. for self-signed HTTPS)
 		//CURLOPT_SSL_VERIFYHOST => 0,
 		//CURLOPT_SSL_VERIFYPEER => false,
@@ -138,7 +140,7 @@ return array(
 		//CURLOPT_PROXYPORT => 8080,
 		//CURLOPT_PROXYAUTH => CURLAUTH_BASIC,
 		//CURLOPT_PROXYUSERPWD => 'user:password',
-	),
+	],
 
 	'db' => [
 
@@ -173,13 +175,13 @@ return array(
 
 	],
 
-	# Configuration to send emails. Be aware that PHP < 5.5 are not supported.
+	# Configuration to send emails.
 	# These options are basically a mapping of the PHPMailer class attributes
 	# from the PHPMailer library.
 	#
 	# See https://phpmailer.github.io/PHPMailer/classes/PHPMailer-PHPMailer-PHPMailer.html#properties
 	'mailer' => 'mail', // 'mail' or 'smtp'
-	'smtp' => array(
+	'smtp' => [
 		'hostname' => '', // the domain used in the Message-ID header
 		'host' => 'localhost', // the SMTP server address
 		'port' => 25,
@@ -189,7 +191,7 @@ return array(
 		'password' => '',
 		'secure' => '', // '', 'ssl' or 'tls'
 		'from' => 'root@localhost',
-	),
+	],
 
 	# List of enabled FreshRSS extensions.
 	'extensions_enabled' => [
@@ -210,4 +212,4 @@ return array(
 		'127.0.0.0/8',
 		'::1/128',
 	]
-);
+];

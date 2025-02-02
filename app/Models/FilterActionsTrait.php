@@ -6,11 +6,11 @@ declare(strict_types=1);
  */
 trait FreshRSS_FilterActionsTrait {
 
-	/** @var array<FreshRSS_FilterAction>|null $filterActions */
+	/** @var list<FreshRSS_FilterAction>|null $filterActions */
 	private ?array $filterActions = null;
 
 	/**
-	 * @return array<FreshRSS_FilterAction>
+	 * @return list<FreshRSS_FilterAction>
 	 */
 	private function filterActions(): array {
 		if (empty($this->filterActions)) {
@@ -30,17 +30,17 @@ trait FreshRSS_FilterActionsTrait {
 	 * @param array<FreshRSS_FilterAction>|null $filterActions
 	 */
 	private function _filterActions(?array $filterActions): void {
-		$this->filterActions = $filterActions;
+		$this->filterActions = is_array($filterActions) ? array_values($filterActions) : null;
 		if ($this->filterActions !== null && !empty($this->filterActions)) {
-			$this->_attribute('filters', array_map(static function (?FreshRSS_FilterAction $af) {
-					return $af == null ? null : $af->toJSON();
-				}, $this->filterActions));
+			$this->_attribute('filters', array_map(
+				static fn(?FreshRSS_FilterAction $af) => $af == null ? null : $af->toJSON(),
+				$this->filterActions));
 		} else {
 			$this->_attribute('filters', null);
 		}
 	}
 
-	/** @return array<FreshRSS_BooleanSearch> */
+	/** @return list<FreshRSS_BooleanSearch> */
 	public function filtersAction(string $action): array {
 		$action = trim($action);
 		if ($action == '') {
@@ -84,7 +84,7 @@ trait FreshRSS_FilterActionsTrait {
 				}
 			}
 			//Update existing filter with new action
-			for ($k = count($filters) - 1; $k >= 0; $k --) {
+			for ($k = count($filters) - 1; $k >= 0; $k--) {
 				$filter = $filters[$k];
 				if ($filter === $filterAction->booleanSearch()->getRawInput()) {
 					$actions[] = $action;
@@ -100,7 +100,7 @@ trait FreshRSS_FilterActionsTrait {
 		}
 
 		//Add new filters
-		for ($k = count($filters) - 1; $k >= 0; $k --) {
+		for ($k = count($filters) - 1; $k >= 0; $k--) {
 			$filter = $filters[$k];
 			if ($filter != '') {
 				$filterAction = FreshRSS_FilterAction::fromJSON([
@@ -121,6 +121,7 @@ trait FreshRSS_FilterActionsTrait {
 
 	/**
 	 * @param bool $applyLabel Parameter by reference, which will be set to true if the callers needs to apply a label to the article entry.
+	 * @param-out bool $applyLabel
 	 */
 	public function applyFilterActions(FreshRSS_Entry $entry, ?bool &$applyLabel = null): void {
 		$applyLabel = false;
@@ -135,10 +136,16 @@ trait FreshRSS_FilterActionsTrait {
 							}
 							break;
 						case 'star':
-							$entry->_isFavorite(true);
+							if (!$entry->isUpdated()) {
+								// Do not apply to updated articles, to avoid overruling a user manual action
+								$entry->_isFavorite(true);
+							}
 							break;
 						case 'label':
-							$applyLabel = true;
+							if (!$entry->isUpdated()) {
+								// Do not apply to updated articles, to avoid overruling a user manual action
+								$applyLabel = true;
+							}
 							break;
 					}
 				}

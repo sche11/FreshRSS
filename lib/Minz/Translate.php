@@ -40,8 +40,8 @@ class Minz_Translate {
 	 */
 	public static function init(string $lang_name = ''): void {
 		self::$lang_name = $lang_name;
-		self::$lang_files = array();
-		self::$translates = array();
+		self::$lang_files = [];
+		self::$translates = [];
 		self::registerPath(APP_PATH . '/i18n');
 		foreach (self::$path_list as $path) {
 			self::loadLang($path);
@@ -54,8 +54,8 @@ class Minz_Translate {
 	 */
 	public static function reset(string $lang_name): void {
 		self::$lang_name = $lang_name;
-		self::$lang_files = array();
-		self::$translates = array();
+		self::$lang_files = [];
+		self::$translates = [];
 		foreach (self::$path_list as $path) {
 			self::loadLang($path);
 		}
@@ -63,10 +63,10 @@ class Minz_Translate {
 
 	/**
 	 * Return the list of available languages.
-	 * @return array<string> containing langs found in different registered paths.
+	 * @return list<string> containing langs found in different registered paths.
 	 */
 	public static function availableLanguages(): array {
-		$list_langs = array();
+		$list_langs = [];
 
 		self::registerPath(APP_PATH . '/i18n');
 
@@ -75,13 +75,13 @@ class Minz_Translate {
 			if (is_array($scan)) {
 				$path_langs = array_values(array_diff(
 					$scan,
-					array('..', '.')
+					['..', '.']
 				));
 				$list_langs = array_merge($list_langs, $path_langs);
 			}
 		}
 
-		return array_unique($list_langs);
+		return array_values(array_unique($list_langs));
 	}
 
 	/**
@@ -146,7 +146,7 @@ class Minz_Translate {
 		foreach ($list_i18n_files as $i18n_filename) {
 			$i18n_key = basename($i18n_filename, '.php');
 			if (!isset(self::$lang_files[$i18n_key])) {
-				self::$lang_files[$i18n_key] = array();
+				self::$lang_files[$i18n_key] = [];
 			}
 			self::$lang_files[$i18n_key][] = $lang_path . '/' . $i18n_filename;
 			self::$translates[$i18n_key] = null;
@@ -164,7 +164,7 @@ class Minz_Translate {
 			return false;
 		}
 
-		self::$translates[$key] = array();
+		self::$translates[$key] = [];
 
 		foreach (self::$lang_files[$key] as $lang_pathname) {
 			$i18n_array = include($lang_pathname);
@@ -197,7 +197,7 @@ class Minz_Translate {
 			Minz_Log::debug($key . ' is not in a valid format');
 			$top_level = 'gen';
 		} else {
-			$top_level = array_shift($group);
+			$top_level = array_shift($group) ?? '';
 		}
 
 		// If $translates[$top_level] is null it means we have to load the
@@ -218,6 +218,9 @@ class Minz_Translate {
 		$level_processed = 0;
 		$translation_value = $key;
 		foreach ($group as $i18n_level) {
+			if (!is_array($translates)) {
+				continue;	// Not needed. To help PHPStan
+			}
 			$level_processed++;
 			if (!isset($translates[$i18n_level])) {
 				Minz_Log::debug($key . ' is not a valid key');
@@ -231,10 +234,9 @@ class Minz_Translate {
 			}
 		}
 
-		if (is_array($translation_value)) {
-			if (isset($translation_value['_'])) {
-				$translation_value = $translation_value['_'];
-			} else {
+		if (!is_string($translation_value)) {
+			$translation_value = is_array($translation_value) ? ($translation_value['_'] ?? null) : null;
+			if (!is_string($translation_value)) {
 				Minz_Log::debug($key . ' is not a valid key');
 				return $key;
 			}
@@ -255,9 +257,7 @@ class Minz_Translate {
 
 /**
  * Alias for Minz_Translate::t()
- * @param string $key
- * @param bool|float|int|string ...$args
  */
-function _t(string $key, ...$args): string {
+function _t(string $key, bool|float|int|string ...$args): string {
 	return Minz_Translate::t($key, ...$args);
 }

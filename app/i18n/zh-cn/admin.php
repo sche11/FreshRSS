@@ -14,13 +14,13 @@ return array(
 	'auth' => array(
 		'allow_anonymous' => '允许匿名阅读默认用户（%s）的文章',
 		'allow_anonymous_refresh' => '允许匿名刷新文章',
-		'api_enabled' => '允许 <abbr>API</abbr> 访问 <small>（用于手机应用）</small>',
+		'api_enabled' => '允许 <abbr>API</abbr> 访问 <small>（用于手机应用 and sharing user queries）</small>',	// DIRTY
 		'form' => '网页表单（传统方式, 需要 JavaScript)',
-		'http' => 'HTTP（面向启用 HTTPS 的高级用户)',
+		'http' => 'HTTP (advanced: managed by Web server, OIDC, SSO…)',	// TODO
 		'none' => '无（危险）',
 		'title' => '认证',
-		'token' => 'Master authentication token',	// TODO
-		'token_help' => 'Allows access to all RSS outputs of the user as well as refreshing feeds without authentication:',	// TODO
+		'token' => '主验证 token',
+		'token_help' => '允许不验证而访问用户的全部 RSS 输出以及刷新订阅源：',
 		'type' => '认证方式',
 		'unsafe_autologin' => '允许不安全的自动登陆方式：',
 	),
@@ -116,6 +116,7 @@ return array(
 		'description' => '描述',
 		'disabled' => '已禁用',
 		'empty_list' => '没有已安装的扩展',
+		'empty_list_help' => 'Check the logs to determine the reason behind the empty extension list.',	// TODO
 		'enabled' => '已启用',
 		'latest' => '已安装',
 		'name' => '名称',
@@ -147,8 +148,9 @@ return array(
 		'main_stream' => '首页',
 		'no_idle' => '订阅源近期皆有更新！',
 		'number_entries' => '%d 篇文章',
+		'overview' => 'Overview',	// TODO
 		'percent_of_total' => '%',
-		'repartition' => '文章分布',
+		'repartition' => '文章分布: %s',	// DIRTY
 		'status_favorites' => '收藏',
 		'status_read' => '已读',
 		'status_total' => '总计',
@@ -205,7 +207,7 @@ return array(
 		'copiedFromURL' => '从 %s 复制 update.php 到 ./data',
 		'current_version' => '当前 版本为',
 		'last' => '上次检查',
-		'loading' => '更新中...',
+		'loading' => '更新中…',
 		'none' => '没有可用更新',
 		'releaseChannel' => array(
 			'_' => '发布通道',
@@ -213,7 +215,7 @@ return array(
 			'latest' => '稳定版本 (“latest”)',
 		),
 		'title' => '更新系统',
-		'viaGit' => '开始通过 git and Github.com 更新',
+		'viaGit' => '开始通过 git and GitHub.com 更新',
 	),
 	'user' => array(
 		'admin' => '管理员',

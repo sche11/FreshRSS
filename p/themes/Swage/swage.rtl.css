@@ -17,6 +17,7 @@
 	--color-border-bad: #b0425b;
 	--color-background-light: #fcfcfc;
 	--color-background-light-darker: #e3e3e3;
+	--color-background-light-darker-transparent: rgba(217, 217, 217, 0.7333333333);
 	--color-background-dark: #181621;
 	--color-background-nav: #0062be;
 	--color-background-nav-darker: #00488b;
@@ -181,7 +182,7 @@ form th {
 .form-group.form-actions {
 	margin: 15px 0 25px;
 	padding: 5px 0;
-	background-color: var(--color-background-light-darker);
+	background-color: var(--color-background-light-darker-transparent);
 	border-top: 3px solid var(--color-border-light-darker);
 }
 .form-group.form-actions .btn {
@@ -433,12 +434,8 @@ form th {
 	box-shadow: 0 2px 5px var(--color-box-shadow-light);
 }
 .content pre {
-	margin: 10px auto;
-	padding: 10px 20px;
-	overflow: auto;
 	background-color: var(--color-background-dark);
 	color: var(--color-text-light);
-	font-size: 0.9rem;
 }
 .content pre code {
 	background: transparent;
@@ -446,10 +443,9 @@ form th {
 	border: none;
 }
 .content code {
-	padding: 2px 5px;
 	background-color: var(--color-background-light);
 	color: var(--color-text-bad);
-	border: 1px solid var(--color-border-light);
+	border-color: var(--color-border-light);
 }
 .content blockquote {
 	margin: 0;
@@ -472,7 +468,6 @@ form th {
 }
 .box .box-title {
 	margin: 0;
-	padding: 7px 10px;
 	background-color: var(--color-background-aside);
 	color: var(--color-text-light);
 	border-bottom: 1px solid var(--color-border-light-darker);
@@ -487,7 +482,6 @@ form th {
 	filter: invert(56%) sepia(87%) saturate(1185%) hue-rotate(327deg) brightness(104%) contrast(96%);
 }
 .box .box-content {
-	padding-right: 30px;
 	max-height: 260px;
 }
 .box .box-content .item {
@@ -751,25 +745,25 @@ form th {
 .flux .current {
 	background-color: var(--color-background-hover);
 }
-.flux .flux_header:hover:not(.current):hover .item.title,
-.flux .current:not(.current):hover .item.title {
+.flux .flux_header:hover:not(.current):hover .item .title,
+.flux .current:not(.current):hover .item .title {
 	background-color: var(--color-background-hover);
 }
 .flux.favorite:not(.current) {
 	background-color: var(--color-background-stared);
 }
-.flux.favorite:not(.current):hover .item.title {
+.flux.favorite:not(.current):hover .item .title {
 	background-color: var(--color-background-stared);
 }
 .flux.not_read:not(.current) {
 	background-color: var(--color-background-unread);
 }
-.flux.not_read:not(.current):hover .item.title {
+.flux.not_read:not(.current):hover .item .title {
 	background-color: var(--color-background-unread);
 }
-.flux .item.date {
+.flux .flux_header .date,
+.flux .flux_content .bottom .date {
 	color: var(--color-text-light-darker);
-	font-size: 0.7rem;
 }
 .flux .bottom {
 	font-size: 0.8rem;
@@ -818,7 +812,7 @@ form th {
 .notification.bad a.close:hover {
 	background-color: var(--color-background-bad);
 }
-.notification a.close {
+.notification .close {
 	display: none;
 }
 
@@ -833,10 +827,6 @@ form th {
 }
 
 #nav_entries {
-	margin: 0;
-	text-align: center;
-	line-height: 3;
-	table-layout: fixed;
 	background-color: var(--color-background-aside);
 }
 
@@ -909,7 +899,7 @@ a.signin {
 }
 
 @media (max-width: 840px) {
-	body:not(.formLogin, .register) .header .item.title {
+	body:not(.formLogin, .register) .header .item .title {
 		display: none;
 	}
 	.form-group .group-name {
@@ -948,7 +938,7 @@ a.signin {
 		width: 35px;
 		text-align: center;
 	}
-	.flux:not(.current):hover .item.title {
+	.flux:not(.current):hover .item .title {
 		top: auto !important;
 	}
 	.aside {
@@ -1037,15 +1027,15 @@ a.signin {
 	.notification {
 		width: 100%;
 	}
-	.notification a.close {
+	.notification .close {
 		background: transparent;
 		display: block;
 		right: 0;
 	}
-	.notification a.close:hover {
+	.notification .close:hover {
 		opacity: 0.5;
 	}
-	.notification a.close .icon {
+	.notification .close .icon {
 		display: none;
 	}
 	#nav_entries {
@@ -1150,13 +1140,11 @@ button.as-link {
 #stream.reader .flux::after {
 	border: none;
 }
-#stream.reader .flux .content {
+#stream.reader .flux .flux_content {
 	border-color: var(--color-border-grey);
 }
 #stream.reader .flux .author {
-	margin: 0 0 10px;
 	color: var(--color-text-light-darker);
-	font-size: 90%;
 }
 
 #nav_menu_actions ul.dropdown-menu {

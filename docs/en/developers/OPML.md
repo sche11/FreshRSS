@@ -44,28 +44,33 @@ The following attributes are using similar naming conventions than [RSS-Bridge](
 * `frss:xPathItemCategories`: XPath expression for extracting a list of categories (tags) from the item context.
 * `frss:xPathItemUid`: XPath expression for extracting an item’s unique ID from the item context. If left empty, a hash is computed automatically.
 
-### JSON+DotPath
+### JSON+DotNotation
 
-* `<outline type="JSON+DotPath" ...`: Similar to `HTML+XPath` but for JSON and using a dot/bracket syntax such as `object.object.array[2].property`.
+* `<outline type="JSON+DotNotation" ...`: Similar to `HTML+XPath` but for JSON and using a dot/bracket syntax such as `object.object.array[2].property`.
 
-* `frss:jsonItem`: JSON dot path for extracting the feed items from the source page.
+* `frss:jsonItem`: JSON dot notation for extracting the feed items from the source page.
 	* Example: `data.items`
-* `frss:jsonItemTitle`: JSON dot path for extracting the item’s title from the item context.
+* `frss:jsonItemTitle`: JSON dot notation for extracting the item’s title from the item context.
 	* Example: `meta.title`
-* `frss:jsonItemContent`: JSON dot path for extracting an item’s content from the item context.
+* `frss:jsonItemContent`: JSON dot notation for extracting an item’s content from the item context.
 	* Example: `content`
-* `frss:jsonItemUri`: JSON dot path for extracting an item link from the item context.
+* `frss:jsonItemUri`: JSON dot notation for extracting an item link from the item context.
 	* Example: `meta.links[0]`
-* `frss:jsonItemAuthor`: JSON dot path for extracting an item author from the item context.
-* `frss:jsonItemTimestamp`: JSON dot path for extracting an item timestamp from the item context. The result will be parsed by [`strtotime()`](https://php.net/strtotime).
+* `frss:jsonItemAuthor`: JSON dot notation for extracting an item author from the item context.
+* `frss:jsonItemTimestamp`: JSON dot notation for extracting an item timestamp from the item context. The result will be parsed by [`strtotime()`](https://php.net/strtotime).
 * `frss:jsonItemTimeFormat`: Date/Time format to parse the timestamp, according to [`DateTime::createFromFormat()`](https://php.net/datetime.createfromformat).
-* `frss:jsonItemThumbnail`: JSON dot path for extracting an item’s thumbnail (image) URL from the item context.
-* `frss:jsonItemCategories`: JSON dot path for extracting a list of categories (tags) from the item context.
-* `frss:jsonItemUid`: JSON dot path for extracting an item’s unique ID from the item context. If left empty, a hash is computed automatically.
+* `frss:jsonItemThumbnail`: JSON dot notation for extracting an item’s thumbnail (image) URL from the item context.
+* `frss:jsonItemCategories`: JSON dot notation for extracting a list of categories (tags) from the item context.
+* `frss:jsonItemUid`: JSON dot notation for extracting an item’s unique ID from the item context. If left empty, a hash is computed automatically.
 
 ### JSON Feed
 
-* `<outline type="JSONFeed" ...`: Uses `JSON+DotPath` behind the scenes to parse a [JSON Feed](https://www.jsonfeed.org/).
+* `<outline type="JSONFeed" ...`: Uses `JSON+DotNotation` behind the scenes to parse a [JSON Feed](https://www.jsonfeed.org/).
+
+### HTML+XPath+JSON
+
+* `<outline type="HTML+XPath+JSON+DotNotation" frss:xPathToJson="..." ...`: Same as `JSON+DotNotation` but first extracting the JSON string from an HTML document thanks to an XPath expression.
+	* Example: `//script[@type='application/json']`
 
 ### cURL
 
@@ -86,8 +91,9 @@ A number of [cURL options](https://curl.se/libcurl/c/curl_easy_setopt.html) are 
 
 * `frss:cssFullContent`: [CSS Selector](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors) to enable the download and extraction of the matching HTML section of each articles’ Web address.
 	* Example: `div.main, .summary`
-* `frss:cssFullContentFilter`: [CSS Selector](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors) to remove the matching HTML elements from the full content retrieved by `frss:cssFullContent`.
+* `frss:cssContentFilter`: [CSS Selector](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors) to remove the matching HTML elements from the article content or from the full content retrieved by `frss:cssFullContent`.
 	* Example: `.footer, .aside`
+. `frss:cssFullContentConditions`: List (separated by a new line) of search queries to trigger a full content retrieval as defined by `frss:cssFullContent`.
 * `frss:filtersActionRead`: List (separated by a new line) of search queries to automatically mark a new article as read.
 
 ### Dynamic OPML (reading lists)

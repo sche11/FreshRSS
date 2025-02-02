@@ -36,7 +36,7 @@ example('PT6M/');
 example('PT7S/');
 example('P1DT1H/');
 
-function example(string $dateInterval) {
+function example(string $dateInterval): void {
 	$dateIntervalArray = parseDateInterval($dateInterval);
 	echo $dateInterval, "\t=>\t",
 		$dateIntervalArray[0] == null ? 'null' : @date('c', $dateIntervalArray[0]), '/',
@@ -67,7 +67,7 @@ function _dateCeiling(string $isoDate): string {
 
 /** @phpstan-return ($isoDate is null ? null : ($isoDate is '' ? null : string)) */
 function _noDelimit(?string $isoDate): ?string {
-	return $isoDate === null || $isoDate === '' ? null : str_replace(array('-', ':'), '', $isoDate);	//FIXME: Bug with negative time zone
+	return $isoDate === null || $isoDate === '' ? null : str_replace(['-', ':'], '', $isoDate);	//FIXME: Bug with negative time zone
 }
 
 function _dateRelative(?string $d1, ?string $d2): ?string {
@@ -139,5 +139,5 @@ function parseDateInterval(string $dateInterval): array {
 			$min = false;
 		}
 	}
-	return array($min, $max);
+	return [$min, $max];
 }

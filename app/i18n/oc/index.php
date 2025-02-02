@@ -14,12 +14,22 @@ return array(
 	'about' => array(
 		'_' => 'A prepaus',
 		'agpl3' => '<a href="https://www.gnu.org/licenses/agpl-3.0.html">AGPL 3</a>',	// IGNORE
+		'bug_reports' => array(
+			'environment_information' => array(
+				'_' => 'System information',	// TODO
+				'browser' => 'Browser',	// TODO
+				'database' => 'Database',	// TODO
+				'server_software' => 'Server software',	// TODO
+				'version_frss' => 'FreshRSS version',	// TODO
+				'version_php' => 'PHP version',	// TODO
+			),
+		),
 		'bugs_reports' => 'Senhalament de problèmas',
 		'credits' => 'Crèdits',
 		'credits_content' => 'Unes elements de l’estil venon del <a href="http://twitter.github.io/bootstrap/">projècte Bootstrap</a> encara que FreshRSS utilize pas aqueste framework. Las <a href="https://gitlab.gnome.org/Archive/gnome-icon-theme-symbolic">icònas</a> venon del <a href="https://www.gnome.org/">projècte GNOME</a>. La polissa <em>Open Sans</em> utilizada foguèt creada per en <a href="https://fonts.google.com/specimen/Open+Sans">Steve Matteson</a>. FreshRSS es basat sus <a href="https://framagit.org/marienfressinaud/MINZ">Minz</a>, un framework PHP.',
 		'documentation' => 'Documentation',	// TODO
 		'freshrss_description' => 'FreshRSS es un agregador de fluxes RSS per l’auto-albergar tal. Sa tòca es d’èsser leugièr e de bon utilizar de prima abòrd mas tanben d’èsser potent e parametrable.',
-		'github' => '<a href="https://github.com/FreshRSS/FreshRSS/issues">sus Github</a>',
+		'github' => '<a href="https://github.com/FreshRSS/FreshRSS/issues">sus GitHub</a>',
 		'license' => 'Licéncia',
 		'project_website' => 'Site del projècte',
 		'title' => 'A prepaus',
@@ -27,6 +37,11 @@ return array(
 	),
 	'feed' => array(
 		'empty' => 'I a pas cap de flux de mostrar.',
+		'received' => array(
+			'before_yesterday' => 'Received before yesterday',	// TODO
+			'today' => 'Received today',	// TODO
+			'yesterday' => 'Received yesterday',	// TODO
+		),
 		'rss_of' => 'Flux RSS de %s',
 		'title' => 'Flux màger',
 		'title_fav' => 'Favorits',
@@ -60,6 +75,18 @@ return array(
 		'reader_view' => 'Vista lectura',
 		'rss_view' => 'Flux RSS',
 		'search_short' => 'Recercar',
+		'sort' => array(
+			'_' => 'Sorting criteria',	// TODO
+			'date_asc' => 'Publication date 1→9',	// TODO
+			'date_desc' => 'Publication date 9→1',	// TODO
+			'id_asc' => 'Freshly received last',	// TODO
+			'id_desc' => 'Freshly received first',	// TODO
+			'link_asc' => 'Link A→Z',	// TODO
+			'link_desc' => 'Link Z→A',	// TODO
+			'rand' => 'Random order',	// TODO
+			'title_asc' => 'Title A→Z',	// TODO
+			'title_desc' => 'Title Z→A',	// TODO
+		),
 		'starred' => 'Mostrar los favorits',
 		'stats' => 'Estatisticas',
 		'subscription' => 'Gestion dels abonaments',

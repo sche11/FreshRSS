@@ -14,13 +14,13 @@ return array(
 	'auth' => array(
 		'allow_anonymous' => '누구나 기본 사용자의 글을 읽을 수 있도록 합니다(%s)',
 		'allow_anonymous_refresh' => '누구나 피드를 갱신할 수 있도록 합니다',
-		'api_enabled' => '<abbr>API</abbr> 사용을 허가합니다<small>(모바일 애플리케이션을 사용할 때 필요합니다)</small>',
+		'api_enabled' => '<abbr>API</abbr> 사용을 허가합니다<small>(모바일 애플리케이션을 사용할 때 필요합니다	and sharing user queries)</small>',	// DIRTY
 		'form' => '웹폼 (전통적인 방식, 자바스크립트 필요)',
-		'http' => 'HTTP (HTTPS를 사용하는 고급 사용자용)',
+		'http' => 'HTTP (advanced: managed by Web server, OIDC, SSO…)',	// TODO
 		'none' => '사용하지 않음 (위험)',
 		'title' => '인증',
-		'token' => 'Master authentication token',	// TODO
-		'token_help' => 'Allows access to all RSS outputs of the user as well as refreshing feeds without authentication:',	// TODO
+		'token' => '마스터 인증 토큰',
+		'token_help' => '인증 없이 사용자의 모든 RSS 내용과 피드 새로고침 권한을 허용합니다.:',
 		'type' => '인증',
 		'unsafe_autologin' => '다음과 같은 안전하지 않은 방식의 로그인을 허가합니다: ',
 	),
@@ -116,6 +116,7 @@ return array(
 		'description' => '설명',
 		'disabled' => '비활성화됨',
 		'empty_list' => '설치된 확장 기능이 없습니다',
+		'empty_list_help' => 'Check the logs to determine the reason behind the empty extension list.',	// TODO
 		'enabled' => '활성화됨',
 		'latest' => '설치됨',
 		'name' => '이름',
@@ -147,8 +148,9 @@ return array(
 		'main_stream' => '메인 스트림',
 		'no_idle' => '유휴 피드가 없습니다!',
 		'number_entries' => '%d 개의 글',
+		'overview' => 'Overview',	// TODO
 		'percent_of_total' => '전체에서의 비율 (%)',
-		'repartition' => '글 분류',
+		'repartition' => '글 분류: %s',	// DIRTY
 		'status_favorites' => '즐겨찾기',
 		'status_read' => '읽음',
 		'status_total' => '전체',
@@ -160,8 +162,8 @@ return array(
 		'_' => '시스템 설정',
 		'auto-update-url' => '자동 업데이트 서버 URL',
 		'base-url' => array(
-			'_' => 'Base URL',	// TODO
-			'recommendation' => 'Automatic recommendation: <kbd>%s</kbd>',	// TODO
+			'_' => 'Base URL',	// IGNORE
+			'recommendation' => '자동 추천: <kbd>%s</kbd>',
 		),
 		'cookie-duration' => array(
 			'help' => '초',
@@ -187,33 +189,33 @@ return array(
 			),
 			'title' => '사용자 회원가입 양식',
 		),
-		'sensitive-parameter' => 'Sensitive parameter. Edit manually in <kbd>./data/config.php</kbd>',	// TODO
+		'sensitive-parameter' => 'Sensitive parameter. <kbd>./data/config.php</kbd>에서 직접 수정',	// DIRTY
 		'tos' => array(
-			'disabled' => 'is not given',	// TODO
-			'enabled' => '<a href="./?a=tos">is enabled</a>',	// TODO
-			'help' => 'How to <a href="https://freshrss.github.io/FreshRSS/en/admins/12_User_management.html#enable-terms-of-service-tos" target="_blank">enable the Terms of Service</a>',	// TODO
+			'disabled' => '주어지지 않음',
+			'enabled' => '<a href="./?a=tos">활성화됨</a>',
+			'help' => '<a href="https://freshrss.github.io/FreshRSS/en/admins/12_User_management.html#enable-terms-of-service-tos" target="_blank">이용 약관 활성화</a> 하는 방법',
 		),
 		'websub' => array(
-			'help' => 'About <a href="https://freshrss.github.io/FreshRSS/en/users/WebSub.html" target="_blank">WebSub</a>',	// TODO
+			'help' => '<a href="https://freshrss.github.io/FreshRSS/en/users/WebSub.html" target="_blank">WebSub</a> 살펴보기',
 		),
 	),
 	'update' => array(
 		'_' => '업데이트',
 		'apply' => '업데이트 적용하기',
-		'changelog' => 'Changelog',	// TODO
+		'changelog' => '변경사항',
 		'check' => '새 업데이트 확인하기',
-		'copiedFromURL' => 'update.php copied from %s to ./data',	// TODO
+		'copiedFromURL' => 'update.php가 %s 에서 ./data 으로 복사됨',
 		'current_version' => '현버전은 입니다',
 		'last' => '마지막 확인',
-		'loading' => 'Updating…',	// TODO
+		'loading' => '업데이트 중…',
 		'none' => '적용 가능한 업데이트가 없습니다',
 		'releaseChannel' => array(
-			'_' => 'Release channel',	// TODO
-			'edge' => 'Rolling release (“edge”)',	// TODO
-			'latest' => 'Stable release (“latest”)',	// TODO
+			'_' => '릴리즈 채널',
+			'edge' => '롤링 릴리즈 (“edge”)',
+			'latest' => '안정 릴리즈 (“latest”)',
 		),
 		'title' => '업데이트',
-		'viaGit' => 'Update via git and Github.com started',	// TODO
+		'viaGit' => 'Git 및 GitHub.com을 통한 업데이트 시작 됨',
 	),
 	'user' => array(
 		'admin' => '관리자',

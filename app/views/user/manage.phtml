@@ -4,10 +4,6 @@
 	$this->partial('aside_configure');
 ?>
 <main class="post">
-	<div class="link-back-wrapper">
-		<a class="link-back" href="<?= _url('index', 'index') ?>"><?= _t('gen.action.back_to_rss_feeds') ?></a>
-	</div>
-
 	<h1><?= _t('gen.menu.user_management') ?></h1>
 	<h2><?= _t('admin.user.create') ?></h2>
 	<form method="post" action="<?= _url('user', 'create') ?>" autocomplete="off">
@@ -108,7 +104,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach ($this->users as $username => $values) : ?>
+				<?php foreach ($this->users as $username => $values): ?>
 					<tr <?= $values['is_default'] ? 'class="default-user"' : '' ?>>
 						<td><a href="<?= _url('user', 'details', 'username', $username) ?>" class="configure open-slider" ><?= _i('configure') ?></a></td>
 						<td><?= $username ?></td>

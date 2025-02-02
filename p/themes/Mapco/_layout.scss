@@ -247,7 +247,7 @@ main.prompt {
 }
 
 /*=== Content of feed articles */
-.content, .content.thin {
+.content, .content_thin {
 	padding: 20px 10px;
 
 	font-size: 1.125rem;
@@ -285,12 +285,8 @@ main.prompt {
 	}
 
 	pre {
-		margin: 10px auto;
-		padding: 10px 20px;
-		overflow: auto;
 		background: variables.$main-first-darker;
 		color: variables.$white;
-		font-size: 0.9rem;
 		border-radius: 3px;
 
 		code {
@@ -301,11 +297,9 @@ main.prompt {
 	}
 
 	code {
-		padding: 2px 5px;
 		background: variables.$code-bg;
 		color: variables.$code-text;
 		font-size: 1rem;
-		// border: 1px solid variables.$alert-light;
 		border-radius: 3px;
 	}
 
@@ -360,15 +354,17 @@ main.prompt {
 		color: variables.$white;
 	}
 
-	a.close {
-		border-radius: 0 3px 3px 0;
+	.close {
+		.icon {
+			filter: brightness(3);
+		}
 	}
 
-	&.good a.close:hover {
+	&.good .close:hover {
 		background: variables.$success-text;
 	}
 
-	&.bad a.close:hover {
+	&.bad .close:hover {
 		background: variables.$alert-text;
 	}
 
@@ -386,9 +382,5 @@ main.prompt {
 
 /*=== Navigation menu (for articles) */
 #nav_entries {
-	margin: 0;
-	text-align: center;
-	line-height: 3em;
-	table-layout: fixed;
 	background: variables.$sid-bg;
 }

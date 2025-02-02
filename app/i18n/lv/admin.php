@@ -14,9 +14,9 @@ return array(
 	'auth' => array(
 		'allow_anonymous' => 'Ļaut anonīmi lasīt noklusējuma lietotāja rakstus (%s)',
 		'allow_anonymous_refresh' => 'Atļaut anonīmu rakstu atsvaidzināšanu',
-		'api_enabled' => 'Atļaut <abbr>API</abbr> piekļuvi <small>(nepieciešams mobilajām lietotnēm)</small>',
+		'api_enabled' => 'Atļaut <abbr>API</abbr> piekļuvi <small>(nepieciešams mobilajām lietotnēm and sharing user queries)</small>',	// DIRTY
 		'form' => 'Tīmekļa veidlapa (tradicionālā, nepieciešams JavaScript)',
-		'http' => 'HTTP (pieredzējušiem lietotājiem ar HTTPS)',
+		'http' => 'HTTP (advanced: managed by Web server, OIDC, SSO…)',	// TODO
 		'none' => 'Nav (bīstami)',
 		'title' => 'Autentifikācija',
 		'token' => 'Master authentication token',	// TODO
@@ -116,6 +116,7 @@ return array(
 		'description' => 'Apraksts',
 		'disabled' => 'Atspējots',
 		'empty_list' => 'Nav instalētu paplašinājumu',
+		'empty_list_help' => 'Check the logs to determine the reason behind the empty extension list.',	// TODO
 		'enabled' => 'Ieslēgts',
 		'latest' => 'Instalēts',
 		'name' => 'Vārds',
@@ -147,8 +148,9 @@ return array(
 		'main_stream' => 'Galvenā plūsma',
 		'no_idle' => 'Nav neaktīvu barotņu!',
 		'number_entries' => '%d raksti',
+		'overview' => 'Overview',	// TODO
 		'percent_of_total' => '% no kopsummas',
-		'repartition' => 'Rakstu pārdalīšana',
+		'repartition' => 'Rakstu pārdalīšana: %s',	// DIRTY
 		'status_favorites' => 'Mīļākie',
 		'status_read' => 'Izlasīti',
 		'status_total' => 'Kopā',
@@ -213,7 +215,7 @@ return array(
 			'latest' => 'Stable release (“latest”)',	// TODO
 		),
 		'title' => 'Atjaunināt sistēmu',
-		'viaGit' => 'Update via git and Github.com started',	// TODO
+		'viaGit' => 'Update via git and GitHub.com started',	// TODO
 	),
 	'user' => array(
 		'admin' => 'Administrators',

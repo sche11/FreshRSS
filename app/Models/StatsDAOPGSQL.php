@@ -9,6 +9,7 @@ class FreshRSS_StatsDAOPGSQL extends FreshRSS_StatsDAO {
 	 * @param int $feed id
 	 * @return array<int,int>
 	 */
+	#[\Override]
 	public function calculateEntryRepartitionPerFeedPerHour(?int $feed = null): array {
 		return $this->calculateEntryRepartitionPerFeedPerPeriod('hour', $feed);
 	}
@@ -17,6 +18,7 @@ class FreshRSS_StatsDAOPGSQL extends FreshRSS_StatsDAO {
 	 * Calculates the number of article per day of week per feed
 	 * @return array<int,int>
 	 */
+	#[\Override]
 	public function calculateEntryRepartitionPerFeedPerDayOfWeek(?int $feed = null): array {
 		return $this->calculateEntryRepartitionPerFeedPerPeriod('day', $feed);
 	}
@@ -25,6 +27,7 @@ class FreshRSS_StatsDAOPGSQL extends FreshRSS_StatsDAO {
 	 * Calculates the number of article per month per feed
 	 * @return array<int,int>
 	 */
+	#[\Override]
 	public function calculateEntryRepartitionPerFeedPerMonth(?int $feed = null): array {
 		return $this->calculateEntryRepartitionPerFeedPerPeriod('month', $feed);
 	}
@@ -34,6 +37,7 @@ class FreshRSS_StatsDAOPGSQL extends FreshRSS_StatsDAO {
 	 * @param string $period format string to use for grouping
 	 * @return array<int,int>
 	 */
+	#[\Override]
 	protected function calculateEntryRepartitionPerFeedPerPeriod(string $period, ?int $feed = null): array {
 		$restrict = '';
 		if ($feed) {
@@ -53,19 +57,12 @@ SQL;
 			return [];
 		}
 
-		switch ($period) {
-			case 'hour':
-				$periodMax = 24;
-				break;
-			case 'day':
-				$periodMax = 7;
-				break;
-			case 'month':
-				$periodMax = 12;
-				break;
-			default:
-			$periodMax = 30;
-		}
+		$periodMax = match ($period) {
+			'hour' => 24,
+			'day' => 7,
+			'month' => 12,
+			default => 30,
+		};
 
 		$repartition = array_fill(0, $periodMax, 0);
 		foreach ($res as $value) {
@@ -74,5 +71,4 @@ SQL;
 
 		return $repartition;
 	}
-
 }

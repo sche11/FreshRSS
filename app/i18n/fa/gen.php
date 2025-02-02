@@ -14,13 +14,16 @@ return array(
 	'action' => array(
 		'actualize' => ' فیدها را به روز کنید',
 		'add' => ' اضافه کنید',
-		'back' => '← به عقب برگرد',
 		'back_to_rss_feeds' => '← به فیدهای RSS خود برگردید',
 		'cancel' => ' لغو',
+		'close' => 'Close',	// TODO
 		'create' => ' ایجاد کنید',
+		'delete_all_feeds' => 'Delete all feeds',	// TODO
+		'delete_errored_feeds' => 'Delete feeds with errors',	// TODO
 		'delete_muted_feeds' => ' فیدهای خاموش را حذف کنید',
 		'demote' => ' تنزل دادن',
 		'disable' => ' غیر فعال کردن',
+		'download' => 'Download',	// TODO
 		'empty' => ' خالی',
 		'enable' => ' فعال کنید',
 		'export' => ' صادرات',
@@ -29,6 +32,14 @@ return array(
 		'load_default_shortcuts' => ' میانبرهای پیش فرض را بارگیری کنید',
 		'manage' => ' مدیریت',
 		'mark_read' => ' علامت گذاری به عنوان خوانده شده',
+		'menu' => array(
+			'open' => 'Open menu',	// TODO
+		),
+		'nav_buttons' => array(
+			'next' => 'Next article',	// TODO
+			'prev' => 'Previous article',	// TODO
+			'up' => 'Go up',	// TODO
+		),
 		'open_url' => ' URL را باز کنید',
 		'promote' => ' ترویج',
 		'purge' => ' پاکسازی',
@@ -139,13 +150,14 @@ return array(
 		'should_be_activated' => ' جاوا اسکریپت باید فعال باشد',
 	),
 	'lang' => array(
-		'cz' => 'Čeština',	// IGNORE
+		'cs' => 'Čeština',	// IGNORE
 		'de' => 'Deutsch',	// IGNORE
 		'el' => 'Ελληνικά',	// IGNORE
 		'en' => 'English',	// IGNORE
 		'en-us' => 'English (United States)',	// IGNORE
 		'es' => 'Español',	// IGNORE
 		'fa' => 'فارسی',	// IGNORE
+		'fi' => 'Suomi',	// IGNORE
 		'fr' => 'Français',	// IGNORE
 		'he' => 'עברית',	// IGNORE
 		'hu' => 'Magyar',	// IGNORE
@@ -175,6 +187,7 @@ return array(
 		'display' => 'نمایش',
 		'extensions' => ' برنامه های افزودنی',
 		'logs' => ' سیاهههای مربوط',
+		'privacy' => 'Privacy',	// TODO
 		'queries' => ' پرس و جوهای کاربر',
 		'reading' => ' خواندن',
 		'search' => ' کلمات یا #برچسب ها را جستجو کنید',
@@ -196,9 +209,10 @@ return array(
 	),
 	'share' => array(
 		'Known' => ' سایت های مبتنی بر شناخته شده',
+		'archiveIS' => 'archive.is',	// IGNORE
 		'archiveORG' => ' archive.org',
 		'archivePH' => ' archive.ph',
-		'blogotext' => ' وبلاگ متن',
+		'bluesky' => 'Bluesky',	// TODO
 		'buffer' => ' بافر',
 		'clipboard' => ' کلیپ بورد',
 		'diaspora' => ' دیاسپورا*',
@@ -220,6 +234,7 @@ return array(
 		'raindrop' => ' Raindrop.io',
 		'reddit' => ' Reddit',
 		'shaarli' => ' شعرلی',
+		'telegram' => 'Telegram',	// IGNORE
 		'twitter' => ' توییتر',
 		'wallabag' => ' wallabag نسخه 1',
 		'wallabagv2' => ' wallabag نسخه 2',

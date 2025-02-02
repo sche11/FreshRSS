@@ -122,10 +122,6 @@
 
 		~ a.dropdown-toggle {
 			&:not(.btn) {
-				~ .dropdown-menu {
-					margin-top: 0;
-				}
-
 				&::after {
 					bottom: -17px;
 				}
@@ -147,8 +143,8 @@
 
 	}
 
-	#nav_entries {
-		line-height: 4.5rem;
+	#nav_entries button {
+		height: 4.5rem;
 	}
 
 	.notification {

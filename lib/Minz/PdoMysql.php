@@ -16,17 +16,16 @@ class Minz_PdoMysql extends Minz_Pdo {
 		$this->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
 	}
 
+	#[\Override]
 	public function dbType(): string {
 		return 'mysql';
 	}
 
 	/**
-	 * @param string|null $name
-	 * @return string|false
 	 * @throws PDOException if the attribute `PDO::ATTR_ERRMODE` is set to `PDO::ERRMODE_EXCEPTION`
 	 */
-	#[\ReturnTypeWillChange]
-	public function lastInsertId($name = null) {
+	#[\Override]
+	public function lastInsertId(?string $name = null): string|false {
 		return parent::lastInsertId();	//We discard the name, only used by PostgreSQL
 	}
 }

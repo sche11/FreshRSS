@@ -8,6 +8,7 @@ class FreshRSS_stats_Controller extends FreshRSS_ActionController {
 
 	/**
 	 * @var FreshRSS_ViewStats
+	 * @phpstan-ignore property.phpDocType
 	 */
 	protected $view;
 
@@ -20,6 +21,7 @@ class FreshRSS_stats_Controller extends FreshRSS_ActionController {
 	 * the common boilerplate for every action. It is triggered by the
 	 * underlying framework.
 	 */
+	#[\Override]
 	public function firstAction(): void {
 		if (!FreshRSS_Auth::hasAccess()) {
 			Minz_Error::error(403);
@@ -33,7 +35,7 @@ class FreshRSS_stats_Controller extends FreshRSS_ActionController {
 
 		$catDAO = FreshRSS_Factory::createCategoryDao();
 		$catDAO->checkDefault();
-		$this->view->categories = $catDAO->listSortedCategories(false) ?: [];
+		$this->view->categories = $catDAO->listSortedCategories(prePopulateFeeds: false);
 
 		FreshRSS_View::prependTitle(_t('admin.stats.title') . ' · ');
 	}
@@ -125,7 +127,7 @@ class FreshRSS_stats_Controller extends FreshRSS_ActionController {
 		FreshRSS_View::appendScript(Minz_Url::display('/scripts/feed.js?' . @filemtime(PUBLIC_PATH . '/scripts/feed.js')));
 		$feed_dao = FreshRSS_Factory::createFeedDao();
 		$statsDAO = FreshRSS_Factory::createStatsDAO();
-		$feeds = $statsDAO->calculateFeedLastDate() ?: [];
+		$feeds = $statsDAO->calculateFeedLastDate();
 		$idleFeeds = [
 			'last_5_year' => [],
 			'last_3_year' => [],
@@ -221,7 +223,7 @@ class FreshRSS_stats_Controller extends FreshRSS_ActionController {
 			$id = null;
 		}
 
-		$this->view->categories 	= $categoryDAO->listCategories(true) ?: [];
+		$this->view->categories 	= $categoryDAO->listCategories(prePopulateFeeds: true);
 		$this->view->feed 			= $id === null ? FreshRSS_Feed::default() : ($feedDAO->searchById($id) ?? FreshRSS_Feed::default());
 		$this->view->days 			= $statsDAO->getDays();
 		$this->view->months 		= $statsDAO->getMonths();

@@ -20,8 +20,7 @@ Minz_Translate::init('en');
 
 FreshRSS_Context::$isCli = true;
 
-/** @return never */
-function fail(string $message, int $exitCode = 1) {
+function fail(string $message, int $exitCode = 1): never {
 	fwrite(STDERR, $message . "\n");
 	die($exitCode);
 }
@@ -51,10 +50,10 @@ function accessRights(): void {
 		"\t", 'sudo cli/access-permissions.sh', "\n";
 }
 
-/** @return never */
-function done(bool $ok = true) {
+function done(bool $ok = true): never {
 	if (!$ok) {
-		fwrite(STDERR, (empty($_SERVER['argv'][0]) ? 'Process' : basename($_SERVER['argv'][0])) . ' failed!' . "\n");
+		fwrite(STDERR, (isset($_SERVER['argv']) && is_array($_SERVER['argv']) && !empty($_SERVER['argv'][0]) && is_string($_SERVER['argv'][0]) ?
+			basename($_SERVER['argv'][0]) : 'Process') . ' failed!' . "\n");
 	}
 	exit($ok ? 0 : 1);
 }

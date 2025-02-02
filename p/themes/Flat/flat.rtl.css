@@ -83,8 +83,8 @@ th {
 	background: #f6f6f6;
 }
 
-form td,
-form th {
+.config-articleicons td,
+.config-articleicons th {
 	font-weight: normal;
 	text-align: center;
 }
@@ -112,7 +112,7 @@ form th {
 .form-group.form-actions {
 	margin: 15px 0 25px;
 	padding: 5px 0;
-	background: #ecf0f1;
+	background-color: #e6ecedaa;
 	border-top: 3px solid #bdc3c7;
 	border-radius: 5px 5px 0 0;
 }
@@ -424,8 +424,6 @@ form th {
 }
 
 .box .box-title {
-	margin: 0;
-	padding: 5px 10px;
 	background: #ecf0f1;
 	color: #333;
 	border-bottom: 1px solid #ddd;
@@ -693,6 +691,7 @@ form th {
 	border-right: 2px solid #ecf0f1;
 }
 
+.flux:not(.current):hover .flux_header .title,
 .flux .flux_header:hover {
 	background: #fff;
 }
@@ -728,9 +727,9 @@ form th {
 	font-size: 0.9rem;
 }
 
-.flux .item.date {
+.flux .flux_header .date,
+.flux .flux_content .bottom .date {
 	color: #666;
-	font-size: 0.7rem;
 }
 
 .flux .bottom {
@@ -756,20 +755,15 @@ form th {
 }
 
 .content pre {
-	margin: 10px auto;
-	padding: 10px 20px;
-	overflow: auto;
 	background: #222;
 	color: #fff;
-	font-size: 0.9rem;
 	border-radius: 3px;
 }
 
 .content code {
-	padding: 2px 5px;
 	background: #fafafa;
 	color: #d14;
-	border: 1px solid #eee;
+	border-color: #eee;
 	border-radius: 3px;
 }
 
@@ -819,16 +813,24 @@ form th {
 	color: #000;
 }
 
-.notification a.close {
+.notification .close {
 	border-radius: 3px 0 0 3px;
 }
 
-.notification.good a.close:hover {
+.notification.good .close:hover {
 	background: #16a085;
 }
 
-.notification.bad a.close:hover {
+.notification .close .icon {
+	filter: brightness(2.5);
+}
+
+.notification.bad .close:hover {
 	background: #c0392b;
+}
+
+.notification .close:hover .icon {
+	filter: brightness(4);
 }
 
 /*=== "Load more" part */
@@ -845,10 +847,6 @@ form th {
 
 /*=== Navigation menu (for articles) */
 #nav_entries {
-	margin: 0;
-	text-align: center;
-	line-height: 3em;
-	table-layout: fixed;
 	background: #34495e;
 }
 
@@ -860,15 +858,13 @@ form th {
 	border: none;
 }
 
-#stream.reader .flux .content {
+#stream.reader .flux .flux_content {
 	background-color: #fff;
 	border-color: #ecf0f1;
 }
 
 #stream.reader .flux .author {
-	margin: 0 0 10px;
 	color: #999;
-	font-size: 90%;
 }
 
 /*=== GLOBAL VIEW */
@@ -1003,17 +999,17 @@ form th {
 		border-radius: 0;
 	}
 
-	.notification a.close {
+	.notification .close {
 		background: transparent;
 		display: block;
 		right: 0;
 	}
 
-	.notification a.close:hover {
+	.notification .close:hover {
 		opacity: 0.5;
 	}
 
-	.notification a.close .icon {
+	.notification .close .icon {
 		display: none;
 	}
 

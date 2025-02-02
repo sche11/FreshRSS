@@ -14,13 +14,13 @@ return array(
 	'auth' => array(
 		'allow_anonymous' => 'Povoliť čítanie článkov prednastaveného používateľa (%s) bez prihlásenia.',
 		'allow_anonymous_refresh' => 'Povoliť obnovenie článkov bez prihlásenia',
-		'api_enabled' => 'Povoliť prístup cez <abbr>API</abbr> <small>(vyžadujú mobilné aplikácie)</small>',
+		'api_enabled' => 'Povoliť prístup cez <abbr>API</abbr> <small>(vyžadujú mobilné aplikácie and sharing user queries)</small>',	// DIRTY
 		'form' => 'Webový formulár (traditičný, vyžaduje JavaScript)',
-		'http' => 'HTTP (pre pokročilých používateľov s HTTPS)',
+		'http' => 'HTTP (advanced: managed by Web server, OIDC, SSO…)',	// TODO
 		'none' => 'Žiadny (nebezpečné)',
 		'title' => 'Prihlásenie',
-		'token' => 'Master authentication token',	// TODO
-		'token_help' => 'Allows access to all RSS outputs of the user as well as refreshing feeds without authentication:',	// TODO
+		'token' => 'Hlavný prihlasovací token',
+		'token_help' => 'Povoľuje prístup k všetkým RSS výstupom, a tiež k obnove kanálov bez prihlásenia:',
 		'type' => 'Spôsob prihlásenia',
 		'unsafe_autologin' => 'Povoliť nebezpečné automatické prihlásenie pomocou webového formulára: ',
 	),
@@ -116,6 +116,7 @@ return array(
 		'description' => 'Popis',
 		'disabled' => 'Zakázané',
 		'empty_list' => 'Žiadne nainštalované rozšírenia',
+		'empty_list_help' => 'Check the logs to determine the reason behind the empty extension list.',	// TODO
 		'enabled' => 'Povolené',
 		'latest' => 'Nainštalované',
 		'name' => 'Názov',
@@ -147,8 +148,9 @@ return array(
 		'main_stream' => 'Všetky kanály',
 		'no_idle' => 'Žiadne neaktívne kanály!',
 		'number_entries' => 'Počet článkov: %d',
+		'overview' => 'Overview',	// TODO
 		'percent_of_total' => 'Z celkového počtu: %',
-		'repartition' => 'Rozdelenie článkov',
+		'repartition' => 'Rozdelenie článkov: %s',
 		'status_favorites' => 'Obľúbené',
 		'status_read' => 'Prečítané',
 		'status_total' => 'Spolu',
@@ -160,8 +162,8 @@ return array(
 		'_' => 'Nastavenia systému',
 		'auto-update-url' => 'Odkaz na aktualizačný server',
 		'base-url' => array(
-			'_' => 'Base URL',	// TODO
-			'recommendation' => 'Automatic recommendation: <kbd>%s</kbd>',	// TODO
+			'_' => 'Základná URL',
+			'recommendation' => 'Automatické odporúčanie: <kbd>%s</kbd>',
 		),
 		'cookie-duration' => array(
 			'help' => 'v sekundách',
@@ -187,33 +189,33 @@ return array(
 			),
 			'title' => 'Registračný formulár používateľa',
 		),
-		'sensitive-parameter' => 'Sensitive parameter. Edit manually in <kbd>./data/config.php</kbd>',	// TODO
+		'sensitive-parameter' => 'Citlivý parameter. Upravte ručne v súbore <kbd>./data/config.php</kbd>',
 		'tos' => array(
-			'disabled' => 'is not given',	// TODO
-			'enabled' => '<a href="./?a=tos">is enabled</a>',	// TODO
-			'help' => 'How to <a href="https://freshrss.github.io/FreshRSS/en/admins/12_User_management.html#enable-terms-of-service-tos" target="_blank">enable the Terms of Service</a>',	// TODO
+			'disabled' => 'nebol zadaný',
+			'enabled' => '<a href="./?a=tos">je povolený</a>',
+			'help' => '<a href="https://freshrss.github.io/FreshRSS/en/admins/12_User_management.html#enable-terms-of-service-tos" target="_blank">Ako povolit Podmienky služby</a>',
 		),
 		'websub' => array(
-			'help' => 'About <a href="https://freshrss.github.io/FreshRSS/en/users/WebSub.html" target="_blank">WebSub</a>',	// TODO
+			'help' => 'O protokole <a href="https://freshrss.github.io/FreshRSS/en/users/WebSub.html" target="_blank">WebSub</a>',
 		),
 	),
 	'update' => array(
 		'_' => 'Aktualizácia systému',
 		'apply' => 'Použiť',
-		'changelog' => 'Changelog',	// TODO
+		'changelog' => 'Zoznam zmien',
 		'check' => 'Skontrolovať aktualizácie',
-		'copiedFromURL' => 'update.php copied from %s to ./data',	// TODO
+		'copiedFromURL' => 'update.php skopírovaný z %s do ./data',
 		'current_version' => 'Vaša aktuálna verzia',
 		'last' => 'Posledná kontrola',
-		'loading' => 'Updating…',	// TODO
+		'loading' => 'Aktualizuje sa…',
 		'none' => 'Žiadna nová aktualizácia',
 		'releaseChannel' => array(
-			'_' => 'Release channel',	// TODO
-			'edge' => 'Rolling release (“edge”)',	// TODO
-			'latest' => 'Stable release (“latest”)',	// TODO
+			'_' => 'Kanál verzií',
+			'edge' => 'Vývojárska verzia (“edge”)',
+			'latest' => 'Stabilná verzia (“latest”)',
 		),
 		'title' => 'Aktualizácia systému',
-		'viaGit' => 'Update via git and Github.com started',	// TODO
+		'viaGit' => 'Začala sa aktualizácia prostredníctvom git a GitHub.com',
 	),
 	'user' => array(
 		'admin' => 'Administrátor',

@@ -14,13 +14,16 @@ return array(
 	'action' => array(
 		'actualize' => 'Atjaunināt barotnes',
 		'add' => 'Pievienot',
-		'back' => '← Atgriezties',
 		'back_to_rss_feeds' => '← Atgriezieties pie RSS barotnēm',
 		'cancel' => 'Atcelt',
+		'close' => 'Close',	// TODO
 		'create' => 'Uztaisīt',
+		'delete_all_feeds' => 'Delete all feeds',	// TODO
+		'delete_errored_feeds' => 'Delete feeds with errors',	// TODO
 		'delete_muted_feeds' => 'Izdzēst izslēgtās barotnes',
 		'demote' => 'Pazemināt amatu',
 		'disable' => 'Izslēgt',
+		'download' => 'Download',	// TODO
 		'empty' => 'Iztukšot',
 		'enable' => 'Ieslēgt',
 		'export' => 'Eksportēt',
@@ -29,6 +32,14 @@ return array(
 		'load_default_shortcuts' => 'Ielādēt noklusējuma saīsnes',
 		'manage' => 'Pārvaldīt',
 		'mark_read' => 'Atzīmēt kā izlasītu',
+		'menu' => array(
+			'open' => 'Open menu',	// TODO
+		),
+		'nav_buttons' => array(
+			'next' => 'Next article',	// TODO
+			'prev' => 'Previous article',	// TODO
+			'up' => 'Go up',	// TODO
+		),
 		'open_url' => 'Atvērt URL',
 		'promote' => 'Paaugstināt amatu',
 		'purge' => 'Iztīrīt',
@@ -139,13 +150,14 @@ return array(
 		'should_be_activated' => 'JavaScript jābūt ieslēgtam',
 	),
 	'lang' => array(
-		'cz' => 'Čeština',	// IGNORE
+		'cs' => 'Čeština',	// IGNORE
 		'de' => 'Deutsch',	// IGNORE
 		'el' => 'Ελληνικά',	// IGNORE
 		'en' => 'English',	// IGNORE
 		'en-us' => 'English (United States)',	// IGNORE
 		'es' => 'Español',	// IGNORE
 		'fa' => 'فارسی',	// IGNORE
+		'fi' => 'Suomi',	// IGNORE
 		'fr' => 'Français',	// IGNORE
 		'he' => 'עברית',	// IGNORE
 		'hu' => 'Magyar',	// IGNORE
@@ -175,6 +187,7 @@ return array(
 		'display' => 'Display',	// TODO
 		'extensions' => 'Paplašinājumi',
 		'logs' => 'Žurnāls',
+		'privacy' => 'Privacy',	// TODO
 		'queries' => 'Lietotāja pieprasījumi',
 		'reading' => 'Lasīšana',
 		'search' => 'Meklēt vārdus vai #birkas',
@@ -196,9 +209,10 @@ return array(
 	),
 	'share' => array(
 		'Known' => 'Zināmas vietnes',
+		'archiveIS' => 'archive.is',	// IGNORE
 		'archiveORG' => 'archive.org',	// IGNORE
 		'archivePH' => 'archive.ph',	// IGNORE
-		'blogotext' => 'Blogotext',	// IGNORE
+		'bluesky' => 'Bluesky',	// TODO
 		'buffer' => 'Buffer',	// IGNORE
 		'clipboard' => 'Starpliktuve',
 		'diaspora' => 'Diaspora*',	// IGNORE
@@ -220,6 +234,7 @@ return array(
 		'raindrop' => 'Raindrop.io',	// IGNORE
 		'reddit' => 'Reddit',	// IGNORE
 		'shaarli' => 'Shaarli',	// IGNORE
+		'telegram' => 'Telegram',	// IGNORE
 		'twitter' => 'Twitter',	// IGNORE
 		'wallabag' => 'wallabag v1',	// IGNORE
 		'wallabagv2' => 'wallabag v2',	// IGNORE

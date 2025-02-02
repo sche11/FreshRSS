@@ -12,6 +12,7 @@ class FreshRSS_category_Controller extends FreshRSS_ActionController {
 	 * underlying framework.
 	 *
 	 */
+	#[\Override]
 	public function firstAction(): void {
 		if (!FreshRSS_Auth::hasAccess()) {
 			Minz_Error::error(403);
@@ -27,14 +28,14 @@ class FreshRSS_category_Controller extends FreshRSS_ActionController {
 	 * Request parameter is:
 	 *   - new-category
 	 */
-	public function createAction() :void {
+	public function createAction(): void {
 		$catDAO = FreshRSS_Factory::createCategoryDao();
 		$tagDAO = FreshRSS_Factory::createTagDao();
 
 		$url_redirect = ['c' => 'subscription', 'a' => 'add'];
 
 		$limits = FreshRSS_Context::systemConf()->limits;
-		$this->view->categories = $catDAO->listCategories(false) ?: [];
+		$this->view->categories = $catDAO->listCategories(prePopulateFeeds: false);
 
 		if (count($this->view->categories) >= $limits['max_categories']) {
 			Minz_Request::bad(_t('feedback.sub.category.over_max', $limits['max_categories']), $url_redirect);
@@ -99,6 +100,12 @@ class FreshRSS_category_Controller extends FreshRSS_ActionController {
 		FreshRSS_View::prependTitle($category->name() . ' · ' . _t('sub.title') . ' · ');
 
 		if (Minz_Request::isPost()) {
+			if (Minz_Request::paramBoolean('enable_read_when_same_title_in_category')) {
+				$category->_attribute('read_when_same_title_in_category', Minz_Request::paramInt('read_when_same_title_in_category'));
+			} else {
+				$category->_attribute('read_when_same_title_in_category', null);
+			}
+
 			$category->_filtersAction('read', Minz_Request::paramTextToArray('filteractions_read'));
 
 			if (Minz_Request::paramBoolean('use_default_purge_options')) {
@@ -190,7 +197,6 @@ class FreshRSS_category_Controller extends FreshRSS_ActionController {
 			}
 
 			// Remove related queries.
-			/** @var array<array{'get'?:string,'name'?:string,'order'?:string,'search'?:string,'state'?:int,'url'?:string}> $queries */
 			$queries = remove_query_by_get('c_' . $id, FreshRSS_Context::userConf()->queries);
 			FreshRSS_Context::userConf()->queries = $queries;
 			FreshRSS_Context::userConf()->save();
@@ -222,16 +228,16 @@ class FreshRSS_category_Controller extends FreshRSS_ActionController {
 			}
 
 			$muted = Minz_Request::paramTernary('muted');
+			$errored = Minz_Request::paramTernary('errored');
 
 			// List feeds to remove then related user queries.
-			$feeds = $feedDAO->listByCategory($id, $muted);
+			$feeds = $feedDAO->listByCategory($id, $muted, $errored);
 
-			if ($feedDAO->deleteFeedByCategory($id, $muted)) {
+			if ($feedDAO->deleteFeedByCategory($id, $muted, $errored)) {
 				// TODO: Delete old favicons
 
 				// Remove related queries
 				foreach ($feeds as $feed) {
-					/** @var array<array{'get'?:string,'name'?:string,'order'?:string,'search'?:string,'state'?:int,'url'?:string}> */
 					$queries = remove_query_by_get('f_' . $feed->id(), FreshRSS_Context::userConf()->queries);
 					FreshRSS_Context::userConf()->queries = $queries;
 				}

@@ -14,13 +14,13 @@ return array(
 	'auth' => array(
 		'allow_anonymous' => 'デフォルトのユーザーの記事がログインしていないときでも読めるようにします。 (%s)',
 		'allow_anonymous_refresh' => '未ログインユーザーでも記事を更新できるようにします。',
-		'api_enabled' => '<abbr>API</abbr>からのアクセスを許可する <small>(モバイルアプリが必要です)</small>',
+		'api_enabled' => '<abbr>API</abbr>アクセスを許可する <small>(モバイルアプリやユーザークエリの共有に必要)</small>',
 		'form' => 'ウェブフォーム (JavaScriptが必要です)',
-		'http' => 'HTTP (上級者はHTTPSでも)',
+		'http' => 'HTTP (advanced: managed by Web server, OIDC, SSO…)',	// TODO
 		'none' => 'なし (危険)',
 		'title' => '認証',
-		'token' => 'Master authentication token',	// TODO
-		'token_help' => 'Allows access to all RSS outputs of the user as well as refreshing feeds without authentication:',	// TODO
+		'token' => 'マスター認証用のトークン',
+		'token_help' => 'ユーザーのすべての RSS 出力へのアクセスと、認証なしのフィードの更新を許可します',
 		'type' => '認証メソッド',
 		'unsafe_autologin' => '危険な自動ログインを有効にします',
 	),
@@ -84,7 +84,7 @@ return array(
 			'ok' => '正規表現ライブラリはインストールされています。 (PCRE).',
 		),
 		'pdo' => array(
-			'nok' => 'PD0あるいはサポートされているドライバーが見つかりませんでした。 (pdo_mysql, pdo_sqlite, pdo_pgsql).',
+			'nok' => 'PD0またはサポートされているドライバーが見つかりませんでした。 (pdo_mysql, pdo_sqlite, pdo_pgsql).',
 			'ok' => 'PD0とサポートされているドライバーはインストールされています。 (pdo_mysql, pdo_sqlite, pdo_pgsql).',
 		),
 		'php' => array(
@@ -116,6 +116,7 @@ return array(
 		'description' => '説明',
 		'disabled' => '無効',
 		'empty_list' => 'インストールされている拡張機能はありません',
+		'empty_list_help' => '拡張機能リストが表示されない原因を特定するために、ログを確認してください。',
 		'enabled' => '有効',
 		'latest' => 'インストール済み',
 		'name' => '名前',
@@ -147,8 +148,9 @@ return array(
 		'main_stream' => '主なストリーム',
 		'no_idle' => '未使用のフィードはありません!',
 		'number_entries' => '%d 記事',
+		'overview' => 'Overview',	// TODO
 		'percent_of_total' => '% 総計',
-		'repartition' => '記事の仕切り',
+		'repartition' => '記事の仕切り: %s',	// DIRTY
 		'status_favorites' => 'お気に入り',
 		'status_read' => '既読',
 		'status_total' => 'すべて',
@@ -160,8 +162,8 @@ return array(
 		'_' => 'システム設定',
 		'auto-update-url' => '自動アップグレードするサーバーのURL',
 		'base-url' => array(
-			'_' => 'Base URL',	// TODO
-			'recommendation' => 'Automatic recommendation: <kbd>%s</kbd>',	// TODO
+			'_' => 'ベースURL',
+			'recommendation' => '自動的に推薦: <kbd>%s</kbd>',
 		),
 		'cookie-duration' => array(
 			'help' => '秒',
@@ -187,33 +189,33 @@ return array(
 			),
 			'title' => 'ユーザー登録',
 		),
-		'sensitive-parameter' => 'Sensitive parameter. Edit manually in <kbd>./data/config.php</kbd>',	// TODO
+		'sensitive-parameter' => 'センシティブなパラメーターです。<kbd>./data/config.php</kbd> を手動で編集してください',
 		'tos' => array(
-			'disabled' => 'is not given',	// TODO
-			'enabled' => '<a href="./?a=tos">is enabled</a>',	// TODO
-			'help' => 'How to <a href="https://freshrss.github.io/FreshRSS/en/admins/12_User_management.html#enable-terms-of-service-tos" target="_blank">enable the Terms of Service</a>',	// TODO
+			'disabled' => '無効化',
+			'enabled' => '<a href="./?a=tos">有効化</a>',
+			'help' => '<a href="https://freshrss.github.io/FreshRSS/en/admins/12_User_management.html#enable-terms-of-service-tos" target="_blank">利用規約を有効にする方法</a>',
 		),
 		'websub' => array(
-			'help' => 'About <a href="https://freshrss.github.io/FreshRSS/en/users/WebSub.html" target="_blank">WebSub</a>',	// TODO
+			'help' => '<a href="https://freshrss.github.io/FreshRSS/en/users/WebSub.html" target="_blank">WebSubについて</a>',
 		),
 	),
 	'update' => array(
 		'_' => 'システムアップデート',
 		'apply' => '適用',
-		'changelog' => 'Changelog',	// TODO
+		'changelog' => '変更履歴',
 		'check' => 'アップデートを確認する',
-		'copiedFromURL' => 'update.php copied from %s to ./data',	// TODO
-		'current_version' => '現在のバージョンは',
+		'copiedFromURL' => 'update.php が %s から ./data にコピーされました。',
+		'current_version' => '現在のバージョン',
 		'last' => '最近の検証',
-		'loading' => 'Updating…',	// TODO
+		'loading' => '更新中…',
 		'none' => '更新を適用できません',
 		'releaseChannel' => array(
-			'_' => 'Release channel',	// TODO
-			'edge' => 'Rolling release (“edge”)',	// TODO
-			'latest' => 'Stable release (“latest”)',	// TODO
+			'_' => 'リリースチャンネル',
+			'edge' => 'ローリングリリース (“edge”)',
+			'latest' => '安定版リリース (“latest”)',
 		),
 		'title' => 'アップデートシステム',
-		'viaGit' => 'Update via git and Github.com started',	// TODO
+		'viaGit' => 'gitとGitHub.comによるアップデートを開始',
 	),
 	'user' => array(
 		'admin' => '管理者',

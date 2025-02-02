@@ -10,6 +10,7 @@ class FreshRSS_subscription_Controller extends FreshRSS_ActionController {
 	 * the common boilerplate for every action. It is triggered by the
 	 * underlying framework.
 	 */
+	#[\Override]
 	public function firstAction(): void {
 		if (!FreshRSS_Auth::hasAccess()) {
 			Minz_Error::error(403);
@@ -17,7 +18,7 @@ class FreshRSS_subscription_Controller extends FreshRSS_ActionController {
 
 		$catDAO = FreshRSS_Factory::createCategoryDao();
 		$catDAO->checkDefault();
-		$this->view->categories = $catDAO->listSortedCategories(false, true) ?: [];
+		$this->view->categories = $catDAO->listSortedCategories(prePopulateFeeds: false, details: true);
 
 		$signalError = false;
 		foreach ($this->view->categories as $cat) {
@@ -92,21 +93,35 @@ class FreshRSS_subscription_Controller extends FreshRSS_ActionController {
 			FreshRSS_View::appendScript(Minz_Url::display('/scripts/feed.js?' . @filemtime(PUBLIC_PATH . '/scripts/feed.js')));
 		}
 
-		$feedDAO = FreshRSS_Factory::createFeedDao();
-		$this->view->feeds = $feedDAO->listFeeds();
-
 		$id = Minz_Request::paramInt('id');
-		if ($id === 0 || !isset($this->view->feeds[$id])) {
-			Minz_Error::error(404);
+		if ($id === 0) {
+			Minz_Error::error(400);
 			return;
 		}
 
-		$feed = $this->view->feeds[$id];
+		$feedDAO = FreshRSS_Factory::createFeedDao();
+		$feed = $feedDAO->searchById($id);
+		if ($feed === null) {
+			Minz_Error::error(404);
+			return;
+		}
 		$this->view->feed = $feed;
 
 		FreshRSS_View::prependTitle($feed->name() . ' · ' . _t('sub.title.feed_management') . ' · ');
 
 		if (Minz_Request::isPost()) {
+			$unicityCriteria = Minz_Request::paramString('unicityCriteria');
+			if (in_array($unicityCriteria, ['id', '', null], strict: true)) {
+				$unicityCriteria = null;
+			}
+			if ($unicityCriteria === null && $feed->attributeBoolean('hasBadGuids')) {	// Legacy
+				$unicityCriteria = 'link';
+			}
+			$feed->_attribute('hasBadGuids', null);	// Remove legacy
+			$feed->_attribute('unicityCriteria', $unicityCriteria);
+
+			$feed->_attribute('unicityCriteriaForced', Minz_Request::paramBoolean('unicityCriteriaForced') ? true : null);
+
 			$user = Minz_Request::paramString('http_user_feed' . $id);
 			$pass = Minz_Request::paramString('http_pass_feed' . $id);
 
@@ -137,18 +152,21 @@ class FreshRSS_subscription_Controller extends FreshRSS_ActionController {
 			}
 			$feed->_attribute('read_when_same_title_in_feed', $read_when_same_title_in_feed);
 
-			$cookie = Minz_Request::paramString('curl_params_cookie');
+			$cookie = Minz_Request::paramString('curl_params_cookie', plaintext: true);
 			$cookie_file = Minz_Request::paramBoolean('curl_params_cookiefile');
 			$max_redirs = Minz_Request::paramInt('curl_params_redirects');
-			$useragent = Minz_Request::paramString('curl_params_useragent');
-			$proxy_address = Minz_Request::paramString('curl_params');
-			$proxy_type = Minz_Request::paramString('proxy_type');
-			$request_method = Minz_Request::paramString('curl_method');
-			$request_fields = Minz_Request::paramString('curl_fields', true);
+			$useragent = Minz_Request::paramString('curl_params_useragent', plaintext: true);
+			$proxy_address = Minz_Request::paramString('curl_params', plaintext: true);
+			$proxy_type = Minz_Request::paramIntNull('proxy_type');
+			$request_method = Minz_Request::paramString('curl_method', plaintext: true);
+			$request_fields = Minz_Request::paramString('curl_fields', plaintext: true);
+			$headers = Minz_Request::paramTextToArray('http_headers', plaintext: true);
 			$opts = [];
-			if ($proxy_type !== '') {
+			if ($proxy_type !== null) {
+				$opts[CURLOPT_PROXYTYPE] = $proxy_type;
+			}
+			if ($proxy_address !== '') {
 				$opts[CURLOPT_PROXY] = $proxy_address;
-				$opts[CURLOPT_PROXYTYPE] = (int)$proxy_type;
 			}
 			if ($cookie !== '') {
 				$opts[CURLOPT_COOKIE] = $cookie;
@@ -174,6 +192,11 @@ class FreshRSS_subscription_Controller extends FreshRSS_ActionController {
 						$opts[CURLOPT_HTTPHEADER] = ['Content-Type: application/json'];
 					}
 				}
+			}
+
+			if (!empty($headers)) {
+				$headers = array_filter(array_map('trim', $headers));
+				$opts[CURLOPT_HTTPHEADER] = array_merge($headers, $opts[CURLOPT_HTTPHEADER] ?? []);
 			}
 
 			$feed->_attribute('curl_params', empty($opts) ? null : $opts);
@@ -237,7 +260,7 @@ class FreshRSS_subscription_Controller extends FreshRSS_ActionController {
 					$xPathSettings['itemUid'] = Minz_Request::paramString('xPathItemUid', true);
 				if (!empty($xPathSettings))
 					$feed->_attribute('xpath', $xPathSettings);
-			} elseif ($feed->kind() === FreshRSS_Feed::KIND_JSON_DOTPATH) {
+			} elseif ($feed->kind() === FreshRSS_Feed::KIND_JSON_DOTNOTATION || $feed->kind() === FreshRSS_Feed::KIND_HTML_XPATH_JSON_DOTNOTATION) {
 				$jsonSettings = [];
 				if (Minz_Request::paramString('jsonFeedTitle') !== '') {
 					$jsonSettings['feedTitle'] = Minz_Request::paramString('jsonFeedTitle', true);
@@ -273,10 +296,16 @@ class FreshRSS_subscription_Controller extends FreshRSS_ActionController {
 					$jsonSettings['itemUid'] = Minz_Request::paramString('jsonItemUid', true);
 				}
 				if (!empty($jsonSettings)) {
-					$feed->_attribute('json_dotpath', $jsonSettings);
+					$feed->_attribute('json_dotnotation', $jsonSettings);
+				}
+				if (Minz_Request::paramString('xPathToJson', plaintext: true) !== '') {
+					$feed->_attribute('xPathToJson', Minz_Request::paramString('xPathToJson', plaintext: true));
 				}
 			}
 
+			$conditions = Minz_Request::paramTextToArray('path_entries_conditions', plaintext: true);
+			$conditions = array_filter(array_map('trim', $conditions));
+			$feed->_attribute('path_entries_conditions', empty($conditions) ? null : $conditions);
 			$feed->_attribute('path_entries_filter', Minz_Request::paramString('path_entries_filter', true));
 
 			$values = [
@@ -303,7 +332,7 @@ class FreshRSS_subscription_Controller extends FreshRSS_ActionController {
 				case 'normal':
 				case 'reader':
 					$get = Minz_Request::paramString('get');
-					if ($get) {
+					if ($get !== '') {
 						$url_redirect = ['c' => 'index', 'a' => $from, 'params' => ['get' => $get]];
 					} else {
 						$url_redirect = ['c' => 'index', 'a' => $from];

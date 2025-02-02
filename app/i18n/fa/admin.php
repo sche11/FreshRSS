@@ -14,9 +14,9 @@ return array(
 	'auth' => array(
 		'allow_anonymous' => ' اجازه خواندن ناشناس مقالات کاربر پیش‌فرض (%s)',
 		'allow_anonymous_refresh' => ' اجازه بازخوانی ناشناس مقالات را بدهید',
-		'api_enabled' => ' اجازه دسترسی به <abbr>API</abbr> <small>(الزامی برای برنامه های تلفن همراه)</small>',
+		'api_enabled' => ' اجازه دسترسی به <abbr>API</abbr> <small>(الزامی برای برنامه های تلفن همراه and sharing user queries and sharing user queries)</small>',	// DIRTY
 		'form' => ' فرم وب (سنتی',
-		'http' => ' HTTP (برای کاربران پیشرفته با HTTPS)',
+		'http' => 'HTTP (advanced: managed by Web server, OIDC, SSO…)',	// TODO
 		'none' => ' هیچ (خطرناک)',
 		'title' => ' احراز هویت',
 		'token' => 'Master authentication token',	// TODO
@@ -116,6 +116,7 @@ return array(
 		'description' => ' توضیحات',
 		'disabled' => ' معلول',
 		'empty_list' => ' هیچ برنامه افزودنی نصب شده ای وجود ندارد',
+		'empty_list_help' => 'Check the logs to determine the reason behind the empty extension list.',	// TODO
 		'enabled' => ' فعال است',
 		'latest' => ' نصب شده است',
 		'name' => ' نام',
@@ -147,8 +148,9 @@ return array(
 		'main_stream' => ' جریان اصلی',
 		'no_idle' => ' هیچ فید بیکار وجود ندارد!',
 		'number_entries' => ' %d مقاله',
+		'overview' => 'Overview',	// TODO
 		'percent_of_total' => ' درصد از کل',
-		'repartition' => ' تقسیم مجدد مقالات',
+		'repartition' => ' تقسیم مجدد مقالات: %s',	// DIRTY
 		'status_favorites' => ' موارد دلخواه',
 		'status_read' => ' بخوانید',
 		'status_total' => ' مجموع',
@@ -213,7 +215,7 @@ return array(
 			'latest' => ' انتشار پایدار ("آخرین")',
 		),
 		'title' => ' FreshRSS را به روز کنید',
-		'viaGit' => ' به روز رسانی از طریق git و Github.com شروع شد',
+		'viaGit' => ' به روز رسانی از طریق git و GitHub.com شروع شد',
 	),
 	'user' => array(
 		'admin' => ' مدیر',

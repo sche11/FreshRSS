@@ -14,13 +14,16 @@ return array(
 	'action' => array(
 		'actualize' => 'フィードを更新する',
 		'add' => '追加',
-		'back' => '← 戻る',
 		'back_to_rss_feeds' => '← RSSフィードに戻る',
 		'cancel' => 'キャンセル',
+		'close' => 'Close',	// TODO
 		'create' => '作成',
+		'delete_all_feeds' => 'すべてのフィードを削除する',
+		'delete_errored_feeds' => 'エラーのフィードを削除する',
 		'delete_muted_feeds' => 'ミュートにしているフィードを削除する',
 		'demote' => '寄付',
 		'disable' => '無効',
+		'download' => 'ダウンロード',
 		'empty' => '空',
 		'enable' => '有効',
 		'export' => 'エクスポート',
@@ -29,13 +32,21 @@ return array(
 		'load_default_shortcuts' => 'デフォルトのショートカットを読み込む',
 		'manage' => '管理',
 		'mark_read' => '既読にする',
+		'menu' => array(
+			'open' => 'メニューを開く',
+		),
+		'nav_buttons' => array(
+			'next' => '次の記事',
+			'prev' => '前の記事',
+			'up' => '先頭へ',
+		),
 		'open_url' => 'URLを開く',
 		'promote' => 'プロモート',
 		'purge' => '不要なデータの削除',
 		'refresh_opml' => 'OPMLをリフレッシュする',
 		'remove' => '消去',
 		'rename' => '名前を変更する',
-		'see_website' => 'webサイトをご覧ください',
+		'see_website' => 'Webサイトを開く',
 		'submit' => '保存',
 		'truncate' => 'すべての記事を消去する',
 		'update' => '更新',
@@ -134,18 +145,19 @@ return array(
 			'request_failed' => 'おそらくインターネット接続に問題があるため、リクエストは失敗しました。',
 			'title_new_articles' => 'FreshRSS: 新規記事!',
 		),
-		'labels_empty' => 'No labels',	// TODO
+		'labels_empty' => 'ラベルがありません',
 		'new_article' => '新しい記事があるのでクリックしてページをリフレッシュしてください。',
 		'should_be_activated' => 'JavaScriptは有効になっている必要があります。',
 	),
 	'lang' => array(
-		'cz' => 'Čeština',	// IGNORE
+		'cs' => 'Čeština',	// IGNORE
 		'de' => 'Deutsch',	// IGNORE
 		'el' => 'Ελληνικά',	// IGNORE
 		'en' => 'English',	// IGNORE
 		'en-us' => 'English (United States)',	// IGNORE
 		'es' => 'Español',	// IGNORE
 		'fa' => 'فارسی',	// IGNORE
+		'fi' => 'Suomi',	// IGNORE
 		'fr' => 'Français',	// IGNORE
 		'he' => 'עברית',	// IGNORE
 		'hu' => 'Magyar',	// IGNORE
@@ -175,10 +187,11 @@ return array(
 		'display' => 'ディスプレイ',
 		'extensions' => '拡張機能',
 		'logs' => 'ログ',
+		'privacy' => 'プライバシー',
 		'queries' => 'ユーザークエリ',
 		'reading' => 'リーディング',
 		'search' => '単語で検索するかハッシュタグで検索する',
-		'search_help' => 'See documentation for advanced <a href="https://freshrss.github.io/FreshRSS/en/users/10_filter.html#with-the-search-field" target="_blank">search parameters</a>',	// TODO
+		'search_help' => '高度な検索パラメータについては <a href="https://freshrss.github.io/FreshRSS/en/users/10_filter.html#with-the-search-field" target="_blank">こちら</a>を参照してください',
 		'sharing' => '共有',
 		'shortcuts' => 'ショートカット',
 		'stats' => '統計',
@@ -188,22 +201,23 @@ return array(
 		'user_profile' => 'プロフィール',
 	),
 	'period' => array(
-		'days' => '日',
-		'hours' => '時',
-		'months' => '月',
-		'weeks' => '週',
-		'years' => '年',
+		'days' => '日間',
+		'hours' => '時間',
+		'months' => 'ヶ月',
+		'weeks' => '週間',
+		'years' => '年間',
 	),
 	'share' => array(
 		'Known' => 'よく使われるサイト',
+		'archiveIS' => 'archive.is',	// IGNORE
 		'archiveORG' => 'archive.org',	// IGNORE
 		'archivePH' => 'archive.ph',	// IGNORE
-		'blogotext' => 'Blogotext',	// IGNORE
+		'bluesky' => 'Bluesky',	// IGNORE
 		'buffer' => 'Buffer',	// IGNORE
 		'clipboard' => 'クリップボード',
 		'diaspora' => 'Diaspora*',	// IGNORE
 		'email' => 'Eメール',
-		'email-webmail-firefox-fix' => 'Email (webmail - fix for Firefox)',	// TODO
+		'email-webmail-firefox-fix' => 'Eメール（Firefox用に修正）',
 		'facebook' => 'Facebook',	// IGNORE
 		'gnusocial' => 'GNU social',	// IGNORE
 		'jdh' => 'Journal du hacker',	// IGNORE
@@ -220,6 +234,7 @@ return array(
 		'raindrop' => 'Raindrop.io',	// IGNORE
 		'reddit' => 'Reddit',	// IGNORE
 		'shaarli' => 'Shaarli',	// IGNORE
+		'telegram' => 'Telegram',	// IGNORE
 		'twitter' => 'Twitter',	// IGNORE
 		'wallabag' => 'wallabag v1',	// IGNORE
 		'wallabagv2' => 'wallabag v2',	// IGNORE
@@ -233,12 +248,12 @@ return array(
 		'by_author' => '著者:',
 		'by_default' => 'デフォルト',
 		'damn' => '終了!',
-		'default_category' => 'カテゴリーに登録されていない',
-		'no' => 'NO',
+		'default_category' => '未分類',
+		'no' => 'いいえ',
 		'not_applicable' => '利用不可能',
 		'ok' => 'OK!',
 		'or' => 'または',
-		'yes' => 'OK',
+		'yes' => 'はい',
 	),
 	'stream' => array(
 		'load_more' => '記事をもっと読み込む',

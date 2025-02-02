@@ -14,13 +14,13 @@ return array(
 	'auth' => array(
 		'allow_anonymous' => 'Разрешить анонимное чтение статей пользователя по умолчанию (%s)',
 		'allow_anonymous_refresh' => 'Разрешить анонимное обновление статей',
-		'api_enabled' => 'Позволить <abbr>API</abbr> доступ <small>(необходимо для мобильных приложений)</small>',
+		'api_enabled' => 'Позволить <abbr>API</abbr> доступ <small>(необходимо для мобильных приложений and sharing user queries)</small>',
 		'form' => 'Веб-форма (традиционный, необходим JavaScript)',
-		'http' => 'HTTP (для опытных пользователей с HTTPS)',
+		'http' => 'HTTP (advanced: managed by Web server, OIDC, SSO…)',	// TODO
 		'none' => 'Без аутентификации (небезопасно)',
 		'title' => 'Аутентификации',
-		'token' => 'Master authentication token',	// TODO
-		'token_help' => 'Allows access to all RSS outputs of the user as well as refreshing feeds without authentication:',	// TODO
+		'token' => 'Главный токен аутентификации',
+		'token_help' => 'Обеспечивает доступ ко всем выходным данным RSS пользователя, а также к обновлению лент без проверки подлинности:',
 		'type' => 'Способ аутентификации',
 		'unsafe_autologin' => 'Разрешить небезопасный автоматический вход с использованием следующего формата: ',
 	),
@@ -116,6 +116,7 @@ return array(
 		'description' => 'Описание',
 		'disabled' => 'Отключены',
 		'empty_list' => 'Нет установленных расширений',
+		'empty_list_help' => 'Check the logs to determine the reason behind the empty extension list.',	// TODO
 		'enabled' => 'Включены',
 		'latest' => 'Установлено',
 		'name' => 'Название',
@@ -147,8 +148,9 @@ return array(
 		'main_stream' => 'Основной поток',
 		'no_idle' => 'Нет неактивных лент!',
 		'number_entries' => 'статей: %d',
+		'overview' => 'Overview',	// TODO
 		'percent_of_total' => '% от всего',
-		'repartition' => 'Распределение статей',
+		'repartition' => 'Распределение статей: %s',
 		'status_favorites' => 'В избранном',
 		'status_read' => 'Прочитано',
 		'status_total' => 'Всего',
@@ -160,8 +162,8 @@ return array(
 		'_' => 'Системные настройки',
 		'auto-update-url' => 'URL сервера для автоматического обновления',
 		'base-url' => array(
-			'_' => 'Base URL',	// TODO
-			'recommendation' => 'Automatic recommendation: <kbd>%s</kbd>',	// TODO
+			'_' => 'Основной URL-адрес',
+			'recommendation' => 'Автоматическая рекомендация: <kbd>%s</kbd>',
 		),
 		'cookie-duration' => array(
 			'help' => 'в секундах',
@@ -187,33 +189,33 @@ return array(
 			),
 			'title' => 'Форма регистрации пользователей',
 		),
-		'sensitive-parameter' => 'Sensitive parameter. Edit manually in <kbd>./data/config.php</kbd>',	// TODO
+		'sensitive-parameter' => 'Важный параметр. Отредактируйте вручную в <kbd>./data/config.php</kbd>',
 		'tos' => array(
-			'disabled' => 'is not given',	// TODO
-			'enabled' => '<a href="./?a=tos">is enabled</a>',	// TODO
-			'help' => 'How to <a href="https://freshrss.github.io/FreshRSS/en/admins/12_User_management.html#enable-terms-of-service-tos" target="_blank">enable the Terms of Service</a>',	// TODO
+			'disabled' => 'не указан',
+			'enabled' => '<a href="./?a=tos">включен</a>',
+			'help' => 'Как <a href="https://freshrss.github.io/FreshRSS/en/admins/12_User_management.html#enable-terms-of-service-tos" target="_blank">включить Условия предоставления услуг</a>',
 		),
 		'websub' => array(
-			'help' => 'About <a href="https://freshrss.github.io/FreshRSS/en/users/WebSub.html" target="_blank">WebSub</a>',	// TODO
+			'help' => 'О <a href="https://freshrss.github.io/FreshRSS/en/users/WebSub.html" target="_blank">WebSub</a>',
 		),
 	),
 	'update' => array(
 		'_' => 'Обновление системы',
 		'apply' => 'Применить',
-		'changelog' => 'Changelog',	// TODO
+		'changelog' => 'Список изменений',
 		'check' => 'Проверить обновления',
-		'copiedFromURL' => 'update.php copied from %s to ./data',	// TODO
+		'copiedFromURL' => 'update.php скопирован из %s в ./data',
 		'current_version' => 'Ваша текущая версия',
 		'last' => 'Последняя проверка',
-		'loading' => 'Updating…',	// TODO
+		'loading' => 'Обновление…',
 		'none' => 'Нет обновлений',
 		'releaseChannel' => array(
-			'_' => 'Release channel',	// TODO
-			'edge' => 'Rolling release (“edge”)',	// TODO
-			'latest' => 'Stable release (“latest”)',	// TODO
+			'_' => 'Релизный канал',
+			'edge' => 'Плавающий релиз (“edge”)',
+			'latest' => 'Стабильный релиз (“latest”)',
 		),
 		'title' => 'Обновить систему',
-		'viaGit' => 'Update via git and Github.com started',	// TODO
+		'viaGit' => 'Обновление с помощью git и GitHub.com запущено',
 	),
 	'user' => array(
 		'admin' => 'Администратор',

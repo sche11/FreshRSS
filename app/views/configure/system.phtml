@@ -4,10 +4,6 @@
 	$this->partial('aside_configure');
 ?>
 <main class="post">
-	<div class="link-back-wrapper">
-		<a class="link-back" href="<?= _url('index', 'index') ?>"><?= _t('gen.action.back_to_rss_feeds') ?></a>
-	</div>
-
 	<h1><?= _t('admin.system') ?></h1>
 
 	<form method="post" action="<?= _url('configure', 'system') ?>">
@@ -74,7 +70,7 @@
 			</div>
 		</div>
 
-		<legend><?= _t('admin.system.registration.title') ?></legend>
+		<h2><?= _t('admin.system.registration.title') ?></h2>
 
 		<div class="form-group">
 			<label class="group-name" for="max-registrations-select"><?= _t('admin.system.registration.select.label') ?></label>

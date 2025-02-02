@@ -33,8 +33,9 @@ return array(
 	'display' => array(
 		'_' => 'Affichage',
 		'darkMode' => array(
-			'_' => 'Mode sombre automatique (bêta)',
+			'_' => 'Mode sombre automatique',
 			'auto' => 'Auto',	// IGNORE
+			'help' => 'Seulement pour les thèmes compatibles',
 			'no' => 'Non',
 		),
 		'icon' => array(
@@ -98,9 +99,19 @@ return array(
 			'previous' => 'Précédent',
 		),
 	),
+	'privacy' => array(
+		'_' => 'Vie privée',
+		'retrieve_extension_list' => 'Récupération de la liste des extensions',
+	),
 	'profile' => array(
 		'_' => 'Gestion du profil',
-		'api' => 'Gestion de l’API',
+		'api' => array(
+			'_' => 'Gestion de l’API',
+			'check_link' => 'Vérifier l’état de l’API via : <kbd><a href="../api/" target="_blank">%s</a></kbd>',
+			'disabled' => 'L’accès API est désactivé.',
+			'documentation_link' => 'Voir <a href="https://freshrss.github.io/FreshRSS/fr/users/06_Mobile_access.html" target="_blank">la documentation et une liste d’applications compatibles</a>',
+			'help' => 'Voir <a href="https://freshrss.github.io/FreshRSS/fr/users/06_Mobile_access.html" target=_blank>la documentation</a>',
+		),
 		'delete' => array(
 			'_' => 'Suppression du compte',
 			'warn' => 'Le compte et toutes les données associées vont être supprimées.',
@@ -114,6 +125,7 @@ return array(
 	'query' => array(
 		'_' => 'Filtres utilisateurs',
 		'deprecated' => 'Ce filtre n’est plus valide. La catégorie ou le flux concerné a été supprimé.',
+		'description' => 'Description',	// IGNORE
 		'filter' => array(
 			'_' => 'Filtres appliqués :',
 			'categories' => 'Afficher par catégorie',
@@ -126,6 +138,8 @@ return array(
 			'tags' => 'Afficher par étiquette',
 			'type' => 'Type',	// IGNORE
 		),
+		'get_A' => 'Tous les flux, y compris ceux limités à leur catégorie',
+		'get_Z' => 'Tous les flux, y compris les archivés',
 		'get_all' => 'Afficher tous les articles',
 		'get_all_labels' => 'Afficher les articles avec une étiquette',
 		'get_category' => 'Afficher la catégorie <em>%s<em>',
@@ -134,14 +148,24 @@ return array(
 		'get_important' => 'Afficher les articles des flux importants',
 		'get_label' => 'Afficher les articles avec l’étiquette “%s”',
 		'help' => 'Voir la <a href="https://freshrss.github.io/FreshRSS/en/users/user_queries.html" target="_blank">documentation pour les filtres utilisateurs et repartage par HTML / RSS / OPML</a>.',
+		'image_url' => 'URL de l’image',
 		'name' => 'Nom',
 		'no_filter' => 'Aucun filtre appliqué',
+		'no_queries' => array(
+			'_' => 'Aucun filtre utilisateur n’a été sauvegardé.',
+			'help' => 'Voir <a href="https://freshrss.github.io/FreshRSS/en/users/user_queries.html" target="_blank">la documentation</a>',
+		),
 		'number' => 'Filtre n°%d',
 		'order_asc' => 'Afficher les articles les plus anciens en premier',
 		'order_desc' => 'Afficher les articles les plus récents en premier',
 		'search' => 'Recherche de « %s »',
 		'share' => array(
 			'_' => 'Partager ce filtre par lien',
+			'disabled' => array(
+				'_' => 'désactivé',
+				'title' => 'Partager',
+			),
+			'greader' => 'Lien partageable au format JSON GReader',
 			'help' => 'Donner ce lien pour partager le contenu du filtre avec d’autres personnes',
 			'html' => 'Lien partageable de la page HTML',
 			'opml' => 'Lien partageable de la liste des flux au format OPML',
@@ -169,6 +193,7 @@ return array(
 		'_' => 'Lecture',
 		'after_onread' => 'Après « Marquer tout comme lu »,',
 		'always_show_favorites' => 'Afficher par défaut tous les articles dans les favoris',
+		'apply_to_individual_feed' => 'S’applique aux flux individuellement',
 		'article' => array(
 			'authors_date' => array(
 				'_' => 'Auteurs et date',
@@ -183,6 +208,11 @@ return array(
 				'with_authors' => 'Sur la ligne « Auteurs et date »',
 			),
 			'feed_title' => 'Titre du flux',
+			'icons' => array(
+				'_' => 'Position des icônes d’article<br /><small>(Vue lecture seulement)</small>',
+				'above_title' => 'Au dessus du titre',
+				'with_authors' => 'Sur la ligne auteur et date',
+			),
 			'tags' => array(
 				'_' => 'Tags',	// IGNORE
 				'both' => 'En en-tête et en pied d’article',
@@ -211,7 +241,7 @@ return array(
 		),
 		'hide_read_feeds' => 'Cacher les catégories & flux sans article non-lu (ne fonctionne pas avec la configuration « Afficher tous les articles »)',
 		'img_with_lazyload' => 'Utiliser le mode <em>chargement différé</em> pour les images',
-		'jump_next' => 'sauter au prochain voisin non lu (flux ou catégorie)',
+		'jump_next' => 'sauter au prochain voisin non lu',
 		'mark_updated_article_unread' => 'Marquer les articles mis à jour comme non-lus',
 		'number_divided_when_reader' => 'Divisé par 2 dans la vue de lecture.',
 		'read' => array(
@@ -223,17 +253,19 @@ return array(
 			'upon_gone' => 'lorsqu’il n’est plus dans le flux d’actualités en amont',
 			'upon_reception' => 'dès la réception du nouvel article',
 			'when' => 'Marquer un article comme lu…',
-			'when_same_title' => 'si un même titre existe déjà dans les <i>n</i> articles plus récents',
+			'when_same_title_in_category' => 'si un même titre existe déjà dans les <i>n</i> articles plus récents de la catégorie',
+			'when_same_title_in_feed' => 'si un même titre existe déjà dans les <i>n</i> articles plus récents du flux',
 		),
 		'show' => array(
 			'_' => 'Articles à afficher',
 			'active_category' => 'La catégorie active',
-			'adaptive' => 'Adapter l’affichage',
+			'adaptive' => 'Afficher les non lus s’il y en a, sinon tous les articles',
 			'all_articles' => 'Afficher tous les articles',
 			'all_categories' => 'Toutes les catégories',
 			'no_category' => 'Aucune catégorie',
 			'remember_categories' => 'Se souvenir des catégories dépliées',
 			'unread' => 'Afficher les non lus',
+			'unread_or_favorite' => 'Afficher les non lus et les favoris',
 		),
 		'show_fav_unread_help' => 'S’applique aussi aux étiquettes',
 		'sides_close_article' => 'Cliquer hors de la zone de texte ferme l’article',
@@ -241,6 +273,9 @@ return array(
 			'_' => 'Ordre de tri',
 			'newer_first' => 'Plus récents en premier',
 			'older_first' => 'Plus anciens en premier',
+		),
+		'star' => array(
+			'when' => 'Marquer un article comme favori…',
 		),
 		'sticky_post' => 'Aligner l’article en haut quand il est ouvert',
 		'title' => 'Lecture',
@@ -254,7 +289,7 @@ return array(
 	'sharing' => array(
 		'_' => 'Partage',
 		'add' => 'Ajouter une méthode de partage',
-		'blogotext' => 'Blogotext',	// IGNORE
+		'bluesky' => 'Bluesky',	// TODO
 		'deprecated' => 'Ce service est obsolète et sera supprimé dans une <a href="https://freshrss.github.io/FreshRSS/en/users/08_sharing_services.html" title="Voir la documentation" target="_blank">prochaine version de FreshRSS</a>.',
 		'diaspora' => 'Diaspora*',	// IGNORE
 		'email' => 'Courriel',
@@ -287,7 +322,7 @@ return array(
 		'mark_favorite' => 'Basculer l’indicateur de favori',
 		'mark_read' => 'Basculer l’indicateur de lecture',
 		'navigation' => 'Navigation',	// IGNORE
-		'navigation_help' => 'Avec le modificateur <kbd>⇧ Maj</kbd>, les raccourcis de navigation s’appliquent aux flux.<br/>Avec le modificateur <kbd>Alt ⎇</kbd>, les raccourcis de navigation s’appliquent aux catégories.',
+		'navigation_help' => 'Avec le modificateur <kbd>⇧ Maj</kbd>, les raccourcis de navigation s’appliquent aux flux.<br />Avec le modificateur <kbd>Alt ⎇</kbd>, les raccourcis de navigation s’appliquent aux catégories.',
 		'navigation_no_mod_help' => 'Les raccourcis suivant ne supportent pas les modificateurs.',
 		'next_article' => 'Passer à l’article suivant',
 		'next_unread_article' => 'Passer à l’article non lu suivant',

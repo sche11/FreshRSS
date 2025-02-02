@@ -14,8 +14,8 @@ function show_default_favicon(int $cacheSeconds = 3600): void {
 	}
 }
 
-$id = isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '0';
-if (!ctype_xdigit($id)) {
+$id = $_SERVER['QUERY_STRING'] ?? '0';
+if (!is_string($id) || !ctype_xdigit($id)) {
 	$id = '0';
 }
 
@@ -42,22 +42,14 @@ if ($ico_mtime == false || $ico_mtime < $txt_mtime || ($ico_mtime < time() - (mt
 		if ($ico_mtime == false) {
 			show_default_favicon(86400);
 			exit();
-		} else {
-			touch($ico);
 		}
+
+		touch($ico);
 	}
 }
 
 if (!httpConditional($ico_mtime, mt_rand(14, 21) * 86400, 2)) {
-	$ico_content_type = 'image/x-icon';
-	if (function_exists('mime_content_type')) {
-		$ico_content_type = mime_content_type($ico);
-	}
-	switch ($ico_content_type) {
-		case 'image/svg':
-			$ico_content_type = 'image/svg+xml';
-			break;
-	}
+	$ico_content_type = contentType($ico);
 	header('Content-Type: ' . $ico_content_type);
 	header('Content-Disposition: inline; filename="' . $id . '.ico"');
 	readfile($ico);

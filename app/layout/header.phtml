@@ -18,25 +18,27 @@
 	<div class="item search">
 		<?php if (FreshRSS_Auth::hasAccess() || FreshRSS_Context::systemConf()->allow_anonymous) { ?>
 		<form action="<?= $this->html_url ?>" method="get">
-			<div class="stick">
-				<?php if (Minz_Request::controllerName() === 'index'): ?>
-					<?php if (in_array(Minz_Request::actionName(), ['normal', 'global', 'reader'], true)) { ?>
-					<input type="hidden" name="a" value="<?= Minz_Request::actionName() ?>" />
-					<?php } if (Minz_Request::paramString('get') !== '') { ?>
-					<input type="hidden" name="get" value="<?= FreshRSS_Context::currentGet() ?>" />
-					<?php } if (Minz_Request::paramInt('state') !== 0) { ?>
-					<input type="hidden" name="state" value="<?= Minz_Request::paramInt('state') ?>" />
-					<?php } ?>
-				<?php endif; ?>
-				<?php if (Minz_Request::paramString('user') !== '') { ?>
-				<input type="hidden" name="user" value="<?= Minz_User::name() ?>" />
-				<?php } if (ctype_alnum(Minz_Request::paramString('t'))) { ?>
-				<input type="hidden" name="t" value="<?= Minz_Request::paramString('t') ?>" />
-				<?php } if (ctype_upper(Minz_Request::paramString('order'))) { ?>
-				<input type="hidden" name="order" value="<?= FreshRSS_Context::$order ?>" />
-				<?php } if (ctype_lower(Minz_Request::paramString('f'))) { ?>
-				<input type="hidden" name="f" value="<?= Minz_Request::paramString('f') ?>" />
+			<?php if (Minz_Request::controllerName() === 'index'): ?>
+				<?php if (in_array(Minz_Request::actionName(), ['normal', 'global', 'reader'], true)) { ?>
+				<input type="hidden" name="a" value="<?= Minz_Request::actionName() ?>" />
+				<?php } if (Minz_Request::paramString('get') !== '') { ?>
+				<input type="hidden" name="get" value="<?= FreshRSS_Context::currentGet() ?>" />
+				<?php } if (Minz_Request::paramInt('state') !== 0) { ?>
+				<input type="hidden" name="state" value="<?= Minz_Request::paramInt('state') ?>" />
 				<?php } ?>
+			<?php endif; ?>
+			<?php if (Minz_Request::paramString('user') !== '') { ?>
+			<input type="hidden" name="user" value="<?= Minz_User::name() ?>" />
+			<?php } if (ctype_alnum(Minz_Request::paramString('t'))) { ?>
+			<input type="hidden" name="t" value="<?= Minz_Request::paramString('t') ?>" />
+			<?php } if (ctype_lower(Minz_Request::paramString('sort'))) { ?>
+			<input type="hidden" name="sort" value="<?= FreshRSS_Context::$sort ?>" />
+			<?php } if (ctype_upper(Minz_Request::paramString('order'))) { ?>
+			<input type="hidden" name="order" value="<?= FreshRSS_Context::$order ?>" />
+			<?php } if (ctype_lower(Minz_Request::paramString('f'))) { ?>
+			<input type="hidden" name="f" value="<?= Minz_Request::paramString('f') ?>" />
+			<?php } ?>
+			<div class="stick">
 				<input type="search" name="search" id="search"
 					value="<?= htmlspecialchars(htmlspecialchars_decode(Minz_Request::paramString('search'), ENT_QUOTES), ENT_COMPAT, 'UTF-8') ?>"
 					placeholder="<?= _t('gen.menu.search') ?>" />
@@ -79,6 +81,7 @@
 						<li class="item"><a href="<?= _url('configure', 'shortcut') ?>"><?= _t('gen.menu.shortcuts') ?></a></li>
 						<li class="item"><a href="<?= _url('configure', 'queries') ?>"><?= _t('gen.menu.queries') ?></a></li>
 						<li class="item"><a href="<?= _url('extension', 'index') ?>"><?= _t('gen.menu.extensions') ?></a></li>
+						<li class="item"><a href="<?= _url('configure', 'privacy') ?>"><?= _t('gen.menu.privacy') ?></a></li>
 						<?= Minz_ExtensionManager::callHookString('menu_configuration_entry') ?>
 					</ul>
 				</li>

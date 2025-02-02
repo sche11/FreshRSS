@@ -5,10 +5,6 @@ require_once __DIR__ . '/I18nValidatorInterface.php';
 
 class I18nUsageValidator implements I18nValidatorInterface {
 
-	/** @var array<string> */
-	private array $code;
-	/** @var array<string,array<string,I18nValue>> */
-	private array $reference;
 	private int $totalEntries = 0;
 	private int $failedEntries = 0;
 	private string $result = '';
@@ -17,11 +13,13 @@ class I18nUsageValidator implements I18nValidatorInterface {
 	 * @param array<string,array<string,I18nValue>> $reference
 	 * @param array<string> $code
 	 */
-	public function __construct(array $reference, array $code) {
-		$this->code = $code;
-		$this->reference = $reference;
+	public function __construct(
+		private readonly array $reference,
+		private readonly array $code,
+	) {
 	}
 
+	#[\Override]
 	public function displayReport(): string {
 		if ($this->failedEntries > $this->totalEntries) {
 			throw new \RuntimeException('The number of unused strings cannot be higher than the number of strings');
@@ -32,10 +30,12 @@ class I18nUsageValidator implements I18nValidatorInterface {
 		return sprintf('%5.1f%% of translation keys are unused.', $this->failedEntries / $this->totalEntries * 100) . PHP_EOL;
 	}
 
+	#[\Override]
 	public function displayResult(): string {
 		return $this->result;
 	}
 
+	#[\Override]
 	public function validate(): bool {
 		foreach ($this->reference as $file => $data) {
 			foreach ($data as $key => $value) {

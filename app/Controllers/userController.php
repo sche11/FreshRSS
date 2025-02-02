@@ -229,6 +229,10 @@ class FreshRSS_user_Controller extends FreshRSS_ActionController {
 
 		$ok = self::checkUsername($new_user_name);
 		$homeDir = join_path(DATA_PATH, 'users', $new_user_name);
+		// create basepath if missing
+		if (!is_dir(join_path(DATA_PATH, 'users'))) {
+			$ok &= mkdir(join_path(DATA_PATH, 'users'), 0770, true);
+		}
 		$configPath = '';
 
 		if ($ok) {
@@ -243,10 +247,12 @@ class FreshRSS_user_Controller extends FreshRSS_ActionController {
 			$ok &= !file_exists($configPath);
 		}
 		if ($ok) {
-			if (!is_dir($homeDir)) {
-				mkdir($homeDir, 0770, true);
+			// $homeDir must not exist beforehand,
+			// otherwise it might be multiple remote parties racing to register one username
+			$ok = mkdir($homeDir, 0770, true);
+			if ($ok) {
+				$ok &= (file_put_contents($configPath, "<?php\n return " . var_export($userConfig, true) . ';') !== false);
 			}
-			$ok &= (file_put_contents($configPath, "<?php\n return " . var_export($userConfig, true) . ';') !== false);
 		}
 		if ($ok) {
 			$newUserDAO = FreshRSS_Factory::createUserDao($new_user_name);
@@ -317,8 +323,14 @@ class FreshRSS_user_Controller extends FreshRSS_ActionController {
 				);
 			}
 
-			$tos_enabled = file_exists(TOS_FILENAME);
-			$accept_tos = Minz_Request::paramBoolean('accept_tos');
+			if (!FreshRSS_Auth::hasAccess('admin')) {
+				// TODO: We may want to ask the user to accept TOS before first login
+				$tos_enabled = file_exists(TOS_FILENAME);
+				$accept_tos = Minz_Request::paramBoolean('accept_tos');
+				if ($tos_enabled && !$accept_tos) {
+					Minz_Request::bad(_t('user.tos.feedback.invalid'), $badRedirectUrl);
+				}
+			}
 
 			if (FreshRSS_Context::systemConf()->force_email_validation && empty($email)) {
 				Minz_Request::bad(
@@ -330,13 +342,6 @@ class FreshRSS_user_Controller extends FreshRSS_ActionController {
 			if (!empty($email) && !validateEmailAddress($email)) {
 				Minz_Request::bad(
 					_t('user.email.feedback.invalid'),
-					$badRedirectUrl
-				);
-			}
-
-			if ($tos_enabled && !$accept_tos) {
-				Minz_Request::bad(
-					_t('user.tos.feedback.invalid'),
 					$badRedirectUrl
 				);
 			}
@@ -376,7 +381,11 @@ class FreshRSS_user_Controller extends FreshRSS_ActionController {
 			}
 		}
 
-		$redirect_url = ['c' => 'user', 'a' => 'manage'];
+		if (FreshRSS_Auth::hasAccess('admin')) {
+			$redirect_url = ['c' => 'user', 'a' => 'manage'];
+		} else {
+			$redirect_url = ['c' => 'index', 'a' => 'index'];
+		}
 		Minz_Request::forward($redirect_url, true);
 	}
 
@@ -390,8 +399,10 @@ class FreshRSS_user_Controller extends FreshRSS_ActionController {
 		$ok &= is_dir($user_data);
 		if ($ok) {
 			FreshRSS_fever_Util::deleteKey($username);
+			Minz_ModelPdo::$usesSharedPdo = false;
 			$oldUserDAO = FreshRSS_Factory::createUserDao($username);
 			$ok &= $oldUserDAO->deleteUser();
+			Minz_ModelPdo::$usesSharedPdo = true;
 			$ok &= recursive_unlink($user_data);
 			$filenames = glob(PSHB_PATH . '/feeds/*/' . $username . '.txt');
 			if (!empty($filenames)) {

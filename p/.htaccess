@@ -1,3 +1,8 @@
+# If you need custom .htaccess rules, instead of modifying this file,
+# create one in `./i/.htaccess` (in particular for access control such as HTTP Basic Auth),
+# or in `../.htaccess` for other more general rules.
+# See also `../.htaccess.dist` if you cannot set Apache `DocumentRoot` to here (`FreshRSS/p/`) as recommended
+
 <IfModule mod_dir.c>
 	DirectoryIndex	index.php index.html
 </IfModule>
